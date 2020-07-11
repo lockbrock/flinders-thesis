@@ -1,18 +1,19 @@
 % Chapter Template
 
-\chapter{Implementation of project(??)} % Main chapter title
-
-\label{Chapter4} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+\chapter{Extending the Test Framework} % Main chapter title
+\label{Chapter4}
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-\section{Main Section 1}
-Chapter 4
-- Modify test framework
-
-- Modify fakeradio
+\begin{itemize}
+    \item Modify test framework
+    \item Modify fakeradio to output layout
+    \item Get dual link types working
+    \item Be able to define different WiFi layouts
+    \item 
+\end{itemize}
 
 
 \begin{itemize}
@@ -26,15 +27,34 @@ Chapter 4
 
 
 %-----------------------------------
-%	SUBSECTION 1
+%   SECTION 1
 %-----------------------------------
-\subsection{Subsection 1}
+\section{Joint wifi \& radio tests}
+A key part of the test framework that was missing was support for networks with both wifi and radio link types. 
+This presents a major limitation  to the test framework as real Serval networks would feature both of these network links.
+To implement this feature, several additions need to be made to the test framework.
+
+First, the ability to define which link simulation will be used for each nodes needs to be defined.
+This allows test definition writers to define the functionality(??) of each of the nodes. 
+For instance, test writers are able to define if a specific node in a topology is using the fakeradio tool or simply acting as wifi, or even, both. 
+
+Next, the ability to define specific network topologies will need to be added.
+This already exists in the case of the fakeradio networks as discussed in the previous chapters, this is not easily done with the simulated wifi tool.
+
+Once these two pieces of functionality have been added to the test framework, developers will be able to test considerably larger and more complicated network topologies with ease.
+With this expanded test framework the Serval team will be able to significantly improve their knowledge of the Serval network; complicated, larger, and reproducable serve a huge benefit to the goals of the Serval team. \emph{rewrite, this is bad}
 
 
 
-%-----------------------------------
-%	SUBSECTION 2
-%-----------------------------------
+What needed to be done for this?
+\begin{itemize}
+    \item Add capability to define interface to use
+    \item Strip definitions to get lists of what interfaces for each node
+    \item For each node, add the interfaces that are in lists
+    \item For each node, add appropriate configuration
+    \item Pass lbard rules to fakeradio as per normal
+\end{itemize}
+
 
 \subsection{Subsection 2}
 
@@ -43,4 +63,5 @@ Chapter 4
 %	SECTION 2
 %----------------------------------------------------------------------------------------
 
-\section{Main Section 2}
+\section{Retreiving network layouts}
+To be used in next section when we are creating diagrams from the network layouts
