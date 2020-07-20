@@ -60,8 +60,22 @@ The first feature is defining the interfaces to be used on a per-node basis.
 With this, nodes can each have their own configuration, allowing for some nodes to have WiFi enabled while others only have fakeradio interfaces.
 Next, the ability to define WiFi topologies will need to be added, as currently it appears to only be possible to have nodes communicating with every other node without any defined topology.
 
+To ensure that this does not affect pre-existing LBARD tests, two new files will be created.
+The first is the \emph{topologies} test file.
+This file is just a new test file that outlines the new tests to be implemented.
+Further, since these will need 
+
 \subsection{Defining interfaces per node}
+\begin{itemize}
+    \item \textbf{Explain original scenario}
+    \item Pass n nodes, all are labelled as specified radio type
+    \item n Serval interfaces and n LBARD interfaces are started
+    \item fakeradio is started
+    \item Test is run, communicate, log it all
+    \item Limitation: as it is treating each node the same with no differentiation between, no way to enable wifi on some nodes and not others
+\end{itemize}
 \todo{briefly explain original scenario}
+
 \todo{Explain why we need to enable interfaces}
 
 The first step to completing this is to determine what nodes need which configuration applied.
@@ -104,43 +118,57 @@ When this is called the program iterates through the supplied interfaces (ie. 'w
 For fakeradio instances, the only configuration that needs to be set is enabling http (to connect to LBARD) and setting the username and password for LBARD.
 
 With this completed, it is now possible to run WiFi and fakeradio nodes side-by-side, with the appropriate interfaces enabled based on the test definition.
-However once this method was implemented, a major issue was discovered; it is not possible to have complicated WiFi topologies with this method since WiFi nodes have zero restriction around what other WiFi nodes they can communicate with.
+However this method has a major limitation; it is not possible to have complicated WiFi topologies with this method since WiFi nodes have zero restriction around what other WiFi nodes they can communicate with.
 This means that while networks such as \todo{figure a; A-r-B-w-C-r-D} work, any network such as \todo{figure b} will not work as there is no way to restrict node E from connecting to node C.
-
-
-\begin{itemize}
-    \item Explain original scenario
-    \begin{itemize}
-        \item Pass n nodes, all are labelled as specified radio type
-        \item n Serval interfaces and n LBARD interfaces are started
-        \item fakeradio is started
-        \item Test is run, communicate, log it all
-        \item Limitation: as it is treating each node the same with no differentiation between, no way to enable wifi on some nodes and not others
-    \end{itemize}
-    \item \#Take fakeradio and wifi rules, extract node info and convert to array
-    \item \#Loop through two arrays; one per node
-    \item \#For each fakeradio, add configuration for LBARD
-    \item \#Send fakeradio config to connect them all
-    \item \#for each wifi, add config for wifi
-    \item \#No ability to have complicated wifi topologies
-    \item \#Explain (with diagram) why no ability to define
-\end{itemize}
 
 
 
 \subsection{Defining wifi topologies}
-\begin{itemize}
-    \item Explain (with diagram) the current way of defining them
+When expanding the test framework to handle the mixed topologies, it was planned to implement functionality to define WiFi network layouts in the same format as defining fakeradio networks, however it was suggested to instead define wifi interfaces using existing tools found in the Serval-DNA framework.
+While this meant that topology tests would be not have a consistent method of defining network layouts between radio and WiFi nodes, it would however be consistent with Serval-DNA tests.
 
-    \item Investigate Serval-DNA framework
-    \item Initially looking to define it like fakeradio
-    \item Remove two array method, just use one for fakeradio
-    \item Manually define 
-    \item Decided not to since it's simpler to manually define
-    \item NOT the case for fakeradio, since all nodes need to be defined anyway and no point doubling up
-    \item Each node inherently has it's own interface, needs ot be explicitly connected to another to communicate
-    \item Explain (with diagram) new way of defining
-\end{itemize}
+Using the method previously outlined in the previous section, WiFi nodes all default to using the same WiFi interface - thus creating a fully-connected WiFi mesh sub-network, leading to every WiFi node being connected. 
+This can be seen in \figurename{ \ref{fig:networkWifi1}}.
+Each WiFi interface is essentially a sub-network, with nodes within a specified interface only able to communicate with nodes within the same interface as themselves.
+Thus, to define a complicated network topology it is necessary to restrict which interfaces WiFi nodes can communicate on.
+
+\begin{figure}
+    \begin{centering}
+        \includegraphics[width=14cm,height=20cm,keepaspectratio]{Figures/networkWifiInterface1.png}
+        \caption{Network topology without defining interfaces}
+        \label{fig:networkWifi1}
+    \end{centering}
+\end{figure}
+
+
+In the Serval-DNA test framework, non- fully-connected WiFi networks are created by manually defining the WiFi interfaces that a specified servald interface is connected to.
+To implement this, several changes need to be made.
+The first is removing the functions added in the previous section that relate to WiFi.
+This is because we'll no longer be defining WiFi nodes with a string passed to the setup functions.
+Next, it was decided for every node to automatically have WiFi functionality enabled by default, but only connected to its own private interface. 
+This is done by changing the configuration parsing added in the previous section to enable WiFi by default, but still only enabling LBARD as specified.
+
+To connect nodes via WiFi they must now be connected to a specific WiFi interface as shown in \figurename{ \ref{fig:definingInterfaces}}.
+
+\begin{figure}
+    \begin{centering}
+        \includegraphics[width=14cm,height=20cm,keepaspectratio]{Figures/definingInterfaces.png}
+        \caption{Defining WiFi interfaces}
+        \label{fig:definingInterfaces}
+    \end{centering}
+\end{figure}
+
+When a node is connected to multiple nodes at once, it will be able to communicate with all other nodes in those interfaces, while the connected nodes are still only able to communicate with nodes in the same interfaces as themselves.
+This means that previously impossible network topologies such as WiFi chains can be implemented as shown in \figurename{ \ref{fig:networkWifi2}}.
+
+\begin{figure}
+    \begin{centering}
+        \includegraphics[width=14cm,height=20cm,keepaspectratio]{Figures/networkWifiInterface2.png}
+        \caption{Network topology with two wifi interfaces defined}
+        \label{fig:networkWifi2}
+    \end{centering}
+\end{figure}
+
 
 \subsection{Adding utility functions}
 \begin{itemize}
