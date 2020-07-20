@@ -22,7 +22,6 @@
     \item How can we represent it?
     \item Why format?
     \item JSON vs CSV
-    
 \end{itemize}
 
 
@@ -43,8 +42,7 @@ This already exists in the case of the fakeradio networks as discussed in the pr
 
 Once these two pieces of functionality have been added to the test framework, developers will be able to test considerably larger and more complicated network topologies with ease.
 With this expanded test framework the Serval team will be able to significantly improve their knowledge of the Serval network; complicated, larger, and reproducable serve a huge benefit to the goals of the Serval team. \emph{rewrite, this is bad}
-
-
+\linebreak
 
 What needed to be done for this?
 \begin{itemize}
@@ -55,13 +53,41 @@ What needed to be done for this?
     \item Pass lbard rules to fakeradio as per normal
 \end{itemize}
 
+\subsection{Defining interfaces per node}
+\begin{itemize}
+    \item Loop through two arrays; one per node
+    \item For each fakeradio, add configuration for LBARD
+    \item Send fakeradio config to connect them all
+    \item for each wifi, add config for wifi
+    \item No ability to have complicated wifi topologies
+    \item Explain (with diagram) why no ability to define
+\end{itemize}
 
-\subsection{Subsection 2}
+\subsection{Defining wifi topologies}
+\begin{itemize}
+    \item Investigate servald framework
+    \item Initially looking to define it like fakeradio
+    \item Remove two array method, just use one for fakeradio
+    \item Manually define 
+    \item Decided not to since it's simpler to manually define
+
+    \item Explain (with diagram) the current way of defining them
+\end{itemize}
+
+\subsection{Adding utility functions}
+\begin{itemize}
+    \item Add ability to define {n} things
+    \item Add ability to define multiple radio types easily
+\end{itemize}
 
 
-%----------------------------------------------------------------------------------------
-%	SECTION 2
-%----------------------------------------------------------------------------------------
+\section{Adding more network topologies}
+\begin{itemize}
+    \item We need more than just the basic ones defined earlier
+    \item Not just wifi/radio
+    \item Complicated topologies (find some that represent real models and reference)
+\end{itemize}
+
 
 \section{Retreiving network layouts}
 To be used in next section when we are creating diagrams from the network layouts
