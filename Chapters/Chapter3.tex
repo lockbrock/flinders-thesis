@@ -34,12 +34,12 @@ The test framework provides functions for setting up and running tests, as well 
 With this framework, these test scripts are able to model a wide range of Serval functionality, allowing for developers to easily and effectively write tests with a minimal amount of work needed.
 
 The test framework is composed of three major parts; the test framework, the test definitions, and the test file.
-The framework (\emph{testframework.sh}) provides the functions necessary to run tests, providing: command line argument parsing, running tests, stopping tests, monitoring log files, and more. 
+The framework (\verb|testframework.sh|) provides the functions necessary to run tests, providing: command line argument parsing, running tests, stopping tests, monitoring log files, and more. 
 
-The test definitions file (\emph{testdefs.sh}) provides specific functions that are needed for specific test files.
+The test definitions file (\verb|testdefs.sh|) provides specific functions that are needed for specific test files.
 This file provides the functionality to setup, start, and stop serval instances, configure specific instances, and more.
-When running specific types of tests, the \emph{testdefs.sh} file can be extended by other files such as in the case of the \emph{testdefs\_rhizome.sh} file. 
-This allows for some functions provided in the testdefs file to be overwritten, allowing for different functionality depending on the type of test; this is of great use particularly when attempting to use different configurations than that provided by the original \emph{testdefs.sh} file
+When running specific types of tests, the \verb|testdefs.sh| file can be extended by other files such as in the case of the \verb|testdefs_rhizome.sh| file. 
+This allows for some functions provided in the testdefs file to be overwritten, allowing for different functionality depending on the type of test; this is of great use particularly when attempting to use different configurations than that provided by the original \verb|testdefs.sh| file
 
 Finally, the test files themselves are where tests are defined. 
 These files import the test definitions and test framework and define the environment and test conditions necessary to run tests. 
@@ -66,17 +66,17 @@ This way of running the tests has several benefits for the purpose of this Honou
 
 
 \subsection{Defining Tests}
-Tests are defined in either the lbard (\emph{./lbard/tests/lbard}) or lbard\_size\_tests (\emph{./lbard/tests/lbard\_size\_tests}) file. 
+Tests are defined in either the lbard (\verb|./lbard/tests/lbard|) or lbard\_size\_tests (\verb|./lbard/tests/lbard_size_tests|) file. 
 These are both bash files that implement the LBARD test framework, and simply define what tests are to be run.
-Tests are comprised of three basic components; a doc string with a brief description of what the test does, a 'setup' function that sets up the test environment, and finally, a 'test' function, that is run when the test is run.
+Tests are comprised of three basic components; a doc string with a brief description of what the test does, a \verb|setup| function that sets up the test environment, and finally, a \verb|test| function, that is run when the test is run.
 The doc string is used when running tests and serves as feedback to the tester as to what test is currently being run.
-The setup function is run before the test is conducted. This function serves to set up any necessary configurations for the running of this test. This is where the fakeradio rules are defined, files added to Serval instances, and any other necessary setup for a test.
+The \verb|setup| function is run before the test is conducted. This function serves to set up any necessary configurations for the running of this test. This is where the fakeradio rules are defined, files added to Serval instances, and any other necessary setup for a test.
 Finally in the test function, the conditions for a successful test are defined. Once this function completes (or an error/fail/timeout is encountered), the test concludes.
 
 
 This can be seen in Figure \ref{fig:testDefinition}. 
-In this example, the setup function defines the fakeradio rules, then adds a single file of 50 bytes to the Serval instance A. 
-In the test function, a function 'all\_bundles\_received' is defined, that simply checks if instance B received a bundle with the specified bundle ID and version. 
+In this example, the \verb|setup| function defines the fakeradio rules, then adds a single file of 50 bytes to the Serval instance A. 
+In the test function, a function \verb|all_bundles_received| is defined, that simply checks if instance B received a bundle with the specified bundle ID and version. 
 The test then waits until this bundle is received. 
 If this bundle is received before the default timeout, the test will pass.
 
@@ -89,8 +89,8 @@ If this bundle is received before the default timeout, the test will pass.
 \end{figure}
 
 \subsection{Existing Tests}
-Currently, 276 LBARD tests exist; 55 of these are in \emph{./tests/lbard} file, and 221 of these are in the \emph{./tests/lbard\_size\_tests} file.
-While this may seem like a large number of tests, all of the tests in the \emph{lbard\_size\_tests} file follow the exact same structure - transferring a bundle from one node to three neighbours - with the only difference being the size of the bundle.
+Currently, 276 LBARD tests exist; 55 of these are in \verb|./tests/lbard| file, and 221 of these are in the \verb|./tests/lbard_size_tests| file.
+While this may seem like a large number of tests, all of the tests in the \verb|lbard_size_tests| file follow the exact same structure - transferring a bundle from one node to three neighbours - with the only difference being the size of the bundle.
 The bundle simply increases in size by 10 bytes for each tests from 6000 bytes to 8200 bytes.
 
 In the main LBARD test file, there are only a handful of tests, with the majority of them being derivatives of different tests with mild changes. 
@@ -128,15 +128,15 @@ Tests can be configured to display more details log file infomation by setting s
 \end{figure}
 
 
-As shown in \figurename{\ref{fig:exampleTest}} When a test is run, four possible status messages can be displayed; pass, fail, error, and fatal.
+As shown in \figurename{ \ref{fig:exampleTest}} When a test is run, four possible status messages can be displayed; pass, fail, error, and fatal.
 
-\emph{Pass} is simply when a test has fulfilled the requirements outlined in the test definition.
+\verb|Pass| is simply when a test has fulfilled the requirements outlined in the test definition.
 
-\emph{Fail} occurs when a test does not meet the requirements from a test definition but it is not due to an issue with the test or test definition. This may occur if a timeout elapses, or an output does not meet a success condition.
+\verb|Fail| occurs when a test does not meet the requirements from a test definition but it is not due to an issue with the test or test definition. This may occur if a timeout elapses, or an output does not meet a success condition.
 
-The \emph{error} status occurs when - during the process of running the test - an error occurs that stops the test from running correctly, such as LBARD failing to start properly, or being unable to start Serval DNA with the current configuration.
+The \verb|error| status occurs when - during the process of running the test - an error occurs that stops the test from running correctly, such as LBARD failing to start properly, or being unable to start Serval DNA with the current configuration.
 
-Finally, the \emph{fatal} status occurs files don't exist that should, commands are not available, or invalid options are passed to the test framework.
+Finally, the \verb|fatal| status occurs files don't exist that should, commands are not available, or invalid options are passed to the test framework.
 
 
 
@@ -184,3 +184,6 @@ Finally, this will almost certainly help with communicating issues between Serva
 Finally, once the emulator can model a variety of network topologies, the accuracy of the emulator should be determined.
 To achieve this, the emulator should model a real-world Serval network and run various test on this network, and then those same tests should be run on a real-world implementation of this network.
 This wil serve to validate the accuracy of the Serval emulator, as it is expected that modelling the same network should have near-identical results with minimal variance.
+
+\section{Summary}
+Add summary of section/link to next chapter

@@ -61,7 +61,7 @@ With this, nodes can each have their own configuration, allowing for some nodes 
 Next, the ability to define WiFi topologies will need to be added, as currently it appears to only be possible to have nodes communicating with every other node without any defined topology.
 
 To ensure that this does not affect pre-existing LBARD tests, two new files will be created.
-The first is the \emph{topologies} test file.
+The first is the \verb|topologies| test file.
 This file is just a new test file that outlines the new tests to be implemented.
 Further, since these will need 
 
@@ -85,35 +85,35 @@ Since each node that will be connected by fakeradio needs to be defined already,
 Each test that uses fakeradio contains a string in the setup function defining the links between nodes.
 An example of this is shown in \todo{add figure}. 
 The string defines the links in the format "allow between [n],[m];" where n and m are the 0-indexed serval-dna instance number.
-This is suitable to use since every node in a topology using fakeradio must be specified in this string, meaning that \emph{every} node that requires LBARD interfaces defined will be listed here.
+This is suitable to use since every node in a topology using fakeradio must be specified in this string, meaning that \verb|every| node that requires LBARD interfaces defined will be listed here.
 As the WiFi functionality does not need to have the topology defined in such a way it is necessary to define a new string, simply listing the nodes that require WiFi to be enabled. 
 
-These strings are passed to the \emph{start\_instances} function. 
+These strings are passed to the \verb|start\_instances| function. 
 To determine what nodes to enable the configurations on, the node information needs to be stripped from the string.
 
 To achieve this, multiple alterations need to be run on the strings.
 The first is removing newline characters and replacing them with spaces.
 This ensures that multiple line fakeradio rules will not break the node parsing.
-Next, a \emph{sed} command is run, replacing every character that is not a number with a space character, stripping all information that is not specifically the number of the node.
-The \emph{tr} command is then run, removing extraneous space characters, so that the string is just the node numbers separated by a single space character.
-Finally, each space character is replaced with the \emph{sed} command with a newline character.
+Next, a \verb|sed| command is run, replacing every character that is not a number with a space character, stripping all information that is not specifically the number of the node.
+The \verb|tr| command is then run, removing extraneous space characters, so that the string is just the node numbers separated by a single space character.
+Finally, each space character is replaced with the \verb|sed| command with a newline character.
 This results in two string of the node numbers, with each node on a new line.
 To use these in the rest of the program, these strings are converted to an array, one for WiFi and one for fakeradio nodes.
 
 With this information, we can now programmatically determine which configurations need to be enabled on each nodes.
 To implement this however, one more step is required.
-A new array \emph{all\_nodes} is created that simply lists all of the nodes in the test.
+A new array \verb|all\_nodes| is created that simply lists all of the nodes in the test.
 This array simply contains the combined unique set of the WiFi and fakeradio arrays.
 
-Next, the program iterates through the \emph{all\_nodes} array, and adds the string 'wifi', 'fakeradio' or 'wifi fakeradio' to an array of strings at the index of the node.
+Next, the program iterates through the \verb|all\_nodes| array, and adds the string 'wifi', 'fakeradio' or 'wifi fakeradio' to an array of strings at the index of the node.
 This results in an array where at the index of a given node the interfaces are textually listed.
 \todo{add better explanation - diagram?}
-The framework then iterates through each node specified and sends the array to the \emph{configure\_servald\_server} function.
+The framework then iterates through each node specified and sends the array to the \verb|configure\_servald\_server| function.
 
 
-The \emph{configure\_servald\_server} is called for each node before the instance is started, and as such each configuration is unique to each instance of servald.
+The \verb|configure\_servald\_server| is called for each node before the instance is started, and as such each configuration is unique to each instance of servald.
 This means that we can now add the required configuration for a node without affecting other nodes.
-When the configure\_servald\_server function is called the program simply calls the \emph{add\_servald\_interface} function with the interfaces needed for that given node.
+When the configure\_servald\_server function is called the program simply calls the \verb|add\_servald\_interface| function with the interfaces needed for that given node.
 When this is called the program iterates through the supplied interfaces (ie. 'wifi', 'fakeradio', or 'fakeradio wifi') and for each interface configures the servald instance appropriately.
 For fakeradio instances, the only configuration that needs to be set is enabling http (to connect to LBARD) and setting the username and password for LBARD.
 
@@ -157,7 +157,6 @@ To connect nodes via WiFi they must now be connected to a specific WiFi interfac
         \label{fig:definingInterfaces}
     \end{centering}
 \end{figure}
-
 When a node is connected to multiple nodes at once, it will be able to communicate with all other nodes in those interfaces, while the connected nodes are still only able to communicate with nodes in the same interfaces as themselves.
 This means that previously impossible network topologies such as WiFi chains can be implemented as shown in \figurename{ \ref{fig:networkWifi2}}.
 
@@ -170,20 +169,20 @@ This means that previously impossible network topologies such as WiFi chains can
 \end{figure}
 
 
-\subsection{Adding utility functions}
+\section{Adding utility functions}
 \begin{itemize}
     \item Add ability to define {n} things
     \item Add ability to define multiple radio types easily
 \end{itemize}
 
 
-\section{Adding more network topologies}
+\section{Adding more topologies tests}
 \begin{itemize}
+    \item List the ones that existed previously - only used for development
     \item We need more than just the basic ones defined earlier
     \item Not just wifi/radio
     \item Complicated topologies (find some that represent real models and reference)
 \end{itemize}
 
-
-\section{Retreiving network layouts}
-To be used in next section when we are creating diagrams from the network layouts
+\section{Summary}
+\textbf{Add link to next section. "While these improved things, we still need to add more. So graphical output blah blah"}
