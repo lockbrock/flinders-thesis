@@ -7,15 +7,10 @@
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
-\begin{itemize}
-    \item Create simple log
-    \item Create tool to render graphics
-    \item Example images
-\end{itemize}
 
 \begin{itemize}
     \item \emph{How to get render the output: what to do?}
-    \item First, create a simple log
+    \item \#First, create a simple log
     \item Get the layout
     \item Create dot file of layout
     \item Sort by major and minor events
@@ -80,7 +75,7 @@ The program repeats these steps with each line in the file until it reaches the 
     \end{centering}
 \end{figure}
 
-\subsection{Filtering Lines}
+\subsection{Filtering Lines}\label{filteringLines}
 \begin{itemize}
     \item \#What lines we're selecting
     \item Why they are chosen
@@ -203,15 +198,125 @@ This structure can be seen in \figurename{ \ref{fig:chapter5SimpleLogFormat}}
 \end{figure}
 
 
-\subsection{Combining with test framework}
+
+
+
+\section{Drawing Packet Transfer through the network}
+To improve the output of the test framework, a network diagram displaying packet transfer is highly useful, allowing testers to better understand the topology they are testing. To produce a useful and informative network diagram, four steps need to be undertaken: determine the major events to be displayed on the diagram, create an ASCII representation of the test, generate a network diagram, and finally, create a PDF of the network topology with the traffic displayed.
+
+
 \begin{itemize}
-    \item Automatically run - in finally section
-    \item Need to specify command line arguments - input, output, etc.
-    \item Output to log directory
+    \item \#Getting major and minor
+    \begin{itemize}
+        \item \#As log file is processed, add certain events to major
+        \item \#Once we process the log file, sort major and minor
+        \item \#Go through stack of (sorted) major, and compare against the time of minor
+        \item \#Add minors that are before the major
+        \item \#Ends up with a sorted list of major and minor
+    \end{itemize}
+    \item Create ASCII representation
+    \begin{itemize}
+        \item Add getting major transfer type
+        \item Using sorted list of major, we can iterate through each of the major events
+        \item For each minor event, print all the details
+    \end{itemize}
+    \item Generate network diagrams
+    \begin{itemize}
+        \item Just the layout
+        \item Already written (mostly)
+        \item Adding network events
+    \end{itemize}
+    \item Create PDF of topology
+    \begin{itemize}
+        \item Adding the images to a LaTeX file
+        \item Template or manually?
+        \item The layout chosen
+        \item For now, manual: easier, however in the future it may be better to have it in a template so layout can be easily changed
+        \item Just writing strings to a file
+    \end{itemize}
 \end{itemize}
 
-\section{Generating a network diagram}
-As an improvement to the outputs of the test framework, rendering a network diagram is highly useful, as it allows for testers to better understand the topology that they are testing.
+\subsection{Getting Major and Minor events}
+To create our network diagrams, we first need to determine what will be displayed on the diagram.
+To do this, two categories of log messages are defined: 
+\begin{itemize}
+    \item Major: When two nodes transfer messages
+    \item Minor: Some processing on a single Node that would not give the full picture of the test if omitted
+\end{itemize}
+
+Major events will be displayed in a diagram showing the network layout, showing the transfer between the two nodes and the message details. 
+Minor events however, will be displayed in a list of minor events that occurred before the major event.
+There can be multiple minor details per major event, however there is only one major event for each minor event.
+
+There are two options for processing and sorting major and minor events.
+The first is to simply process the simple log after it has been made, and check if a line should be considered major or minor. 
+The other solution is to classify lines as they are processed in the creation of the simple log.
+The second option is quite clearly considerably faster, as in the first option we must re-process a new file and then classify lines within it to be major or minor, however the second option has a major issue in that when lines are classified during the creation of the simple log they are not yet sorted.
+This means that if an array of major and minor events is created then these events will \emph{not} be in chronological order.
+Unsorted events is a major issue for the creation of diagrams as the created diagrams will quite obviously not be ordered.
+This means that for the second option to be considered a method of sorting and \emph{then} assigning minor events to a major event must be developed.
+This is the approach that this thesis took.
+
+Determining major events is relatively simple; major events are a transfer between two nodes.
+To effectively save major events, a struct defining major events is created.
+This struct contains all of the necessary features of a major event. These details are:
+\begin{itemize}
+    \item Sending Node
+    \item Destination Node
+    \item Transfer details (type of message, size, etc.)
+    \item The time it occurs at
+    \item The transfer type (Fakeradio or WiFi)
+    \item An array of minor events associated with this major event
+\end{itemize}
+This occurs at two different points in the log file: when Fakeradio sends a packet to a different node, and when Servald sends a packet.
+Fakeradio events are already filtered down to a one line log event for the simple log, so the program simply breaks this line down to get the details of the event, and then appends this to the major events array.
+Servald events however are more complicated as the packet transfer takes place over several messages.
+To convert this into one event, the program simply saves the details of the packet as each line is processed until the log line stating that the message is sent, at which point all of the saved details are added to an event and appended to the major event array.
+
+
+To add the minor events, when a line for the simple log is being formatted for the simple log, the program simply checks if it meets a handful of criteria.
+The minor events that are filtered include:
+\begin{itemize}
+    \item Add stuff here
+    \item todo
+\end{itemize}
+\todo{Add the list of filtered things}
+\todo{Make all log lines?}
+Since the log lines are just a single line, saving these minor events is as simple as appending these lines to the minor event array.
+
+
+Once the simple log file has been produced, and all major and minor events have been extracted, each minor event needs to be associated with a major event.
+When major and minor events are added to their respective arrays, they are done so in the order that the relevant lines appear in the input log file, meaning that these arrays are not sorted.
+To associate a minor event with a major event, the minor event must occur before a major event, but \emph{after} the proceeding major event.
+To achieve this, both of the arrays must be sorted.
+This is simple to achieve using the C standard function \verb|qsort|.
+To use this function, a comparator needs to be implemented: that is to say, a function that is able to compare two objects and return a number indicating which object is bigger.
+As major events are stored as a struct with a timestamp field the comparator for this is simple to implement; convert the timestamps to a long, and determine which is larger.
+For minor events this is similar; extract the timestamp from the message, convert this timestamp to a long, then determine which is larger.
+With these comparators implemented, both the major and minor event arrays can be quickly sorted.
+Using the sorted arrays, the program is now able to assign minor events to major events.
+The process to do this is simple. Iterate through every major event, and check if the top item in the minor events array occurs before the major event.
+If it is, then add it to the major event and move to the next minor event. 
+Do this for every minor event until a minor event is reached that is after the major event.
+At this point, iterate to the next major event and repeat this process.
+This is done until all major events have been processed.
+
+The process for combining major and minor events can be seen in \figurename{ \ref{fig:chapter5CombineMajorMinor}}.
+
+With all of the minor events assigned in chronological order to a relevant major event, an ASCII representation of the network traffic throughout the test can be created.
+
+\begin{figure}
+    \begin{centering}
+        \includegraphics[width=15cm,height=15cm,keepaspectratio]{Figures/Chapter5-CombiningMajorMinor.png}
+        \caption{How Major and Minor events are combined}
+        \label{fig:chapter5CombineMajorMinor}
+    \end{centering}
+\end{figure}
+
+\subsection{ASCII Network Traffic}
+
+\subsection{Generating a network diagram}
+\todo{Change this to work in new structure}
 In the test definitions, it is often difficult to understand what the network topology of a given test is.
 This is due to the fact that the topology definitions - while easy to understand for a computer - are not particularly friendly for humans to understand, due to their relatively complicated definition.
 The topology definition are split into two section, WiFi and Fakeradio, and lists connections only between two nodes - not the entire network.
@@ -225,10 +330,36 @@ DOT files are text files that follow a specified syntax, and are used by Graphvi
 These files are simple, and both human and machine readable. 
 After weighing these options it was decided that despite the far higher level of control possible by using a low-level graphics library, the simplicity and maintainability of creating and rendering DOT files far outweighs this advantage.
 
+To create the DOT files, minor modifications are needed to be made to the previously implemented line filtering as outlined in section \ref{filteringLines}.
+The modifications are simple: when a WiFi or Fakeradio setup line is encountered the node information is stripped from these lines and saved to arrays.
+How this is done depends on if it is a WiFi or a Fakeradio line.
+For a Fakeradio line the program simply extracts the node numbers \todo{Show example?} from the line, converts these to the appropriate node character, and saves these two variables to a simple struct of just the two node characters.
+This struct is appended to an array containing all of the Fakeradio connections.
+For a WiFi connection however this is slightly more complicated.
+To determine the WiFi topology a 2D array is created.
+When a line is encountered that lists a node being connected to a WiFi interface, the node character is appended to the array at the index of the interface.
+An example of this data structure can be seen in \figurename{ \ref{fig:chapter5WiFiDataStructure}}, and the resultant network topology in \figurename{ \ref{fig:chapter5ResultWifiTopology}}.
+
+\begin{figure}
+    \begin{centering}
+        \includegraphics[width=15cm,height=10cm,keepaspectratio]{Figures/Chapter5-WifiArray.png}
+        \caption{Data Structure of determining WiFi topology}
+        \label{fig:chapter5WiFiDataStructure}
+    \end{centering}
+\end{figure}
+
+\begin{figure}
+    \begin{centering}
+        \includegraphics[width=15cm,height=10cm,keepaspectratio]{Figures/Chapter5-WifiArrayResult.png}
+        \caption{Resultant WiFi topology of \figurename{ \ref{fig:chapter5WiFiDataStructure}}}
+        \label{fig:chapter5ResultWifiTopology}
+    \end{centering}
+\end{figure}
+
 \begin{itemize}
-    \item Get layout
-    \item Decide on DOT file format
-    \item Get all combinations of links
+    \item \#Get layout
+    \item \#Decide on DOT file format
+    \item Get all combinations of WiFi links
     \item Add to dot file
     \item Render 
     \item Why we're hiding fakeradio/WiFI
@@ -236,43 +367,29 @@ After weighing these options it was decided that despite the far higher level of
     \item Show an output diagram (oooh fancy! pictures!)
 \end{itemize}
 
+Once the simple log has finished being generated, the program then moves onto writing the layout DOT file.
+The DOT file follows a simple format
 
-
-
-
-
-\section{Animating the network diagram}
-
-\subsection{Getting Major and Minor events}
-\emph{This is just my thoughts as I was working through the issue. This is not going to be in the final thesis}
-I am currently attempting to collect up all of the major (file transfer, show on diagram) and minor (important enough to be on diagram but not on topology) events.
-Initially it was planned to get this out of the log file as the log file is processed and the simple log created. 
-However, during implementation it was realised that as the original log file is not chronologically ordered, minor events will not easily be tied to a major event.
-This is because the majority of the major events occur in fakeradio - when a packet moves from one node to the other.
-However, fakeradio - in the log file - comes before LBARD or even Servald.
-Thus, the major events that occur in fakeradio will not be tied to any minor event in LBARD or Servald.
-There are two possible routes that can be taken to solve this. 
-The first, is to simply process the simple log file AFTER it is created, and essentially copy/paste large amounts of code with minimal difference to make it work with processing major/minor lines.
-The other alternative is to save all major and minor events while processing the simple log.
-The major events can be stored in a struct as planned.
-Minor events can simply be a specially formatted string - essentially the same as those in the simple log.
-
-After the simple log is created, the program then sorts both the array of major events, AND the array of minor events.
-A blank major event must be created before processing to allow for any minor events that occur BEFORE a major event 
-With these both chronologically sorted, the program simply adds any minor events that occur BEFORE a major event to the major event, then once one appears that is LATER than the major event, switches to the next major event.
-This loops through until each major and minor event has been processed.
-If any minor events are left after the last major event it is added to a blank major event (so nothing gets left off).
-A maximum of \emph{n} minor events can be assigned to a major event before it switches over to a new blank major event.
-
-A new array of major events is created after sort. This doubles up on memory, but means that blank events can be added without overwriting other major events.
-
-Does not include broadcast messages because they don't contain enough information.
-
-\subsection{Rendering all of the images}
+\subsection{Creating a LaTeX PDF}
 \begin{itemize}
-    \item How we render one
-    \item Do in a loop for each of them
-    \item LaTeX template, etc.
+    \item Now that we have an ASCII way of displaying the network, how do we make it nicer?
+    \item Create DOT image for transfers
+    \begin{itemize}
+        \item Pin nodes so they don't move
+        \item 
+    \end{itemize}
+    \item Render every DOT image
+    \begin{itemize}
+        \item We have an issue with consistent size
+        \item So we'll need to right-align everything
+        \item Try and make every diagram right-aligned
+    \end{itemize}
+    \item Create a LaTeX template - work out the layout
+    \begin{itemize}
+        \item Layout ideas;
+        \item Portrait/Landscape
+    \end{itemize}
+    \item For each major event, render a page of LaTeX
 \end{itemize}
 
 \section{Summary}
