@@ -1,5 +1,3 @@
-% Chapter Template
-
 \chapter{Improving the Output} % Main chapter title
 
 \label{Chapter5} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
@@ -7,29 +5,9 @@
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
-
-\begin{itemize}
-    \item \emph{How to get render the output: what to do?}
-    \item \#First, create a simple log
-    \item Get the layout
-    \item Create dot file of layout
-    \item Sort by major and minor events
-\end{itemize}
-
-\textbf{Add intro. Why we're doing this, etc.}
+\todo{Add intro. Why we're doing this, etc.}
 
 \section{Creating a Simple Log}
-\begin{itemize}
-    \item \#Reasoning behind doing this
-    \item \#Loop through file
-    \item \#Filter each line, return appropriate line type
-    \item \#Print in proper format
-    \item   Add issues: LBARD T+ etc.
-    \item \#Show development of output format
-    \item \#Talk about what events, why they were selected
-    \item \#Show output log screenshot
-    \item Link with the test - run in the 'finally' section
-\end{itemize}
 
 The first step in improving the output of the test framework is improving the log output.
 To do this, it was decided that a simple log file should be created for several reasons.
@@ -110,14 +88,6 @@ A line is accepted if it matches specified criteria; for instance, a line within
 These lines are then sent to the relevant function to be formatted appropriately.
 
 \subsection{Output format}
-\begin{itemize}
-    \item \#Original log file format
-    \item \#How we get consistent format
-    \item \#What the output format is
-    \item \#Setup section up top
-    \item Getting consistent timestamp (talk about issue with LBARD (. instead of :) T+, etc.)
-    \item \#Show a screenshot
-\end{itemize}
 
 \subsubsection{Formatting lines}
 The log files produced by the test framework follow a consistent structure.
@@ -196,9 +166,7 @@ This structure can be seen in \figurename{ \ref{fig:chapter5SimpleLogFormat}}
         \label{fig:chapter5SimpleLogFormat}
     \end{centering}
 \end{figure}
-
-
-
+\todo{Update this}
 
 
 \section{Drawing Packet Transfer through the network}
@@ -216,9 +184,9 @@ To improve the output of the test framework, a network diagram displaying packet
     \end{itemize}
     \item Create ASCII representation
     \begin{itemize}
-        \item Add getting major transfer type
-        \item Using sorted list of major, we can iterate through each of the major events
-        \item For each minor event, print all the details
+        \item \#Add getting major transfer type
+        \item \#Using sorted list of major, we can iterate through each of the major events
+        \item \#For each minor event, print all the details
     \end{itemize}
     \item Generate network diagrams
     \begin{itemize}
@@ -240,8 +208,8 @@ To improve the output of the test framework, a network diagram displaying packet
 To create our network diagrams, we first need to determine what will be displayed on the diagram.
 To do this, two categories of log messages are defined: 
 \begin{itemize}
-    \item Major: When two nodes transfer messages
-    \item Minor: Some processing on a single Node that would not give the full picture of the test if omitted
+    \item Major: When a node sends a message/packet to another
+    \item Minor: Some processing on a single node that would not give the full picture of the test if omitted
 \end{itemize}
 
 Major events will be displayed in a diagram showing the network layout, showing the transfer between the two nodes and the message details. 
@@ -307,16 +275,32 @@ With all of the minor events assigned in chronological order to a relevant major
 
 \begin{figure}
     \begin{centering}
-        \includegraphics[width=15cm,height=15cm,keepaspectratio]{Figures/Chapter5-CombiningMajorMinor.png}
-        \caption{How Major and Minor events are combined}
+        \includegraphics[width=10cm,height=15cm,keepaspectratio]{Figures/Chapter5-CombiningMajorMinor.png}
+        \caption{Process of combining Major and Minor events}
         \label{fig:chapter5CombineMajorMinor}
     \end{centering}
 \end{figure}
 
 \subsection{ASCII Network Traffic}
+Creating an ASCII representation of the network traffic becomes simple once minor and major events have been created.
+To achieve this, the program simply iterates through every major event.
+For each major event, the program then iterates through each minor event.
+With this, the program is able to quickly print an ASCII representation of the network traffic through the network during a test.
+This can be seen in \figurename{ \ref{fig:chapter5ASCIIRep}}
+\begin{figure}
+    \begin{centering}
+        \includegraphics[width=15cm,height=15cm,keepaspectratio]{Figures/Chapter5-ASCIIRepresentation.png}
+        \caption{ASCII Representation of test network}
+        \label{fig:chapter5ASCIIRep}
+    \end{centering}
+\end{figure}
+This output can then piped to a file for debugging if testers do not have the requirements installed for generating the diagrams as outlined in the next sections.
+
+
+
 
 \subsection{Generating a network diagram}
-\todo{Change this to work in new structure}
+\todo{Change this to work in new structure} 
 In the test definitions, it is often difficult to understand what the network topology of a given test is.
 This is due to the fact that the topology definitions - while easy to understand for a computer - are not particularly friendly for humans to understand, due to their relatively complicated definition.
 The topology definition are split into two section, WiFi and Fakeradio, and lists connections only between two nodes - not the entire network.
@@ -324,11 +308,11 @@ The topology definition are split into two section, WiFi and Fakeradio, and list
 To render these diagrams, the layout will need to be extracted from the test definition, then a diagram drawn of this topology.
 From this layout, the image will then need to be created and rendered.
 There are two main solutions for creating the image: do it using a graphics library, or creating a DOT file and rendering it with Graphviz.
-Using a graphics library would provide a high level of control over the creation of the image as graphical elements would need to be defined explicitly and as such are unlikely to have unforseen side-efects as could be expected with using a higher-level solution such as Graphviz.
+Using a graphics library would provide a high level of control over the creation of the image as graphical elements would need to be defined explicitly and as such are unlikely to have unforeseen side-effects as could be expected with using a higher-level solution such as Graphviz.
 That said, this would be considerably more complicated and harder to maintain than simply writing DOT files, then using the high-level tools provided by Graphviz to render this DOT file.
 DOT files are text files that follow a specified syntax, and are used by Graphviz to render and create graphs.
 These files are simple, and both human and machine readable. 
-After weighing these options it was decided that despite the far higher level of control possible by using a low-level graphics library, the simplicity and maintainability of creating and rendering DOT files far outweighs this advantage.
+After weighing these options it was decided that despite the far higher level of control possible by using a low-level graphics library, the accessability, simplicity and maintainability of creating and rendering DOT files far outweighs this advantage.
 
 To create the DOT files, minor modifications are needed to be made to the previously implemented line filtering as outlined in section \ref{filteringLines}.
 The modifications are simple: when a WiFi or Fakeradio setup line is encountered the node information is stripped from these lines and saved to arrays.
@@ -338,59 +322,120 @@ This struct is appended to an array containing all of the Fakeradio connections.
 For a WiFi connection however this is slightly more complicated.
 To determine the WiFi topology a 2D array is created.
 When a line is encountered that lists a node being connected to a WiFi interface, the node character is appended to the array at the index of the interface.
-An example of this data structure can be seen in \figurename{ \ref{fig:chapter5WiFiDataStructure}}, and the resultant network topology in \figurename{ \ref{fig:chapter5ResultWifiTopology}}.
-
-\begin{figure}
-    \begin{centering}
-        \includegraphics[width=15cm,height=10cm,keepaspectratio]{Figures/Chapter5-WifiArray.png}
-        \caption{Data Structure of determining WiFi topology}
-        \label{fig:chapter5WiFiDataStructure}
-    \end{centering}
-\end{figure}
+An example of this data structure and the resultant network topology in \figurename{ \ref{fig:chapter5ResultWifiTopology}}.
 
 \begin{figure}
     \begin{centering}
         \includegraphics[width=15cm,height=10cm,keepaspectratio]{Figures/Chapter5-WifiArrayResult.png}
-        \caption{Resultant WiFi topology of \figurename{ \ref{fig:chapter5WiFiDataStructure}}}
+        \caption{WiFi Array and resultant topology}
         \label{fig:chapter5ResultWifiTopology}
     \end{centering}
 \end{figure}
 
-\begin{itemize}
-    \item \#Get layout
-    \item \#Decide on DOT file format
-    \item Get all combinations of WiFi links
-    \item Add to dot file
-    \item Render 
-    \item Why we're hiding fakeradio/WiFI
-    \item   (cos we want to animate, doesn't work otherwise)
-    \item Show an output diagram (oooh fancy! pictures!)
-\end{itemize}
+Once the simple log has finished being generated and the links between nodes gathered, the program then moves onto writing the layout DOT file.
+The DOT file follows a simple format; initialisation of graph variables, and then the definition of the Layout subgraph.
+The graph is defined as a \emph{directed} graph.
+While this may not appear to make sense initially - network traffic is not restricted by the direction - this is done for future-proofing: when this program will show network traffic that \emph{will} be (partially) directed, and so this subgraph is directed, however the direction hidden with the \verb|dir=none| flag.
+Producing the DOT file consists of four steps:
+\begin{enumerate}
+    \item Open the file and write the initialisation
+    \item Write the fakeradio links
+    \item Write the WiFi nodes
+    \item Write the end of the DOT file, then close it
+\end{enumerate}
 
-Once the simple log has finished being generated, the program then moves onto writing the layout DOT file.
-The DOT file follows a simple format
+In the first step, the program opens a new file with the name \verb|diagramLayout.dot|, and writes the initialisation variables.
+This is simply writing a string listing all of the graph variables. 
+In \figurename{ \ref{fig:chapter5DotAndRender}} this would be from \verb|digraph A| to \verb|edge [dir=none, penwidth=3]|.
+
+In the next step, the program simply iterates through all of the Fakeradio links that have been saved, as outlined previously in this section.
+Then this information is written to the DOT file with the extra field \verb|[color=red]|.
+This is used to highlight Fakeradio links between nodes and help distinguish the different link types between nodes in a network.
+
+Then, the program iterates through the WiFi link array. 
+To do this, the program iterates through each of the interface arrays, and for each, simply creates all \emph{unique} combinations of the nodes in this interface.
+With these combinations, the program then writes each unique combination to the file with the extra field \verb|[color=blue]|.
+
+Finally, the program adds the closing curly braces to the file, and closes it.
+The program then renders the DOT file with the command 
+
+\verb|neato -Tpng [fileName] -o [outputFileName]|
+
+\begin{figure}
+    \begin{centering}
+        \includegraphics[width=15cm,height=10cm,keepaspectratio]{Figures/Chapter5-DotAndRender.png}
+        \caption{Side-by-side of DOT file and output graph\\\emph{Rendered using neato}}
+        \label{fig:chapter5DotAndRender}
+    \end{centering}
+\end{figure}
+
 
 \subsection{Creating a LaTeX PDF}
+\todo{Add intro}
+\subsubsection{Transfer Diagrams}
+The first step in creating a LaTeX PDF is to generate all of the images of the network topology.
+This is an extension of the development done in the previous section, however this is now creating multiple images - one per major event - and adding a directed link and label between a sending and receiving node.
+
+To achieve this, the program iterates through every single major event in chronological order.
+For each major event, the program adds the graph initialisation as previously outlined.
+The program then adds a subgraph named \emph{Transfer}.
+The transfer subgraph consists of just one line showing the \emph{directed} connection between the sending and receiving node.
+To display the transfer in a nice format two options are added to this connection: the label, to show the transfer message, and the colour, which is the same as the normal colour of this link.
+
+
+However, this had the issue that \verb|neato| will move the nodes around when a label is added that is longer than previously.
+This is due to the fact that \verb|neato| will attempt to place all elements an even distance away from every element \emph{this includes labels}. 
+To fix this issue, a Subgraph called \emph{Nodes} is created before the \emph{Transfer} subgraph where it just lists all of the nodes in the network, and applies the \verb|[pin=true]| flag to them.
+This pins the nodes in their current position at the time the flag is added.
+In this case, that is when \emph{just the nodes} have been placed.
+This gives the program the ability to add labels of arbitrary length without moving the nodes around.
+With this, the DOT files are all rendered, creating a chronologically ordered series of diagrams.
+
+An example of a created DOT file can be seen in \figurename{ \ref{fig:chapter5DotAndRender}}.
+
+\begin{figure}
+    \begin{centering}
+        \includegraphics[width=15cm,height=10cm,keepaspectratio]{Figures/Chapter5-DotAndRender.png}
+        \caption{Example of the major event DOT file side-by-side with the rendered diagram\\\emph{Rendered using neato}}
+        \label{fig:chapter5DotAndRender}
+    \end{centering}
+\end{figure}
+\todo{Change this to a different diagram}
+
+
+However, one issue remains: while nodes themselves do not move around, the size of the page that a graph is drawn on \emph{will} change depending on the length of the label.
+\todo{Add link to next section}
+
+\subsubsection{Creating LaTeX PDF}
+Once the diagrams have been created, a LaTeX PDF can then be created.
+This PDF will contain several pieces of information:
 \begin{itemize}
-    \item Now that we have an ASCII way of displaying the network, how do we make it nicer?
-    \item Create DOT image for transfers
-    \begin{itemize}
-        \item Pin nodes so they don't move
-        \item 
-    \end{itemize}
-    \item Render every DOT image
-    \begin{itemize}
-        \item We have an issue with consistent size
-        \item So we'll need to right-align everything
-        \item Try and make every diagram right-aligned
-    \end{itemize}
-    \item Create a LaTeX template - work out the layout
-    \begin{itemize}
-        \item Layout ideas;
-        \item Portrait/Landscape
-    \end{itemize}
-    \item For each major event, render a page of LaTeX
+    \item The test details
+    \item A diagram for each major event
+    \item All minor events associated with that major event
+    \item The time the major event occurs
 \end{itemize}
+The produced LaTeX file follows a simple structure.
+At the top of every page, the test details are listed. This is simply the name, result, and start/finish time of a test.
+Underneath this, the time that the major event occurred is listed. 
+The vast majority of the page is taken up by the diagram of the network layout, showing the network traffic when the major event occurs.
+Finally, the bottom half of the page is a list of minor events associated with the major event.
+
+To produce this, the program follows a simple process.
+For the first major event, the program creates a new LaTeX file and writes the import and setup lines necessary for the compilation of the LaTeX document.
+Then, the program simply writes the test details to the file with the \verb|\large| tag.
+The program then adds the image for that major event. Importantly, this image is \emph{right-aligned}. 
+This is due to the fact that diagrams should roughly align with each-other throughout the document.
+However as mentioned previously, the page size will change depending on the length of the label.
+As most diagrams should be produced with the topology on the right and the label on the left, this means that for the vast majority of the diagrams, the topology generated will all align on the right - however the distance between the topology and the left edge of the diagram may change.
+By aligning the image along the right of the page, this should mean that - for the vast majority of cases - the variable width along the left of the diagram doesn't move the image.
+After this, the program simply iterates through every minor event associated with the major event, and adds these lines to the LaTeX file.
+Finally, a page break is added so that the next major event is put on a new page.
+This is done for every major event.
+
+Once the LaTeX file has been produced, the program renders the file using the command
+\verb|pdflatex --output-directory=[output file] [file]|
+
 
 \section{Summary}
 \textbf{Add link to next section}
