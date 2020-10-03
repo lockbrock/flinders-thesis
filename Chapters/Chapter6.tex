@@ -8,26 +8,144 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-\section{Main Section 1}
+\section{Generating diagrams of the real-world}
 Chapter 6
 - Apply but in test network
 - Real world tests
 
-%-----------------------------------
-%	SUBSECTION 1
-%-----------------------------------
-\subsection{Subsection 1}
+\begin{itemize}
+    \item Add additional flags to real-world tests
+    \begin{itemize}
+        \item "bundles pieces ack announce message\_pieces sync"
+        \item  Allowed for enough information to ensure that we could generate the diagrams
+    \end{itemize}
+\end{itemize}
+
+To begin to analyse the differences between the emulated Serval networks and those of real-world networks, identical Serval networks are to be run in both emulation using the test framework and in the real world.
+By using the tools created throughout this thesis, the differences and similarities in the functionality of the networks can be analysed.
+Of particular use will be the generation of diagrams and bundle bitmaps as implemented in Chapter 5.
+To do this however, some changes will need to be made to the program to support the generation of real-world Serval tests.
+The first of these is that initial log files will need to be made for the real-world tests.
+\todo{Finish this}
+Additionally, some mild changes will need to be made to the program. 
+These changes should be relatively minor: move to using just LBARD for the generation of major events since real-world tests don't use Fakeradio, retrieve node SIDs from LBARD since we can not use the \todo{finish this}.
+The reasoning behind why the program is so well-suited to handling real-world events is due to the nature of the test framework: the test framework runs real Serval software, with the only part that is not present in real-world scenarios being that of fakeradio.
+If solutions to these changes are found that exist solely within Servald or LBARD, then these solutions will be portable to analysis of both the emulated test framework and real-world tests.
+
+\subsection{Creating initial log file}
+\begin{itemize}
+    \item Allowed us to get a better picture of the real-world tests
+    \item Some used for generating diagrams
+\end{itemize}
+To create the initial log file to be used for real-world tests, multiple log files will need to be manually combined to create the single initial log file that the program requires.
+This log file will simply contain all of the log outputs from the Servald and LBARD processes that are involved in the test.
+
+This log file needs to follow the same format as that of the log files:
+\begin{itemize}
+    \item Four lines detailing the name, result, and start and finish time for the test
+    \item Each LBARD process with a line proceeding each process listing which LBARD process it is
+    \item Each Servald process with a proceeding line detailing which Servald process it is
+\end{itemize} 
+
+Additionally however, the SIDs for each of the nodes will need to be listed at the top of the file. 
+This is because as the initial log file is processed, any references to a SID involve a lookup to determine which node this is referring to, as such these SIDs need to be listed in advance.
+
+An example of one of these log files may look similar to \figurename{ \ref{fig:chapter6RealWorldLog}}.
+
+\begin{figure}
+    \begin{centering}
+\begin{lstlisting}[basicstyle=\small, breaklines, frame=single]
+Name:     FieldTest
+Result:   PASS
+Started:  2020-08-24 13:22:55.044
+Finished: 2020-08-24 13:23:32.497
+++++++++++ fork[1] %lbardA log.stdout ++++++++++
+469:My SID as hex is [SID]
+++++++++++ fork[1] %lbardB log.stdout ++++++++++
+469:My SID as hex is [SID]
+++++++++++ fork[1] %lbardA log.stdout ++++++++++
+[LBARD log file for node A]
+++++++++++ fork[1] %lbardB log.stdout ++++++++++
+[LBARD log file for node B]
+#----- var/servald/instance/A/servald.log -----
+[Servald log file for node A]
+#----- var/servald/instance/B/servald.log -----
+[Servald log file for node B]
+\end{lstlisting}
+        \caption{Example format of a compiled real-world log file with two nodes, A and B}
+        \label{fig:chapter6RealWorldLog}
+    \end{centering}
+\end{figure}
+
+Additionally, to ensure that real-world tests are producing to create network diagram, every field test must have - at a minimum - some specific configurations.
+For LBARD processes, the flags that must be set are:
+\begin{lstlisting}
+    bundles
+    pieces
+    announce
+    message_pieces
+    sync
+    sync_keys
+    \end{lstlisting}
+
+With these flags, LBARD will produce the minimum log output required to generate diagrams. 
+\todo{Add more specific information about what each of these does}
+
+For Servald processes no specific configurations are required, however it is recommended to run each process with the following configuration as a minimum:
+\begin{lstlisting}
+set log.console.show_pid on 
+set log.console.show_time on 
+set debug.server on 
+set debug.mdprequests on 
+set debug.httpd on 
+set debug.rhizome_manifest on
+set debug.rhizome_sync_keys on
+set debug.msp on
+set debug.config on
+set debug.mdprequests on
+set debug.mdp_filter on
+set debug.verbose on
+\end{lstlisting}
+These configurations will allow for a good coverage of Servald functionality, and provide the necessary information for a deeper analysis of real-world tests.
 
 
-%-----------------------------------
-%	SUBSECTION 2
-%-----------------------------------
+\subsection{Adding support for real-world tests}
 
-\subsection{Subsection 2}
+Once the initial log file has been created for the real-world test, this can then be run through the program. \todo{We need a better name than just program}
+The program would produce a perfectly satisfactory simple log file based off of this real-world initial log file, however when any other form of output is run, such as the PDF diagram generation, the amount of major events produced is minor and only included Servald events.
+This is due to the programs reliance on Fakeradio for determining major events.
+For tests produced by the test framework this is perfectly reasonable; fakeradio handles all of the radio traffic and so it makes sense to use this.
+However, real-world tests quite obviously do not require fakeradio to handle the radio traffic, and as such no major events can be determined by analysing fakeradio output as fakeradio is never run.
+As such, some other way of retrieving major events must be implemented.
+
+Achieving this is relatively simple, if fakeradio is not detected, every time a LBARD process announces it has sent a piece, simply use this as the basis of a major event.
+An example of this log output can be seen in \figurename{ \ref{fig:chapter6RLBARDSent}}
+This method has some drawbacks however, LBARD will only report that it is sending a bundle to a single node at a time and - as LBARD will prioritise pieces of bundles that multiple neighbour nodes require - this means that purely using this log output will not show multiple recipients of a bundle piece.
+To mitigate this, the assumption will need to be made that LBARD is transmitting to all of it's neighbours when it sends a bundle.
+Despite this drawback, using the LBARD log output actually has an improvement: LBARD reports the start and end bytes of the piece it is sending.
+By using these start and end pieces, a bundle bitmap can be developed, allowing for easier analysis of how LBARD is sending pieces through the network.
+
+With these minor changes made, the compiled log files of the real world tests can then be run through the program, and any form of output - including diagram generation - should work without issue.
 
 
-%----------------------------------------------------------------------------------------
-%	SECTION 2
-%----------------------------------------------------------------------------------------
+\begin{figure}
+    \begin{centering}
+\begin{lstlisting}[basicstyle=\small, breaklines]
+    >>> [13:13.02.983 662D*] I just sent manifest piece [0,128) of [BID] for [receiving SID]
+\end{lstlisting}
+        \caption{LBARD output when sending a bundle piece}
+        \label{fig:chapter6RLBARDSent}
+    \end{centering}
+\end{figure}
 
-\section{Main Section 2}
+
+\subsection{Displaying bundle bitmaps}
+\todo{Remove references to bundle bitmaps from earlier}
+\todo{Add intro to bundle bitmaps}
+
+
+
+\section{Comparing real-world and framework tests}
+\begin{itemize}
+    \item This is a test
+\end{itemize}

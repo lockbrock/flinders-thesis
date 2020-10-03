@@ -30,30 +30,19 @@
 %-----------------------------------
 \section{Joint WiFi \& Radio Tests}
 A key part of the test framework that was missing was support for networks with both WiFi and radio link types. 
-This presents a major limitation  to the test framework as real Serval networks would feature both of these network links.
+This presents a major limitation  to the test framework as the vast majority of real Serval networks would feature both of these network links.
 To implement this feature, several additions need to be made to the test framework.
 
-First, the ability to define which link simulation will be used for each nodes needs to be defined.
-This allows test definition writers to define the functionality(??) of each of the nodes. 
-For instance, test writers are able to define if a specific node in a topology is using the fakeradio tool or simply acting as WiFi, or even, both. 
+First, the ability to define which link will be used for each nodes needs to be defined.
+This will allow test definition writers to define the connectivity of each of the nodes. 
+For instance, test writers will be able to define if a specific node in a topology is using LBARD to communicate or simply using WiFi, or even, both. 
 
 Next, the ability to define specific network topologies will need to be added.
-This already exists in the case of the fakeradio networks as discussed in the previous chapters, this is not easily done with the simulated WiFi tool.
+This already exists in the case of the Fakeradio networks as discussed in the previous chapters, however this is not as easily done with simulated WiFi connections.
 
 Once these two pieces of functionality have been added to the test framework, developers will be able to test considerably larger and more complicated network topologies with ease.
-With this expanded test framework the Serval team will be able to significantly improve their knowledge of the Serval network; complicated, larger, and reproducible tests offer a huge benefit to the goals of the Serval team. \todo{rewrite, this is bad}
+With this expanded test framework the Serval team will be able to significantly increase their test coverage for the Serval network.
 
-What needed to be done for this?
-\begin{itemize}
-    \item Add capability to define interface to use
-    \item Strip definitions to get lists of what interfaces for each node
-    \item For each node, add the interfaces that are in lists
-    \item For each node, add appropriate configuration
-    \item Pass LBARD rules to fakeradio as per normal
-\end{itemize}
-
-\todo{Mention that this is done in a NEW FILE}
-\todo{Add new testdefs file}
 
 To achieve this, several features need to be implemented. 
 The first feature is defining the interfaces to be used on a per-node basis.
@@ -63,17 +52,11 @@ Next, the ability to define WiFi topologies will need to be added, as currently 
 To ensure that this does not affect pre-existing LBARD tests, two new files will be created.
 The first is the \verb|topologies| test file.
 This file is just a new test file that outlines the new tests to be implemented.
-Further, since these will need 
+Next, as these topology tests will need to use some overwritten test definitions from the original \texttt{testdefs.sh} file, a new test definition file (\texttt{topology\_testdefs.sh}) will be created that extends these functions.
+
+
 
 \subsection{Defining interfaces per node}
-\begin{itemize}
-    \item \textbf{Explain original scenario}
-    \item Pass n nodes, all are labelled as specified radio type
-    \item n Serval interfaces and n LBARD interfaces are started
-    \item fakeradio is started
-    \item Test is run, communicate, log it all
-    \item Limitation: as it is treating each node the same with no differentiation between, no way to enable wifi on some nodes and not others
-\end{itemize}
 \todo{briefly explain original scenario}
 
 \todo{Explain why we need to enable interfaces}
@@ -145,20 +128,50 @@ In the Serval-DNA test framework, non- fully-connected WiFi networks are created
 To implement this, several changes need to be made.
 The first is removing the functions added in the previous section that relate to WiFi.
 This is because we'll no longer be defining WiFi nodes with a string passed to the setup functions.
-Next, it was decided for every node to automatically have WiFi functionality enabled by default, but only connected to its own private interface. 
+Next, it was decided for every node to automatically have WiFi functionality enabled by default, but only connected to its own private interface as this more accurately represents how real Serval nodes will act in real usage \todo{ref}. 
 This is done by changing the configuration parsing added in the previous section to enable WiFi by default, but still only enabling LBARD as specified.
 
 To connect nodes via WiFi they must now be connected to a specific WiFi interface as shown in \figurename{ \ref{fig:definingInterfaces}}.
 
+
+\lstset{language=bash,
+showstringspaces=false,
+numbers=left,
+}
+
 \begin{figure}
     \begin{centering}
-        \includegraphics[width=14cm,height=20cm,keepaspectratio]{Figures/definingInterfaces.png}
-        \caption{Defining WiFi interfaces}
+
+        \begin{lstlisting}[breaklines, frame=single]
+doc_DualType="A 4 node wifi/rfd900 chain. One wifi, two radio links"
+setup_DualType(){
+    # A -r-> B -w-> C -r-> D
+    # No radio connection between 1(B) and 2(C)
+    lbardparams="allow between 0,1; allow between 2,3; deny all;"
+
+    setup 0 0 0 "\${lbardparams}"
+    # Connect 1(B) and 2(C) via a wifi/rhizome interface of number 1
+    foreach_instance +B +C add_servald_interface 1
+
+    # Insert a file to server A
+    set_instance +A
+    rhizome_add_file file1 50
+}
+test_DualType(){
+    dReceivedBundles() {
+        bundle_received_by $BID:$VERSION +D
+    }
+    wait_until --timeout=60 dReceivedBundles
+}
+        \end{lstlisting}
+        \caption{Example of LBARD test definition}
         \label{fig:definingInterfaces}
     \end{centering}
 \end{figure}
+
 When a node is connected to multiple nodes at once, it will be able to communicate with all other nodes in those interfaces, while the connected nodes are still only able to communicate with nodes in the same interfaces as themselves.
 This means that previously impossible network topologies such as WiFi chains can be implemented as shown in \figurename{ \ref{fig:networkWifi2}}.
+\todo{Fix this, it doesn't actually show what it says}
 
 \begin{figure}
     \begin{centering}
@@ -185,4 +198,9 @@ This means that previously impossible network topologies such as WiFi chains can
 \end{itemize}
 
 \section{Summary}
-\textbf{Add link to next section. "While these improved things, we still need to add more. So graphical output blah blah"}
+\begin{itemize}
+    \item Summarise what this chapter did
+    \item Talk about why it was important
+    \item Link to next section
+\end{itemize}
+\todo{Add summary}

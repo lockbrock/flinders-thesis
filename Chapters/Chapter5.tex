@@ -2,6 +2,11 @@
 
 \label{Chapter5} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
+\lstset{language={},
+showstringspaces=false,
+numbers=none,
+}
+
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
@@ -14,7 +19,7 @@ To do this, it was decided that a simple log file should be created for several 
 The log files produced by the test framework have a considerable amount of detail contained within them, however this comes at the cost of being incredibly large - even a relatively simple test such as DualType (produced in the previous section) can create log files of 4,000+ lines.
 More than that, the log files produced are very difficult to follow, as they are ordered by log file, then chronologically.
 Meaning that following a chain of events between multiple nodes becomes a process of consistently switching between sections of log file.
-\todo{Add more; formatting, timestamp, etc.}
+Further, the log files produced by the test framework have several issues: the formatting is inconsistent, timestamps are in different formats, a lack of information around network topology, and some log messages are either too verbose or do not contain enough information.
 
 To fix this, the simple log will require six main features.
 \begin{itemize}
@@ -36,14 +41,15 @@ While this does solve the issue of the previous proposed solution this would add
 Further, this will increase the run-time for tests unnecessarily.
 
 The final option is to write a program that after a test is run and the log file produced, processes the log file and filters and simplifies it, and outputs a separate, simpler log file. 
-This is the method that was undertaken in this thesis. 
+This is the method that will be undertaken in this thesis. 
 The program will be written in C as it needs to be fast, portable, and use minimal external dependencies, as well as it is the language that the majority of the Serval codebase is written in - allowing for future developers to easily maintain and improve the code.
 
-As shown in \figurename{ \ref{fig:chapter5SimpleFlowchart}} the program follows a simple structure.
-The specified log file is opened, and the first line is read into memory.
-This line is then filtered depending on its content; if the line should be in the simple log, and what type of line it is. \todo{Fix this sentence}
-The filtered line is then modified to be in a consistent format, and then the formatted line is written to the output simple log file.
-The program repeats these steps with each line in the file until it reaches the end of the file.
+As shown in \figurename{ \ref{fig:chapter5SimpleFlowchart}} the program follows a simple process.
+For each line in the log file, two steps are followed.
+First, the line is filtered to determine if it should appear in the simple log file. 
+Then, for each line that passes through the filter, apply some transformations to it if necessary so it is in a more useful format.
+Different transformations may be used for different types of lines in the log file.
+
 
 \begin{figure}
     \begin{centering}
@@ -55,7 +61,6 @@ The program repeats these steps with each line in the file until it reaches the 
 
 \subsection{Filtering Lines}\label{filteringLines}
 \begin{itemize}
-    \item \#What lines we're selecting
     \item Why they are chosen
 \end{itemize}
 
@@ -75,16 +80,14 @@ While analysing the output log files, the following list of important events was
     \item \textbf{LBARD} Send and receive bundles
     \item \textbf{Fakeradio} Any transfer between two nodes
 \end{itemize}
-\todo{Add why these were chosen?}
+\todo{Update this to latest details}
 This list covers all major aspects of a topology test; transfer of bundles, setup and layout information, sending and receiving general packets (including the tree-sync packets), and some internal logic and processing when packets are sent and received.
 With only these important events, it should be possible to locate and isolate issues related to transferring bundles and packets. 
-From there, these filtered events should allow a tester to more easily utilise the vastly more expansive and detailed log file. 
-
+From there, these filtered events should allow a tester to more easily utilise the vastly more expansive and detailed original log file produced by the test framework. 
 
 Once the desired events had been determined, these then needed to be filtered within the program.
 To achieve this, each line in the file is analysed to determine if it is important by examining what substrings the line contains.
-A line is accepted if it matches specified criteria; for instance, a line within the Fakeradio process that contains the substring "neighbour has a bundle" would be considered important.
-
+A line is accepted if it matches specified criteria; for instance, a line within the Fakeradio process that contains the substring "neighbour has a bundle" would be considered important. 
 These lines are then sent to the relevant function to be formatted appropriately.
 
 \subsection{Output format}
@@ -104,17 +107,16 @@ This structure means that filtering each line becomes far simpler, since we only
 However the test framework log files have one major issue: the format of lines is not consistent between processes.
 For instance, the typical Servald line may look like
 \begin{center}
-    \begin{lstlisting}[breaklines]
-DEBUG:[511710] 18:15:34.372 overlay_mdp.c:859:_overlay_send_frame()  {mdprequests} Send frame 68 bytes    
+    \begin{lstlisting}[basicstyle=\small, breaklines]
+DEBUG:[511710] 18:15:34.372 overlay_mdp.c:859:_overlay_send_frame() {mdprequests} Send frame 68 bytes    
     \end{lstlisting}
 \end{center}
 while a similar line in LBARD may look like 
 
 \begin{center}
-    \begin{lstlisting}[breaklines]
+    \begin{lstlisting}[basicstyle=\small, breaklines]
 T+25138ms : Sending length of bundle 6A1A3379501553D1* (bundle #0, version 1596098704035, cached_version 1596098704035)
     \end{lstlisting}
-        \todo{Make this font smaller?}
 \end{center}
 
 
@@ -126,16 +128,16 @@ For Servald lines this becomes trivial, simply use the \verb|sscanf| function to
 However, in the case of LBARD and Fakeradio lines, multiple issues arise due to the formatting of the log files.
 The first of these issues is that several lines in LBARD are not timestamped with the time that they occurred, rather they are timestamped with the number of milliseconds since the program started.
 This is an issue since this means that the log files can not be easily sorted by timestamp, and also will not be formatted with a consistent format with the other lines.
-To fix this, the time that an LBARD instance is started is logged as this is in a normal timestamp format, and when an event with a 'T+' timestamp occurs, the number of milliseconds is added to the original timestamp to produce a timestamp. 
-\todo{Fix these sentences}
+To fix this, the initial time that an LBARD instance is started as logged by the file will be used as the T=0 point.
+After this has occurred, when an event with a 'T+' timestamp is encountered, the number of milliseconds is added to the original timestamp to produce an accurate timestamp fo this event.
 
 The other issue with this method is that Fakeradio log lines often are spread over multiple lines.
 This means that simply scanning and processing a single line will not produce all the necessary information.
 However, when 
 \todo{Finish this}
 
-\todo{Add sorting the output}
 \subsubsection{Output log file}
+\todo{Add sorting the output}
 
 Once the log file is produced it follows a consistent format.
 The simple log files format begins with the setup section.
@@ -145,72 +147,73 @@ An example of the setup section can be seen in \figurename{ \ref{fig:chapter5Sim
 
 \begin{figure}
     \begin{centering}
-        \includegraphics[width=15cm,height=20cm,keepaspectratio]{Figures/Chapter5-SimpleLogSetup.png}
-        \caption{Setup section of the simple log}
-        \label{fig:chapter5SimpleLogSetup}
+\begin{lstlisting}[frame=single]
+#000 ====== BEGIN SETUP ======
+#001 Name:     Wifi_RFD900_Chain_Short (topologies)
+#002 Result:   PASS
+#003 Started:  2020-08-24 13:22:55.044
+#004 Finished: 2020-08-24 13:23:32.497
+#005 SIDA : F170309E3033B957*
+#006 SIDB : 86C9DD08EA6A4C65*
+#007 SIDC : FA71E8E919914B52*
+#008 SIDD : 41A35E8851578F82*
+#009 SIDE : 954B6D94024986A0*
+#010 SIDF : B38FB12CB39D006C*
+#011 B connected to wifi interface 1
+#012 C connected to wifi interface 1
+#013 D connected to wifi interface 2
+#014 E connected to wifi interface 2
+#015 RULE: 'allow between 0,1'
+#016 RULE: 'allow between 2,3'
+#017 RULE: 'allow between 4,5'
+#018 RULE: 'deny all'
+#100 ======= END SETUP =======    
+\end{lstlisting}
+    \caption{Format of simple log setup}
+    \label{fig:chapter5SimpleLogSetup}
     \end{centering}
 \end{figure}
+
 After the setup section each line in the log file is ordered by chronological order. 
 The lines follow a simple and consistent structure.
 \begin{center}
-    \begin{lstlisting}[breaklines]
+    \begin{lstlisting}[basicstyle=\small, breaklines]
 [Timestamp] [Process]:[Instance Letter] [Description]
     \end{lstlisting}
 \end{center}
-\todo{Maybe have these figures in a lstlisting themselves. Might make the text easier to read?}
-This structure can be seen in \figurename{ \ref{fig:chapter5SimpleLogFormat}}
+
+This structure can be seen in \figurename{ \ref{fig:chapter5SimpleLogFormat}}.
 \begin{figure}
     \begin{centering}
-        \includegraphics[width=15cm,height=20cm,keepaspectratio]{Figures/Chapter5-SimpleLogFormat.png}
+\begin{lstlisting}[basicstyle=\small, breaklines, frame=single]
+13:23:18.358 LBARD:A Resending bundle 3580786E* from the start.
+13:23:18.358 LBARD:A Sending length of bundle 3580786E* 
+13:23:18.370 FAKERADIO A -> B [Bundle end piece ] [218 bytes]
+13:23:18.370 FAKERADIO A -> B [Time stamp] [218 bytes]
+13:23:18.370 LBARD:A I just sent manifest piece [128,258) for 86c9dd08ea6a*.
+13:23:18.388 LBARD:B : Calling message handler for type 'S' @ offset 0x15
+13:23:18.388 LBARD:B : Calling message handler for type 'T' @ offset 0x8
+13:23:18.388 LBARD:B : Calling message handler for type 'p' @ offset 0x21
+13:23:18.388 LBARD:B Decoding message #4 from f170309e3033*, length = 186:
+13:23:18.388 LBARD:B We have the entire bundle 3580786E*    
+\end{lstlisting}
         \caption{Format of simple log events}
         \label{fig:chapter5SimpleLogFormat}
     \end{centering}
 \end{figure}
-\todo{Update this}
 
 
 \section{Drawing Packet Transfer through the network}
-To improve the output of the test framework, a network diagram displaying packet transfer is highly useful, allowing testers to better understand the topology they are testing. To produce a useful and informative network diagram, four steps need to be undertaken: determine the major events to be displayed on the diagram, create an ASCII representation of the test, generate a network diagram, and finally, create a PDF of the network topology with the traffic displayed.
+To improve the output of the test framework, a network diagram displaying packet transfer is highly useful, allowing testers to better understand the topology they are testing. To produce a useful and informative network diagram, four steps need to be undertaken: determine the major events to be displayed on the diagram, create an ASCII representation of events during a test, generate a network diagram, and finally, create a PDF of the network topology with the traffic displayed.
 
-
-\begin{itemize}
-    \item \#Getting major and minor
-    \begin{itemize}
-        \item \#As log file is processed, add certain events to major
-        \item \#Once we process the log file, sort major and minor
-        \item \#Go through stack of (sorted) major, and compare against the time of minor
-        \item \#Add minors that are before the major
-        \item \#Ends up with a sorted list of major and minor
-    \end{itemize}
-    \item Create ASCII representation
-    \begin{itemize}
-        \item \#Add getting major transfer type
-        \item \#Using sorted list of major, we can iterate through each of the major events
-        \item \#For each minor event, print all the details
-    \end{itemize}
-    \item Generate network diagrams
-    \begin{itemize}
-        \item Just the layout
-        \item Already written (mostly)
-        \item Adding network events
-    \end{itemize}
-    \item Create PDF of topology
-    \begin{itemize}
-        \item Adding the images to a LaTeX file
-        \item Template or manually?
-        \item The layout chosen
-        \item For now, manual: easier, however in the future it may be better to have it in a template so layout can be easily changed
-        \item Just writing strings to a file
-    \end{itemize}
-\end{itemize}
 
 \subsection{Getting Major and Minor events}
 To create our network diagrams, we first need to determine what will be displayed on the diagram.
 To do this, two categories of log messages are defined: 
-\begin{itemize}
+\begin{list}{}{}
     \item Major: When a node sends a message/packet to another
     \item Minor: Some processing on a single node that would not give the full picture of the test if omitted
-\end{itemize}
+\end{list}
 
 Major events will be displayed in a diagram showing the network layout, showing the transfer between the two nodes and the message details. 
 Minor events however, will be displayed in a list of minor events that occurred before the major event.
@@ -222,7 +225,7 @@ The other solution is to classify lines as they are processed in the creation of
 The second option is quite clearly considerably faster, as in the first option we must re-process a new file and then classify lines within it to be major or minor, however the second option has a major issue in that when lines are classified during the creation of the simple log they are not yet sorted.
 This means that if an array of major and minor events is created then these events will \emph{not} be in chronological order.
 Unsorted events is a major issue for the creation of diagrams as the created diagrams will quite obviously not be ordered.
-This means that for the second option to be considered a method of sorting and \emph{then} assigning minor events to a major event must be developed.
+This means that for the second option to be considered, a method of sorting and \emph{then} assigning minor events to a major event must be developed.
 This is the approach that this thesis took.
 
 Determining major events is relatively simple; major events are a transfer between two nodes.
@@ -254,7 +257,7 @@ Since the log lines are just a single line, saving these minor events is as simp
 
 
 Once the simple log file has been produced, and all major and minor events have been extracted, each minor event needs to be associated with a major event.
-When major and minor events are added to their respective arrays, they are done so in the order that the relevant lines appear in the input log file, meaning that these arrays are not sorted.
+When major and minor events are added to their respective arrays, they are done so in the order that the relevant lines appear in the input log file, meaning that these arrays are not chronologically sorted.
 To associate a minor event with a major event, the minor event must occur before a major event, but \emph{after} the proceeding major event.
 To achieve this, both of the arrays must be sorted.
 This is simple to achieve using the C standard function \verb|qsort|.
@@ -268,7 +271,6 @@ If it is, then add it to the major event and move to the next minor event.
 Do this for every minor event until a minor event is reached that is after the major event.
 At this point, iterate to the next major event and repeat this process.
 This is done until all major events have been processed.
-
 The process for combining major and minor events can be seen in \figurename{ \ref{fig:chapter5CombineMajorMinor}}.
 
 With all of the minor events assigned in chronological order to a relevant major event, an ASCII representation of the network traffic throughout the test can be created.
@@ -286,7 +288,7 @@ Creating an ASCII representation of the network traffic becomes simple once mino
 To achieve this, the program simply iterates through every major event.
 For each major event, the program then iterates through each minor event.
 With this, the program is able to quickly print an ASCII representation of the network traffic through the network during a test.
-This can be seen in \figurename{ \ref{fig:chapter5ASCIIRep}}
+This can be seen in \figurename{ \ref{fig:chapter5ASCIIRep}}.
 \begin{figure}
     \begin{centering}
         \includegraphics[width=15cm,height=15cm,keepaspectratio]{Figures/Chapter5-ASCIIRepresentation.png}
@@ -294,6 +296,8 @@ This can be seen in \figurename{ \ref{fig:chapter5ASCIIRep}}
         \label{fig:chapter5ASCIIRep}
     \end{centering}
 \end{figure}
+\todo{Make this into text instead of an image}
+
 This output can then piped to a file for debugging if testers do not have the requirements installed for generating the diagrams as outlined in the next sections.
 
 
@@ -312,7 +316,7 @@ Using a graphics library would provide a high level of control over the creation
 That said, this would be considerably more complicated and harder to maintain than simply writing DOT files, then using the high-level tools provided by Graphviz to render this DOT file.
 DOT files are text files that follow a specified syntax, and are used by Graphviz to render and create graphs.
 These files are simple, and both human and machine readable. 
-After weighing these options it was decided that despite the far higher level of control possible by using a low-level graphics library, the accessability, simplicity and maintainability of creating and rendering DOT files far outweighs this advantage.
+After weighing these options it was decided that despite the far higher level of control possible by using a low-level graphics library, the accessibility, simplicity and maintainability of creating and rendering DOT files far outweighs this advantage.
 
 To create the DOT files, minor modifications are needed to be made to the previously implemented line filtering as outlined in section \ref{filteringLines}.
 The modifications are simple: when a WiFi or Fakeradio setup line is encountered the node information is stripped from these lines and saved to arrays.
@@ -335,7 +339,7 @@ An example of this data structure and the resultant network topology in \figuren
 Once the simple log has finished being generated and the links between nodes gathered, the program then moves onto writing the layout DOT file.
 The DOT file follows a simple format; initialisation of graph variables, and then the definition of the Layout subgraph.
 The graph is defined as a \emph{directed} graph.
-While this may not appear to make sense initially - network traffic is not restricted by the direction - this is done for future-proofing: when this program will show network traffic that \emph{will} be (partially) directed, and so this subgraph is directed, however the direction hidden with the \verb|dir=none| flag.
+While this may not appear to make sense initially - network traffic is not restricted by the direction - this is done for future-proofing: when this program will show network traffic, that \emph{will} be (partially) directed, and so this subgraph is directed, however the direction hidden with the \verb|dir=none| flag.
 Producing the DOT file consists of four steps:
 \begin{enumerate}
     \item Open the file and write the initialisation
@@ -360,6 +364,8 @@ Finally, the program adds the closing curly braces to the file, and closes it.
 The program then renders the DOT file with the command 
 
 \verb|neato -Tpng [fileName] -o [outputFileName]|
+
+\todo{Add a little bit of an outro/ summary}
 
 \begin{figure}
     \begin{centering}
@@ -397,18 +403,19 @@ An example of a created DOT file can be seen in \figurename{ \ref{fig:chapter5Do
     \begin{centering}
         \includegraphics[width=15cm,height=10cm,keepaspectratio]{Figures/Chapter5-DotAndRender.png}
         \caption{Example of the major event DOT file side-by-side with the rendered diagram\\\emph{Rendered using neato}}
-        \label{fig:chapter5DotAndRender}
+        \label{fig:chapter5TEMP}
     \end{centering}
 \end{figure}
 \todo{Change this to a different diagram}
 
 
 However, one issue remains: while nodes themselves do not move around, the size of the page that a graph is drawn on \emph{will} change depending on the length of the label.
-\todo{Add link to next section}
+For the generation of just the images, there is not much that can be done to mitigate this. 
+However, when the images are added to the LaTeX file as outlined in the next section, some mitigation can be done to reduce the amount of change between images on subsequent pages. 
 
-\subsubsection{Creating LaTeX PDF}
+\subsubsection{Creating the LaTeX PDF}
 Once the diagrams have been created, a LaTeX PDF can then be created.
-This PDF will contain several pieces of information:
+This PDF contains several pieces of information:
 \begin{itemize}
     \item The test details
     \item A diagram for each major event
@@ -421,9 +428,10 @@ Underneath this, the time that the major event occurred is listed.
 The vast majority of the page is taken up by the diagram of the network layout, showing the network traffic when the major event occurs.
 Finally, the bottom half of the page is a list of minor events associated with the major event.
 
+
 To produce this, the program follows a simple process.
 For the first major event, the program creates a new LaTeX file and writes the import and setup lines necessary for the compilation of the LaTeX document.
-Then, the program simply writes the test details to the file with the \verb|\large| tag.
+Then, the program simply writes the test det5ails to the file with the \verb|\large| tag.
 The program then adds the image for that major event. Importantly, this image is \emph{right-aligned}. 
 This is due to the fact that diagrams should roughly align with each-other throughout the document.
 However as mentioned previously, the page size will change depending on the length of the label.
