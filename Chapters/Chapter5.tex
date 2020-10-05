@@ -16,7 +16,7 @@ numbers=none,
 
 The first step in improving the output of the test framework is improving the log output.
 To do this, it was decided that a simple log file should be created for several reasons.
-The log files produced by the test framework have a considerable amount of detail contained within them, however this comes at the cost of being incredibly large - even a relatively simple test such as DualType (produced in the previous section) can create log files of 4,000+ lines.
+The log files produced by the test framework have a considerable amount of detail contained within them, however this comes at the cost of being incredibly large — even a relatively simple test such as DualType (produced in the previous section) can create log files of 4,000+ lines.
 More than that, the log files produced are very difficult to follow, as they are ordered by log file, then chronologically.
 Meaning that following a chain of events between multiple nodes becomes a process of consistently switching between sections of log file.
 Further, the log files produced by the test framework have several issues: the formatting is inconsistent, timestamps are in different formats, a lack of information around network topology, and some log messages are either too verbose or do not contain enough information.
@@ -26,7 +26,7 @@ To fix this, the simple log will require six main features.
     \item Consistent formatting
     \item Chronological ordering by timestamp
     \item Reduce amount of information to only useful info
-    \item Machine \emph{and} human readable layout information
+    \item Machine \emph{and} human-readable layout information
     \item Log traceability to original log file
     \item Support all pre-existing topology tests
 \end{itemize}
@@ -34,7 +34,7 @@ To fix this, the simple log will require six main features.
 
 Several options exist for creating a simple log.
 The first is to modify the pre-existing codebase of LBARD, Servald, Fakeradio, and the test framework, and modify their logging to meet the above requirements.
-This is not considered to be a useful use of this thesis, as this would require changing large parts of the codebase for these programs for a relatively mild improvement, as well as modifying the code of pre-tested and running devices.
+This is not considered to be a useful use of this thesis, as this would require changing large parts of the codebase for these programs for a relatively mild improvement, as well as modifying the code of tested and running devices.
 
 The next is to modify the test framework to process and modify the log lines while the tests are run before piping them to the log file.
 While this does solve the issue of the previous proposed solution this would add a large amount of bloat to the test framework that is not required in the vast majority of the tests, and may actually prove to be either impossible or vastly difficult using the Shell scripts of the test framework.
@@ -42,9 +42,9 @@ Further, this will increase the run-time for tests unnecessarily.
 
 The final option is to write a program that after a test is run and the log file produced, processes the log file and filters and simplifies it, and outputs a separate, simpler log file. 
 This is the method that will be undertaken in this thesis. 
-The program will be written in C as it needs to be fast, portable, and use minimal external dependencies, as well as it is the language that the majority of the Serval codebase is written in - allowing for future developers to easily maintain and improve the code.
+The program will be written in C as it needs to be fast, portable, and use minimal external dependencies, as well as it is the language that the majority of the Serval codebase is written in — allowing for future developers to easily maintain and improve the code.
 
-As shown in \figurename{ \ref{fig:chapter5SimpleFlowchart}} the program follows a simple process.
+As shown in \figurename{ \ref{fig:chapter5SimpleFlowchart}}, the program follows a simple process.
 For each line in the log file, two steps are followed.
 First, the line is filtered to determine if it should appear in the simple log file. 
 Then, for each line that passes through the filter, apply some transformations to it if necessary so it is in a more useful format.
@@ -70,7 +70,7 @@ Filtering the log file allows for the simple log to contain only lines that are 
 To determine the minimal information required to understand the tests, the output log files of the tests were analysed.
 While analysing the output log files, the following list of important events was created.
 \begin{itemize}
-    \item \textbf{Setup} Start of a process, lbard/fakeradio
+    \item \textbf{Setup} Start of a process, LBARD/Fakeradio
     \item \textbf{Setup} Test details
     \item \textbf{Setup} Layout information (WiFi and Fakeradio)
     \item \textbf{Setup} SID information
@@ -80,7 +80,7 @@ While analysing the output log files, the following list of important events was
     \item \textbf{LBARD} Send and receive bundles
     \item \textbf{Fakeradio} Any transfer between two nodes
 \end{itemize}
-\todo{Update this to latest details}
+\todo{Update this to the latest details}
 This list covers all major aspects of a topology test; transfer of bundles, setup and layout information, sending and receiving general packets (including the tree-sync packets), and some internal logic and processing when packets are sent and received.
 With only these important events, it should be possible to locate and isolate issues related to transferring bundles and packets. 
 From there, these filtered events should allow a tester to more easily utilise the vastly more expansive and detailed original log file produced by the test framework. 
@@ -104,14 +104,14 @@ The structure always follows the structure of:
 \end{itemize} 
 
 This structure means that filtering each line becomes far simpler, since we only need to track which process (Fakeradio, LBARD, Servald) we are in, and then filter lines within that process that are relevant.
-However the test framework log files have one major issue: the format of lines is not consistent between processes.
+However, the test framework log files have one major issue: the format of lines is not consistent between processes.
 For instance, the typical Servald line may look like
 \begin{center}
     \begin{lstlisting}[basicstyle=\small, breaklines]
 DEBUG:[511710] 18:15:34.372 overlay_mdp.c:859:_overlay_send_frame() {mdprequests} Send frame 68 bytes    
     \end{lstlisting}
 \end{center}
-while a similar line in LBARD may look like 
+while a similar line in LBARD may look like:
 
 \begin{center}
     \begin{lstlisting}[basicstyle=\small, breaklines]
@@ -129,7 +129,7 @@ However, in the case of LBARD and Fakeradio lines, multiple issues arise due to 
 The first of these issues is that several lines in LBARD are not timestamped with the time that they occurred, rather they are timestamped with the number of milliseconds since the program started.
 This is an issue since this means that the log files can not be easily sorted by timestamp, and also will not be formatted with a consistent format with the other lines.
 To fix this, the initial time that an LBARD instance is started as logged by the file will be used as the T=0 point.
-After this has occurred, when an event with a 'T+' timestamp is encountered, the number of milliseconds is added to the original timestamp to produce an accurate timestamp fo this event.
+After this has occurred, when an event with a 'T+' timestamp is encountered, the number of milliseconds is added to the original timestamp to produce an accurate timestamp for this event.
 
 The other issue with this method is that Fakeradio log lines often are spread over multiple lines.
 This means that simply scanning and processing a single line will not produce all the necessary information.
@@ -139,10 +139,10 @@ However, when
 \subsubsection{Output log file}
 \todo{Add sorting the output}
 
-Once the log file is produced it follows a consistent format.
+Once the log file has been produced it follows a consistent format.
 The simple log files format begins with the setup section.
-The setup section lists all of the essential information for drawing a diagram of the network topology. 
-It lists the test details, SIDs of each of the nodes, and all of the WiFi connections and Fakeradio rules. 
+The setup section lists all the essential information for drawing a diagram of the network topology. 
+It lists the test details, SIDs of each of the nodes, and all the WiFi connections and Fakeradio rules. 
 An example of the setup section can be seen in \figurename{ \ref{fig:chapter5SimpleLogSetup}}.
 
 \begin{figure}
@@ -230,7 +230,7 @@ This is the approach that this thesis took.
 
 Determining major events is relatively simple; major events are a transfer between two nodes.
 To effectively save major events, a struct defining major events is created.
-This struct contains all of the necessary features of a major event. These details are:
+This struct contains all the necessary features of a major event. These details are:
 \begin{itemize}
     \item Sending Node
     \item Destination Node
@@ -242,14 +242,14 @@ This struct contains all of the necessary features of a major event. These detai
 This occurs at two different points in the log file: when Fakeradio sends a packet to a different node, and when Servald sends a packet.
 Fakeradio events are already filtered down to a one line log event for the simple log, so the program simply breaks this line down to get the details of the event, and then appends this to the major events array.
 Servald events however are more complicated as the packet transfer takes place over several messages.
-To convert this into one event, the program simply saves the details of the packet as each line is processed until the log line stating that the message is sent, at which point all of the saved details are added to an event and appended to the major event array.
+To convert this into one event, the program simply saves the details of the packet as each line is processed until the log line stating that the message is sent, at which point all the saved details are added to an event and appended to the major event array.
 
 
 To add the minor events, when a line for the simple log is being formatted for the simple log, the program simply checks if it meets a handful of criteria.
 The minor events that are filtered include:
 \begin{itemize}
     \item Add stuff here
-    \item todo
+    \item to-do
 \end{itemize}
 \todo{Add the list of filtered things}
 \todo{Make all log lines?}
@@ -273,7 +273,7 @@ At this point, iterate to the next major event and repeat this process.
 This is done until all major events have been processed.
 The process for combining major and minor events can be seen in \figurename{ \ref{fig:chapter5CombineMajorMinor}}.
 
-With all of the minor events assigned in chronological order to a relevant major event, an ASCII representation of the network traffic throughout the test can be created.
+With all the minor events assigned in chronological order to a relevant major event, an ASCII representation of the network traffic throughout the test can be created.
 
 \begin{figure}
     \begin{centering}
@@ -298,7 +298,7 @@ This can be seen in \figurename{ \ref{fig:chapter5ASCIIRep}}.
 \end{figure}
 \todo{Make this into text instead of an image}
 
-This output can then piped to a file for debugging if testers do not have the requirements installed for generating the diagrams as outlined in the next sections.
+This output can then be piped to a file for debugging if testers do not have the requirements installed for generating the diagrams as outlined in the next sections.
 
 
 
@@ -306,23 +306,23 @@ This output can then piped to a file for debugging if testers do not have the re
 \subsection{Generating a network diagram}
 \todo{Change this to work in new structure} 
 In the test definitions, it is often difficult to understand what the network topology of a given test is.
-This is due to the fact that the topology definitions - while easy to understand for a computer - are not particularly friendly for humans to understand, due to their relatively complicated definition.
-The topology definition are split into two section, WiFi and Fakeradio, and lists connections only between two nodes - not the entire network.
+This is due to the fact that the topology definitions — while easy to understand for a computer — are not particularly friendly for humans to understand, due to their relatively complicated definition.
+The topology definition are split into two sections, WiFi and Fakeradio, and lists connections only between two nodes — not the entire network.
 \todo{Add more / fix this}
 To render these diagrams, the layout will need to be extracted from the test definition, then a diagram drawn of this topology.
 From this layout, the image will then need to be created and rendered.
 There are two main solutions for creating the image: do it using a graphics library, or creating a DOT file and rendering it with Graphviz.
-Using a graphics library would provide a high level of control over the creation of the image as graphical elements would need to be defined explicitly and as such are unlikely to have unforeseen side-effects as could be expected with using a higher-level solution such as Graphviz.
+Using a graphics library would provide a high level of control over the creation of the image as graphical elements would need to be defined explicitly and as such are unlikely to have unforeseen side effects as could be expected with using a higher-level solution such as Graphviz.
 That said, this would be considerably more complicated and harder to maintain than simply writing DOT files, then using the high-level tools provided by Graphviz to render this DOT file.
 DOT files are text files that follow a specified syntax, and are used by Graphviz to render and create graphs.
-These files are simple, and both human and machine readable. 
+These files are simple, and both human and machine-readable. 
 After weighing these options it was decided that despite the far higher level of control possible by using a low-level graphics library, the accessibility, simplicity and maintainability of creating and rendering DOT files far outweighs this advantage.
 
 To create the DOT files, minor modifications are needed to be made to the previously implemented line filtering as outlined in section \ref{filteringLines}.
 The modifications are simple: when a WiFi or Fakeradio setup line is encountered the node information is stripped from these lines and saved to arrays.
 How this is done depends on if it is a WiFi or a Fakeradio line.
 For a Fakeradio line the program simply extracts the node numbers \todo{Show example?} from the line, converts these to the appropriate node character, and saves these two variables to a simple struct of just the two node characters.
-This struct is appended to an array containing all of the Fakeradio connections.
+This struct is appended to an array containing all the Fakeradio connections.
 For a WiFi connection however this is slightly more complicated.
 To determine the WiFi topology a 2D array is created.
 When a line is encountered that lists a node being connected to a WiFi interface, the node character is appended to the array at the index of the interface.
@@ -337,22 +337,22 @@ An example of this data structure and the resultant network topology in \figuren
 \end{figure}
 
 Once the simple log has finished being generated and the links between nodes gathered, the program then moves onto writing the layout DOT file.
-The DOT file follows a simple format; initialisation of graph variables, and then the definition of the Layout subgraph.
+The DOT file follows a simple format; initialisation of graph variables, and then the definition of the Layout sub-graph.
 The graph is defined as a \emph{directed} graph.
-While this may not appear to make sense initially - network traffic is not restricted by the direction - this is done for future-proofing: when this program will show network traffic, that \emph{will} be (partially) directed, and so this subgraph is directed, however the direction hidden with the \verb|dir=none| flag.
+While this may not appear to make sense initially — network traffic is not restricted by the direction — this is done for future-proofing: when this program will show network traffic, that \emph{will} be (partially) directed, and so this sub-graph is directed, however the direction hidden with the \verb|dir=none| flag.
 Producing the DOT file consists of four steps:
 \begin{enumerate}
     \item Open the file and write the initialisation
-    \item Write the fakeradio links
+    \item Write the Fakeradio links
     \item Write the WiFi nodes
     \item Write the end of the DOT file, then close it
 \end{enumerate}
 
 In the first step, the program opens a new file with the name \verb|diagramLayout.dot|, and writes the initialisation variables.
-This is simply writing a string listing all of the graph variables. 
+This is simply writing a string listing all the graph variables. 
 In \figurename{ \ref{fig:chapter5DotAndRender}} this would be from \verb|digraph A| to \verb|edge [dir=none, penwidth=3]|.
 
-In the next step, the program simply iterates through all of the Fakeradio links that have been saved, as outlined previously in this section.
+In the next step, the program simply iterates through all the Fakeradio links that have been saved, as outlined previously in this section.
 Then this information is written to the DOT file with the extra field \verb|[color=red]|.
 This is used to highlight Fakeradio links between nodes and help distinguish the different link types between nodes in a network.
 
@@ -361,11 +361,11 @@ To do this, the program iterates through each of the interface arrays, and for e
 With these combinations, the program then writes each unique combination to the file with the extra field \verb|[color=blue]|.
 
 Finally, the program adds the closing curly braces to the file, and closes it.
-The program then renders the DOT file with the command 
+The program then renders the DOT file with the command:
 
 \verb|neato -Tpng [fileName] -o [outputFileName]|
 
-\todo{Add a little bit of an outro/ summary}
+\todo{Add a little of an outro/ summary}
 
 \begin{figure}
     \begin{centering}
@@ -379,19 +379,19 @@ The program then renders the DOT file with the command
 \subsection{Creating a LaTeX PDF}
 \todo{Add intro}
 \subsubsection{Transfer Diagrams}
-The first step in creating a LaTeX PDF is to generate all of the images of the network topology.
-This is an extension of the development done in the previous section, however this is now creating multiple images - one per major event - and adding a directed link and label between a sending and receiving node.
+The first step in creating a LaTeX PDF is to generate all the images of the network topology.
+This is an extension of the development done in the previous section, however this is now creating multiple images — one per major event — and adding a directed link and label between a sending and receiving node.
 
 To achieve this, the program iterates through every single major event in chronological order.
 For each major event, the program adds the graph initialisation as previously outlined.
-The program then adds a subgraph named \emph{Transfer}.
-The transfer subgraph consists of just one line showing the \emph{directed} connection between the sending and receiving node.
+The program then adds a sub-graph named \emph{Transfer}.
+The transfer sub-graph consists of just one line showing the \emph{directed} connection between the sending and receiving node.
 To display the transfer in a nice format two options are added to this connection: the label, to show the transfer message, and the colour, which is the same as the normal colour of this link.
 
 
 However, this had the issue that \verb|neato| will move the nodes around when a label is added that is longer than previously.
 This is due to the fact that \verb|neato| will attempt to place all elements an even distance away from every element \emph{this includes labels}. 
-To fix this issue, a Subgraph called \emph{Nodes} is created before the \emph{Transfer} subgraph where it just lists all of the nodes in the network, and applies the \verb|[pin=true]| flag to them.
+To fix this issue, a sub-graph called \emph{Nodes} is created before the \emph{Transfer} sub-graph where it just lists all the nodes in the network, and applies the \verb|[pin=true]| flag to them.
 This pins the nodes in their current position at the time the flag is added.
 In this case, that is when \emph{just the nodes} have been placed.
 This gives the program the ability to add labels of arbitrary length without moving the nodes around.
@@ -434,9 +434,9 @@ For the first major event, the program creates a new LaTeX file and writes the i
 Then, the program simply writes the test det5ails to the file with the \verb|\large| tag.
 The program then adds the image for that major event. Importantly, this image is \emph{right-aligned}. 
 This is due to the fact that diagrams should roughly align with each-other throughout the document.
-However as mentioned previously, the page size will change depending on the length of the label.
-As most diagrams should be produced with the topology on the right and the label on the left, this means that for the vast majority of the diagrams, the topology generated will all align on the right - however the distance between the topology and the left edge of the diagram may change.
-By aligning the image along the right of the page, this should mean that - for the vast majority of cases - the variable width along the left of the diagram doesn't move the image.
+However, as mentioned previously, the page size will change depending on the length of the label.
+As most diagrams should be produced with the topology on the right and the label on the left, this means that for the vast majority of the diagrams, the topology generated will all align on the right — however the distance between the topology and the left edge of the diagram may change.
+By aligning the image along the right of the page, this should mean that — for the vast majority of cases — the variable width along the left of the diagram doesn't move the image.
 After this, the program simply iterates through every minor event associated with the major event, and adds these lines to the LaTeX file.
 Finally, a page break is added so that the next major event is put on a new page.
 This is done for every major event.
