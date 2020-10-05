@@ -1,6 +1,6 @@
 % Chapter Template
 
-\chapter{Visualising tests in a real network} % Main chapter title
+\chapter{Visualising real-world networks} % Main chapter title
 
 \label{Chapter6} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
@@ -8,28 +8,18 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-\section{Generating diagrams of the real-world}
-Chapter 6
-- Apply but in test network
-- Real world tests
-
-\begin{itemize}
-    \item Add additional flags to real-world tests
-    \begin{itemize}
-        \item "bundles pieces ack announce message\_pieces sync"
-        \item  Allowed for enough information to ensure that we could generate the diagrams
-    \end{itemize}
-\end{itemize}
-
+\section{Generating diagrams of the real-world}   
 To begin to analyse the differences between the emulated Serval networks and those of real-world networks, identical Serval networks are to be run in both emulation using the test framework and in the real world.
 By using the tools created throughout this thesis, the differences and similarities in the functionality of the networks can be analysed.
-Of particular use will be the generation of diagrams and bundle bitmaps as implemented in Chapter 5.
+Of particular use will be the generation of diagrams as implemented in Chapter 5.
 To do this however, some changes will need to be made to the program to support the generation of real-world Serval tests.
 The first of these is that initial log files will need to be made for the real-world tests.
 \todo{Finish this}
+
 Additionally, some mild changes will need to be made to the program. 
 These changes should be relatively minor: move to using just LBARD for the generation of major events since real-world tests don't use Fakeradio, retrieve node SIDs from LBARD since we can not use the \todo{finish this}.
-The reasoning behind why the program is so well-suited to handling real-world events is due to the nature of the test framework: the test framework runs real Serval software, with the only part that is not present in real-world scenarios being that of fakeradio.
+
+The reasoning behind why the program is so well-suited to handling real-world events is due to the nature of the test framework: the test framework runs real Serval software, with the only part that is not present in real-world scenarios being that of Fakeradio.
 If solutions to these changes are found that exist solely within Servald or LBARD, then these solutions will be portable to analysis of both the emulated test framework and real-world tests.
 
 \subsection{Creating initial log file}
@@ -38,7 +28,7 @@ If solutions to these changes are found that exist solely within Servald or LBAR
     \item Some used for generating diagrams
 \end{itemize}
 To create the initial log file to be used for real-world tests, multiple log files will need to be manually combined to create the single initial log file that the program requires.
-This log file will simply contain all of the log outputs from the Servald and LBARD processes that are involved in the test.
+This log file will simply contain all the log outputs from the Servald and LBARD processes that are involved in the test.
 
 This log file needs to follow the same format as that of the log files:
 \begin{itemize}
@@ -47,7 +37,7 @@ This log file needs to follow the same format as that of the log files:
     \item Each Servald process with a proceeding line detailing which Servald process it is
 \end{itemize} 
 
-Additionally however, the SIDs for each of the nodes will need to be listed at the top of the file. 
+Additionally, the SIDs for each of the nodes will need to be listed at the top of the file. 
 This is because as the initial log file is processed, any references to a SID involve a lookup to determine which node this is referring to, as such these SIDs need to be listed in advance.
 
 An example of one of these log files may look similar to \figurename{ \ref{fig:chapter6RealWorldLog}}.
@@ -77,7 +67,7 @@ Finished: 2020-08-24 13:23:32.497
     \end{centering}
 \end{figure}
 
-Additionally, to ensure that real-world tests are producing to create network diagram, every field test must have - at a minimum - some specific configurations.
+Additionally, to ensure that real-world tests are producing to create network diagram, every field test must have — at a minimum — some specific configurations.
 For LBARD processes, the flags that must be set are:
 \begin{lstlisting}
     bundles
@@ -113,19 +103,19 @@ These configurations will allow for a good coverage of Servald functionality, an
 
 Once the initial log file has been created for the real-world test, this can then be run through the program. \todo{We need a better name than just program}
 The program would produce a perfectly satisfactory simple log file based off of this real-world initial log file, however when any other form of output is run, such as the PDF diagram generation, the amount of major events produced is minor and only included Servald events.
-This is due to the programs reliance on Fakeradio for determining major events.
-For tests produced by the test framework this is perfectly reasonable; fakeradio handles all of the radio traffic and so it makes sense to use this.
-However, real-world tests quite obviously do not require fakeradio to handle the radio traffic, and as such no major events can be determined by analysing fakeradio output as fakeradio is never run.
+This is due to the program's reliance on Fakeradio for determining major events.
+For tests produced by the test framework this is perfectly reasonable; Fakeradio handles all the radio traffic and so it makes sense to use this.
+However, real-world tests quite obviously do not require Fakeradio to handle the radio traffic, and as such no major events can be determined by analysing Fakeradio output as Fakeradio is never run.
 As such, some other way of retrieving major events must be implemented.
 
-Achieving this is relatively simple, if fakeradio is not detected, every time a LBARD process announces it has sent a piece, simply use this as the basis of a major event.
+Achieving this is relatively simple, if Fakeradio is not detected, every time a LBARD process announces it has sent a piece, simply use this as the basis of a major event.
 An example of this log output can be seen in \figurename{ \ref{fig:chapter6RLBARDSent}}
-This method has some drawbacks however, LBARD will only report that it is sending a bundle to a single node at a time and - as LBARD will prioritise pieces of bundles that multiple neighbour nodes require - this means that purely using this log output will not show multiple recipients of a bundle piece.
-To mitigate this, the assumption will need to be made that LBARD is transmitting to all of it's neighbours when it sends a bundle.
+This method has some drawbacks however, LBARD will only report that it is sending a bundle to a single node at a time and — as LBARD will prioritise pieces of bundles that multiple neighbour nodes require — this means that purely using this log output will not show multiple recipients of a bundle piece.
+To mitigate this, the assumption will need to be made that LBARD is transmitting to all of its neighbours when it sends a bundle.
 Despite this drawback, using the LBARD log output actually has an improvement: LBARD reports the start and end bytes of the piece it is sending.
 By using these start and end pieces, a bundle bitmap can be developed, allowing for easier analysis of how LBARD is sending pieces through the network.
 
-With these minor changes made, the compiled log files of the real world tests can then be run through the program, and any form of output - including diagram generation - should work without issue.
+With these minor changes made, the compiled log files of the real world tests can then be run through the program, and any form of output — including diagram generation — should work without issue.
 
 
 \begin{figure}
@@ -142,10 +132,97 @@ With these minor changes made, the compiled log files of the real world tests ca
 \subsection{Displaying bundle bitmaps}
 \todo{Remove references to bundle bitmaps from earlier}
 \todo{Add intro to bundle bitmaps}
+By using these partitions, a count can be taken of what pieces of bundles a node has received.
+This is particularly useful when analysing LBARD networks, as a long-standing bug in LBARD revolves around bundles not being properly marked as received \todo{reference}.
+By analysing these bundle bitmaps, Serval testers will be able to 
+\todo{Finish}
 
+\subsubsection{Calculating bitmap partitions}
+The bitmap partitions are simply the byte borders that a node receives for this bundle.
+For instance, a node may receive bytes 0 to 64 in one transfer, and bytes 65 to 256 in the next.
+Then, assuming that these are the only transfers that this node receives for this bundle, the partitions would be 0, 64, and 256.
+
+Calculating the bitmap partitions is simple; every time LBARD reports it sends a bundle piece, add the start and end byte values to an array for each of the destination nodes.
+The end result of this is that at the conclusion of the processing of the simple log file, each node has an array of bitmap partitions for every bundle that was sent during the test.
+For some nodes who were never sent a bundle, this array may be empty, however for other nodes this will contain every single partition value that it received from 0 to the end byte value.
+
+While this will produce an accurate view of the pieces that a node has been sent throughout the test, this does not provide an adequate level of granularity.
+With the exception for the last piece, bundle pieces always have a granularity of 64 bytes \todo{ref}, however LBARD often attempts to send pieces in 128 byte increments. 
+Thus, to account for this necessary level of granularity, the program must add any non-existent bundle partitions that are a multiple of 64 and less than the maximum byte value that this node has received.
+To do this, the program iterates through the sorted array of byte partitions, and if any multiple of 64 is missing from where it should be in the array, appends it to the end.
+After it iterates through the array, the program sorts the array, giving a complete bundle bitmap for both the body and manifest with a granularity of 64 bytes (excluding the last piece which may be less than 64 bytes).
+
+
+
+\begin{itemize}
+    \item Also, helpful if nodes are sending different overlapping bits, such as 0,128 and 64,192
+    \item Why not just get the maximum one and then add the 64-byte partitions?
+    \item   What if the maximum is a multiple of 64? Then it wouldn't show up, and we'd have no max
+\end{itemize}
+
+\subsubsection{Displaying bitmaps}
+The second step is to calculate the number of times a specific node has received this partition.
+This is as simple as incrementing a counter for each partition every time it is encountered.
+
+Once the bitmap partitions had been calculated for every node, the bitmaps can then be displayed.
+To display these, both the partitions and a current count of the number of times each partition has been sent to the specified node must be known.
+This is because the bitmaps are displayed alongside each major event of an LBARD transfer in both the ASCII and PDF outputs. 
+Thus, as these are displayed alongside a major event, a count of the number of times that partition has been sent must be displayed where the count is current up to the time of that major event.
+\todo{fix wording}
+
+To display the current count every time a LBARD transfer is encountered each of the receiving nodes of this bundle transfer have their bitmap counts adjusted.
+What this means is that the program uses the message type (body or manifest) and the start and end bytes of the message and increments the count of every partition for that node for that bundle between the start and end bytes.
+The end result of this is that every time LBARD reports that it sends a bundle piece — for example, a body piece of bytes 64 to 192 of BID ABCDE1234* — then for every receiving node of this message, the count for each partition between bytes 64 to 192 are incremented by one for that specific bundle ID.
+
+With this, a 'live' bitmap of each of the bundles can be displayed for each of the nodes at the time of the major event.
+Displaying this in the ASCII mode is simple, whenever a major event is encountered where LBARD sends bundle pieces, simply adjust the count using the known BID and start and end byte values of this event, and then iterate through every receiving node and print the count of each of the partitions. 
+This can be seen in \figurename{ \ref{fig:chapter6ASCIIPartition}}.
+
+\begin{figure}
+    \begin{centering}
+\begin{lstlisting}[basicstyle=\small, frame=single, breaklines]
+57: [ 13:22:54.982] Sent body piece [0,50) of 5B59E446*
+A -> BCD
+  Manifest Bitmap (B):
+  | [0,64)    | [64,128)  | [128,192) | [192,256) |
+  | 1         | 1         | 1         | 1         |
+  Body Bitmap (B):
+  | [0,50)     |
+  | 2          |
+  
+  Manifest Bitmap (C):
+  | [0,64)    | [64,128)  | [128,192) | [192,256) |
+  | 1         | 1         | 1         | 1         |
+  Body Bitmap (C):
+  | [0,50)     |
+  | 2          |
+  
+  Manifest Bitmap (D):
+  | [0,64)    | [64,128)  | [128,192) | [192,256) |
+  | 1         | 1         | 1         | 1         |
+  Body Bitmap (D):
+  | [0,50)     |
+  | 2          |
+\end{lstlisting}
+        \caption{ASCII representation of bundle count}
+        \label{fig:chapter6ASCIIPartition}
+    \end{centering}
+\end{figure}
+
+
+For the PDF output, the bitmap partition and counts are displayed in a table underneath the network topology diagram.
+The program creates two tables per receiving node, one for body and one for manifest bitmaps.
+These tables simply list the start and end bytes for each partition in the header row, and beneath each of these, show the 'live' count of the number of times that these partitions have been sent.
+This can be seen in \figurename{ \ref{fig:chapter6PDFPartition}}.
+
+
+\todo{Add PDF partition image}
 
 
 \section{Comparing real-world and framework tests}
 \begin{itemize}
     \item This is a test
 \end{itemize}
+
+\section{Summary}
+\textbf{Summarise this section and link with results}
