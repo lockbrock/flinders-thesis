@@ -14,21 +14,16 @@ By using the tools created throughout this thesis, the differences and similarit
 Of particular use will be the generation of diagrams as implemented in Chapter 5.
 To do this however, some changes will need to be made to the program to support the generation of real-world Serval tests.
 The first of these is that initial log files will need to be made for the real-world tests.
-\todo{Finish this}
-
+This log file is simply a single compiled file of the logs in the real-world tests that the program will use as the input to generate the simple log file and the diagrams.
 Additionally, some mild changes will need to be made to the program. 
-These changes should be relatively minor: move to using just LBARD for the generation of major events since real-world tests don't use Fakeradio, retrieve node SIDs from LBARD since we can not use the \todo{finish this}.
+These changes should be relatively minor: move to using just LBARD for the generation of radio major events since real-world tests don't use Fakeradio, and retrieve node SIDs from Servald since we can not use the SIDs reported by the test framework.
 
 The reasoning behind why the program is so well-suited to handling real-world events is due to the nature of the test framework: the test framework runs real Serval software, with the only part that is not present in real-world scenarios being that of Fakeradio.
 If solutions to these changes are found that exist solely within Servald or LBARD, then these solutions will be portable to analysis of both the emulated test framework and real-world tests.
 
 \subsection{Creating initial log file}
-\begin{itemize}
-    \item Allowed us to get a better picture of the real-world tests
-    \item Some used for generating diagrams
-\end{itemize}
 To create the initial log file to be used for real-world tests, multiple log files will need to be manually combined to create the single initial log file that the program requires.
-This log file will simply contain all the log outputs from the Servald and LBARD processes that are involved in the test.
+This log file will simply contain all the log outputs from the Servald and LBARD processes that are involved in the real-world test.
 
 This log file needs to follow the same format as that of the log files:
 \begin{itemize}
@@ -39,8 +34,8 @@ This log file needs to follow the same format as that of the log files:
 
 Additionally, the SIDs for each of the nodes will need to be listed at the top of the file. 
 This is because as the initial log file is processed, any references to a SID involve a lookup to determine which node this is referring to, as such these SIDs need to be listed in advance.
-
-An example of one of these log files may look similar to \figurename{ \ref{fig:chapter6RealWorldLog}}.
+For emulated tests this is not necessary, as these SIDs are reported by the test framework at the beginning of the log file.
+A combined real-world log file may look similar to \figurename{ \ref{fig:chapter6RealWorldLog}}.
 
 \begin{figure}
     \begin{centering}
@@ -67,7 +62,7 @@ Finished: 2020-08-24 13:23:32.497
     \end{centering}
 \end{figure}
 
-Additionally, to ensure that real-world tests are producing to create network diagram, every field test must have — at a minimum — some specific configurations.
+Additionally, to ensure that real-world tests are producing the appropriate log output to create network diagram, every field test must have — at a minimum — some specific configurations.
 For LBARD processes, the flags that must be set are:
 \begin{lstlisting}
     bundles
@@ -79,7 +74,7 @@ For LBARD processes, the flags that must be set are:
     \end{lstlisting}
 
 With these flags, LBARD will produce the minimum log output required to generate diagrams. 
-\todo{Add more specific information about what each of these does}
+\todo{Add more info about what each of these does}
 
 For Servald processes no specific configurations are required, however it is recommended to run each process with the following configuration as a minimum:
 \begin{lstlisting}
@@ -100,7 +95,6 @@ These configurations will allow for a good coverage of Servald functionality, an
 
 
 \subsection{Adding support for real-world tests}
-
 Once the initial log file has been created for the real-world test, this can then be run through the program. \todo{We need a better name than just program}
 The program would produce a perfectly satisfactory simple log file based off of this real-world initial log file, however when any other form of output is run, such as the PDF diagram generation, the amount of major events produced is minor and only included Servald events.
 This is due to the program's reliance on Fakeradio for determining major events.
@@ -130,12 +124,9 @@ With these minor changes made, the compiled log files of the real world tests ca
 
 
 \subsection{Displaying bundle bitmaps}
-\todo{Remove references to bundle bitmaps from earlier}
-\todo{Add intro to bundle bitmaps}
-By using these partitions, a count can be taken of what pieces of bundles a node has received.
+To assist with the analysis of LBARD sending and receiving bundles and bundle pieces, bundle bitmaps can be used to display the count of times that a specific section of a bundle body or manifest has been sent to a node.
 This is particularly useful when analysing LBARD networks, as a long-standing bug in LBARD revolves around bundles not being properly marked as received \todo{reference}.
-By analysing these bundle bitmaps, Serval testers will be able to 
-\todo{Finish}
+By analysing these bundle bitmaps, Serval testers will be able to easily determine what pieces of a bundle have been sent excessively or not at all.
 
 \subsubsection{Calculating bitmap partitions}
 The bitmap partitions are simply the byte borders that a node receives for this bundle.
@@ -153,28 +144,17 @@ To do this, the program iterates through the sorted array of byte partitions, an
 After it iterates through the array, the program sorts the array, giving a complete bundle bitmap for both the body and manifest with a granularity of 64 bytes (excluding the last piece which may be less than 64 bytes).
 
 
-
-\begin{itemize}
-    \item Also, helpful if nodes are sending different overlapping bits, such as 0,128 and 64,192
-    \item Why not just get the maximum one and then add the 64-byte partitions?
-    \item   What if the maximum is a multiple of 64? Then it wouldn't show up, and we'd have no max
-\end{itemize}
-
 \subsubsection{Displaying bitmaps}
-The second step is to calculate the number of times a specific node has received this partition.
-This is as simple as incrementing a counter for each partition every time it is encountered.
-
 Once the bitmap partitions had been calculated for every node, the bitmaps can then be displayed.
 To display these, both the partitions and a current count of the number of times each partition has been sent to the specified node must be known.
 This is because the bitmaps are displayed alongside each major event of an LBARD transfer in both the ASCII and PDF outputs. 
-Thus, as these are displayed alongside a major event, a count of the number of times that partition has been sent must be displayed where the count is current up to the time of that major event.
-\todo{fix wording}
+As these bitmaps are related to a LBARD major event, the count of sent bundle pieces must accurately represent the number of times this piece has been sent \emph{as of the time of the major event}.
 
-To display the current count every time a LBARD transfer is encountered each of the receiving nodes of this bundle transfer have their bitmap counts adjusted.
+To display the current bitmap partition count during the ASCII or PDF output, every time a LBARD transfer is encountered, each of the receiving nodes of this bundle transfer have their bitmap counts adjusted.
 What this means is that the program uses the message type (body or manifest) and the start and end bytes of the message and increments the count of every partition for that node for that bundle between the start and end bytes.
 The end result of this is that every time LBARD reports that it sends a bundle piece — for example, a body piece of bytes 64 to 192 of BID ABCDE1234* — then for every receiving node of this message, the count for each partition between bytes 64 to 192 are incremented by one for that specific bundle ID.
 
-With this, a 'live' bitmap of each of the bundles can be displayed for each of the nodes at the time of the major event.
+With this, a 'live' bitmap of each of the bundles can be displayed for each of the receiving nodes at the time of the major event.
 Displaying this in the ASCII mode is simple, whenever a major event is encountered where LBARD sends bundle pieces, simply adjust the count using the known BID and start and end byte values of this event, and then iterate through every receiving node and print the count of each of the partitions. 
 This can be seen in \figurename{ \ref{fig:chapter6ASCIIPartition}}.
 
@@ -225,4 +205,9 @@ This can be seen in \figurename{ \ref{fig:chapter6PDFPartition}}.
 \end{itemize}
 
 \section{Summary}
+\begin{itemize}
+    \item Summarise what this chapter did
+    \item Talk about why it was important
+    \item Link to next section
+\end{itemize}
 \textbf{Summarise this section and link with results}
