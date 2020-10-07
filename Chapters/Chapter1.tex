@@ -4,67 +4,81 @@
 
 \label{Chapter1} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-The introduction should provide the following:
+\section{Communication without infrastructure}
 \begin{itemize}
-    \item background to the topic
-    \item brief review of current knowledge (this is not the literature review –it’s only a high level overview)
-    \item state hypotheses
-    \item indicate gaps in knowledge, state aims of the thesis and how it fits into the gap
-    \item an outline of the followingchapters.
+    \item Talk about disasters
+    \item Remote areas
+    \item Lack of communication if/when these happen
+    \item Serval Mesh as a solution.
 \end{itemize}
 
+When a disaster strikes, communication often goes with it.
+Communication is crucial in modern life — doubly so when a disaster leaves people in danger.
+Unfortunately, when a disaster strikes a region, communications are often some of the most vulnerable infrastructure.
+Even if the disaster does not directly affect communications infrastructure, this infrastructure is often overwhelmed by victims attempting to contact rescue teams.
+\todo{Rewrite, this is all weak}
+This impact is  further compounded in areas with already insufficient communication infrastructure such as remote areas and poorer regions.
+Because of this, there is significant demand for cheap, reliable, and resilient communications methods for remote and disaster-affected regions.
+Developed in response to the 2010 Haitian earthquakes that led to the loss of over 100,000 lives and crippled communication infrastructure, severely hampering rescue efforts, the Serval Project aims to provide emergency communications in disaster struck areas through the deployment of the Serval Mesh Extenders.
 
-The introduction should follow the recommended structure:
+\section{The Serval Mesh Network}
+\todo{Add intro bit}
+To achieve communication without pre-existing infrastructure, the Serval team developed the Rhizome protocol.
+Rhizome is a store-and-forward protocol, with every Rhizome node having its own database that stores all files when it receives them, and forwards files to any neighbouring nodes that require them.
+The end result of this is that Serval networks are able to guarantee that every file is received by its destination node, however it does not guarantee the time that this will take.
+The Rhizome protocol was initially implemented as an ad hoc WiFi only mesh network that could be used in a disaster zone to allow communication without infrastructure.
+Today, the Serval Mesh now supports WiFi, UHF packet radio, and an experimental HF radio implementation, with more radio communication methods being developed.
+To handle these various communication methods, the Serval Mesh consists of two main software components; Servald and LBARD.
+Servald in the main implementation of the Rhizome protocol, and handles the core functionality of Serval devices, from adding to the Rhizome database to handling the encryption of messages for transfer, and also supports synchronisation with other nearby Serval devices over WiFi.
+LBARD stands for Low Bandwidth Asynchronous Rhizome Demonstrator, and serves to facilitate sending and receiving Rhizome bundles over low bandwidth links such as UHF radio.
+
+As it stands, the Serval Mesh network has several issues.
+The first of these issues are several long-standing bugs in LBARD and the protocols it uses to synchronise messages with other LBARD nodes.
+Further, due to the nature of Serval networks, it is difficult to set up real Serval networks to easily test the functionality of the network.
+\todo{Change this structure around}
+
+To assist with this, the Serval team have developed a software emulation framework to emulate the functionality of real Serval devices and networks.
+While this has proven valuable with diagnosing issues with Serval functionality, the framework tests tend to test only the core Servald and LBARD functionality, without a focus on proper network functionality.
+\todo{Add more about limitations}
+
+\section{Problem Statement}
 \begin{itemize}
-    \item state the general background of the thesis topic and give some background
-    \item provide an overview of the literature related to the thesis topic
-    \item define the terms and scope of thethesis
-    \item outline the current situation
-    \item evaluate the advantages/disadvantages of existing solutions and identify the knowledge gap
-    \item identify the importance of the proposed research
-    \item state the research problem/questions
-    \item state the research aims and/or research objectives
-    \item state the hypotheses
-    \item outline the experiment methodology
-    \item outline the structure of thethesis
-\end{itemize}
-
-
-\emph{Any time a decision is made, write it down}
-\begin{itemize}
-    \item Take notes
-    \item Git commits of meaningful info
-    \item If in doubt, write too much
-    \item Answer all the why questions
-\end{itemize}
-
-%----------------------------------------------------------------------------------------
-%	SECTION 1
-%----------------------------------------------------------------------------------------
-
-\section{The Serval Project}\label{sec:firstsection}
-Add history, what it is, etc.
-
-
-
-\subsection{Aims}
-
-
-
-\subsection{How it works}
-An overview of how the serval project works
-
-
-%----------------------------------------------------------------------------------------
-%	SECTION 2
-%----------------------------------------------------------------------------------------
-
-\section{Project Overview}
-
-\begin{itemize}
-    \item What the project is (briefly)
-    \item Why the project needs to be done (no current large-scale network testing)
-    \item Allows visual analysis of tests 
-    \item Current test framework is limited in scale, doesn't have many features relevant to real-world: (multi-radio technology not possible)
+    \item What this thesis will be focusing on — scope
     \item 
+    \item List the research questions
 \end{itemize}
+
+This thesis focuses on the development of additional testing tools for the Serval network, and the analysis of how these tools assist the Serval team with the development of the Serval Mesh.
+
+
+To structure the development of this thesis, four research questions were developed.
+These questions were:
+\begin{enumerate}
+    \item What is the state of LBARD and the test framework?
+    \item What other network testing tools exist and what features do they have?
+    \item What additional tools would be useful for analysing and testing the functionality of the Serval Mesh?
+    \item How might these additional tools be created and evaluated?
+\end{enumerate}
+Each of these four questions is answered in depth throughout this thesis.
+
+
+\section{Structure of this thesis}
+
+This thesis will focus on the three main contributions made to the Serval project through this Honours project.
+The first of these is the comprehensive overview and identification of the limitations in LBARD and the Serval test framework as outlined in Chapter 3.
+
+The next contribution is the improvement of the test framework, and the development of several diagnostic and visualisation tools to assist with the analysis of both emulated and real-world tests which is detailed in Chapters 4, 6, and 6. 
+In Chapter 7, these developed tools are thoroughly discussed, with the strengths and limitations of these critically analysed, and their contribution to the goals of the Serval project verified. 
+\todo{Verified is not the right word}
+
+The third main contribution is outlined in Chapter 7, and involves the use of the developed tools to identify significant faults in LBARD, as well as verifying the correction of these faults.
+These developed tools also used to determine the simulation fidelity — that is, how accurate the test framework is to real-world scenarios.
+
+Finally, in Chapter 8 the main results of this thesis are summarised, and the future work outlined.
+\todo{Add more/fix}
+
+
+\begin{itemize}
+    \item   Talk about what will be done in each chapter
+\end{itemize}
+

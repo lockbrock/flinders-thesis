@@ -4,9 +4,9 @@
 
 \label{Chapter6} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-%----------------------------------------------------------------------------------------
-%	SECTION 1
-%----------------------------------------------------------------------------------------
+Add 4 questions as relevant for this chapter
+Talk about this chapter structure
+What this chapter does in each section
 
 \section{Generating diagrams of the real-world}   
 To begin to analyse the differences between the emulated Serval networks and those of real-world networks, identical Serval networks are to be run in both emulation using the test framework and in the real world.
@@ -96,7 +96,9 @@ These configurations will allow for a good coverage of Servald functionality, an
 
 \subsection{Adding support for real-world tests}
 Once the initial log file has been created for the real-world test, this can then be run through the program. \todo{We need a better name than just program}
-The program would produce a perfectly satisfactory simple log file based off of this real-world initial log file, however when any other form of output is run, such as the PDF diagram generation, the amount of major events produced is minor and only included Servald events.
+
+\todo{Fix the tone here - authorative}
+The program would produce a satisfactory simple log file based off of this real-world initial log file, however when any other form of output is run, such as the PDF diagram generation, the amount of major events produced is minor and only included Servald events.
 This is due to the program's reliance on Fakeradio for determining major events.
 For tests produced by the test framework this is perfectly reasonable; Fakeradio handles all the radio traffic and so it makes sense to use this.
 However, real-world tests quite obviously do not require Fakeradio to handle the radio traffic, and as such no major events can be determined by analysing Fakeradio output as Fakeradio is never run.
@@ -195,14 +197,27 @@ The program creates two tables per receiving node, one for body and one for mani
 These tables simply list the start and end bytes for each partition in the header row, and beneath each of these, show the 'live' count of the number of times that these partitions have been sent.
 This can be seen in \figurename{ \ref{fig:chapter6PDFPartition}}.
 
-
-\todo{Add PDF partition image}
-
+\begin{figure}
+    \begin{centering}
+        \includegraphics[width=15cm,height=20cm,keepaspectratio]{Figures/Chapter6-PDFPartition.png}
+        \caption{PDF Output showing network diagram and bundle bitmap}
+        \label{fig:chapter6PDFPartition}
+    \end{centering}
+\end{figure}
 
 \section{Comparing real-world and framework tests}
 \begin{itemize}
-    \item This is a test
+    \item Number of bundle bitmaps by the time that all bundles are sent
+    \item General behaviour
+    \item "simulation fidelity", i.e., is the simulation able to reproduce known real-world problems.
+    \item Multi hop communications aren't working properly but do in simulation
+    \item Lack of bundle background things
+    \item No visibility to see what is happening
+    \item Diagnostic power - how effective the simulation framework is for revealing the cause rather than revealing them \todo{Talk about in lit review}
 \end{itemize}
+
+
+
 
 \section{Summary}
 \begin{itemize}
