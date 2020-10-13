@@ -1,20 +1,47 @@
 % Chapter Template
 
-\chapter{Use of new framework(??)} % Main chapter title
+\chapter{Discussion of results} % Main chapter title
 
 \label{Chapter7} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-%----------------------------------------------------------------------------------------
-%	SECTION 1
-%----------------------------------------------------------------------------------------
+\section{Analysing expanded test framework}
+\begin{itemize}
+    \item Summarise what the expansion was
+    \item How the expansion was useful
+    \item What it now allows, 
+    \item What weaknesses or improvements it still needs
+\end{itemize}
 
-\section{Uncovering issues using these tools}
-\todo{Think of better heading}
-Talk about what issues we've uncovered, how they worked, etc.
+
+\todo{Add intro}
+\todo{Add what criteria to analyse against}
+Three main improvements were made to the LBARD test framework, with each significantly expanding or improving the capabilities of the test framework.
+
+The first of these improvements was the implementation of per-node configurations.
+This improvement allows for an increased amount of control around how emulated networks behave.
+The most important result of this is that nodes can have different interfaces — WiFi and radio — enabled, allowing for more flexible network topologies than the original WiFi or radio- only network topologies.
+With the development of this, the goals of the Serval project - to create reliable and cost-effective communication - have been furthered, with the ability to now comprehensively test a far greater range of Serval networks than was previously possible.
+\todo{add more strengths and weaknesses}
+
+The next improvement that was made to the test framework is the development of new \texttt{setup} functions to allow for easier testing of networks of arbitrary size.
+This improvement is more of a quality of life improvement than a significant feature increase, however its impact to the testing process of the Serval team is non-negligible.
+Before this improvement had been made, tests were generally limited to using either 4 or 8 nodes in a test. 
+This is not due to any limitation in the test framework itself, as the framework is capable of handling up to 26 nodes (A-Z), but simply due to testers using the \texttt{setup} functions available to them which only setup and started 4 or 8 Serval nodes.
+However, with the development of the \texttt{setupN} function, an arbitrary number of Serval nodes can be deployed for the test, allowing for more flexibility in test design, without requiring testers to write a function to deploy the exact number of nodes that they require.
+In the future, as the testing requirements of the Serval team expand it is likely that tests may require more than 26 nodes — particularly if they wish to model a large planned deployment of Serval nodes.
+This represents a limitation in the development of this utility function.
+However, this is considered outside the scope of this thesis and is left for a future developer.
+
+Finally, 8 different tests were written using these newly developed improvements.
+These tests focused on testing several topology-specific Serval network layouts.
+These tests however do have some limitations. First, there is minimal variety in the layout of the newly developed tests, with half of the tests all featuring some variation on a simple chain of nodes.
+Further, these tests predominately tests networks using one file at the start node and concluding when this file reaches a specified destination node.
+While there is some variation in the specific layout, these tests present only a mild addition to the Serval test coverage.
+However, it is hoped that these added tests serve as a useful starting point for future test developers to further test various Serval topologies.
 
 
 
-\section{Discussion}
+\section{Evaluation of developed tools}
 Evaluate developed tools
 \begin{itemize}
     \item Strengths \& weaknesses
@@ -23,33 +50,74 @@ Evaluate developed tools
         \item To Serval Project
         \begin{itemize}
             \item Helped uncover bugs, etc.
-            \item Justify the existence of the 
+            \item Justify the existence of the tool
         \end{itemize}
-        \item To thesis goals
+        \item To thesis goals.
     \end{itemize}
 \end{itemize}
+\todo{Add intro}
+\todo{Add criteria}
+
+\subsection{Creation of simple log}
+The first tool that was developed for the Serval project is that of the simple log generation.
+This tool allows for the log file produced by a test to be simplified, formatted, and sorted into chronological order.
+This is an important tool for the Serval team for various reasons.
+Before this tool, if an issue occurs in a test, the Serval team needed to search through the expansive log file for where the issue went wrong, with no other useful information from the test framework than a Pass/Fail status.
+However, with this tool the Serval team are able to look through the simplified log file chronologically, and develop an understanding of how the network was behaving at any given time.
+\todo{Continue talking about the strengths}
+
+The generation of the simplified log file does have some limitations however.
+First, it may not produce enough output information to the tester to diagnose an encountered issue.
+Fortunately this is not necessarily what the use of this simple log file is; this simplified log file is aimed at locating where issues are occurring in the test, at which point the tester can then use this information to more effectively use the initial log file.
+This generation of the simple log file is further limited by the amount of information that it filters.
+As it stands, the simple log file only keeps specific items from the initial log file.
+As such, if the capabilities of LBARD, Servald, or Fakeradio are extended, this would need to added to the functionality of the program.
+This should not present a major issue in the future, as implementing this should just prove to be a matter of mildly expanding what lines the program does not filter out.
+
+\subsection{Network traffic visualisation}
+
+\subsubsection{ASCII}
+
+
+\subsubsection{Diagrams}
 
 
 
-%-----------------------------------
-%	SUBSECTION 1
-%-----------------------------------
+\section{Debugging LBARD}
+Talk about what issues we've uncovered, how they worked, etc.
+
 \subsection{Subsection 1}
 Found a ~3 second delay between LBARD receiving a bundle and registering a bundle
 
 14:47:38.060 LBARD:B We have the entire bundle EB7E8ABC*
 14:47:42.465 LBARD:B We have new bundle EB7E8ABC*
 
+\emph{How the tools were useful for this}
 
-%-----------------------------------
-%	SUBSECTION 2
-%-----------------------------------
+\section{Summary}
 
-\subsection{Subsection 2}
 
-%----------------------------------------------------------------------------------------
-%	SECTION 2
-%----------------------------------------------------------------------------------------
+\section{Main Section 1}
+- Discussion
+- Talk about all benefits
+Broader use
+Show people conceptually how serval works
+Understanding all the tests
 
-\section{Main Section 2}
+Compare to theoretical
+
+Talk about results in chapter 6
+
+\begin{itemize}
+    \item Benefits
+    \begin{itemize}
+        \item Broader use - education
+        \item Understanding of tests
+    \end{itemize}
+    \item Compare to theoretical
+    \item Talk about results of comparing against real world
+    \item Use in discovering faults
+    \item Should work in combined emulated and real-world tests
+\end{itemize}
+
 
