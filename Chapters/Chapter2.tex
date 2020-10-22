@@ -8,6 +8,18 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
+\section{Mesh Networks}
+A Mesh Network is a type of wireless network where each device directly connects to any neighbouring devices within range.
+To communicate over longer distances than a single device can communicate, each device in the network - called a node - act as a relay, where they transmit any data they receive to their neighbouring nodes.
+
+
+\begin{itemize}
+    \item What they are
+    \item How they work
+    \item What the advantages are
+    \item What the different types are (partially connected/fully connected)
+\end{itemize}
+
 \section{The Serval Mesh Network}
 \begin{itemize}
     \item What is Serval?
@@ -17,17 +29,106 @@
     \item What are we doing (testing network)?
 \end{itemize}
 
+    
+\subsection{The Serval Project}
+In 2010, Dr. Paul Gardner-Stephen began the development of the Serval Mesh Network in response to the earthquakes in Haiti. 
+Originally, the network was designed to connect smartphone devices together using WiFi and Bluetooth technology to form an ad hoc mesh network.
+However, through development this was abandoned due to the lack of ad hoc WiFi support in Android and iOS devices.
+To circumvent this, the first generation Serval Mesh Extender was developed.
+This Mesh Extender was built using a GL-AR150 portable WiFi router, and was able to reach ranges of up to 100 meters.
+With this Mesh Extender, users could connect their smartphone devices to the wireless hotspot of the Mesh Extender without requiring their smartphones themselves to become a node in the mesh network.
+To extend the range of these Mesh Extenders further than the 802.11 WiFi would allow, a radio module was added to the Mesh Extender.
+The RFD900 radio module allowed for Serval Mesh Extenders to reach ranges of up to 3 kilometres over the 915MHz radio band.
+
+\todo{Talk about 2nd gen mesh extenders}
+
+
+\begin{itemize}
+    \item The history
+    \item Original mesh plan - smart phones over wifi
+    \item 1st gen mesh extenders
+    \item 2nd gen mesh extenders
+    \item Tested in field in Vanuatu
+\end{itemize}
+
+
+\subsection{Rhizome}
+The Rhizome protocol was developed for the Serval Mesh Network, and forms the basis of all services provided by the Serval Mesh.
+
+Rhizome has several features that are useful for the Serval Mesh network.
+The first of these is that it functions as a store and forward protocol, where when data is transferred across the mesh network, this data is stored on the Serval node that this data is transferred to, and is then forwarded on to any neighbouring nodes that do not have this piece of data.
+In practice, this means that the Serval Mesh is very rugged, as the data sent through the Mesh will be stored in multiple locations so that even if one node is removed from the network due to a situation such as a natural disaster or power outage, then this data will still — eventually — reach its destination as long as a path can be made to the destination.
+The other advantage that the store-and-forward design has is that the Mesh does not need to use any routing protocols to determine what the most efficient route to the destination is; the data will eventually reach every node and will naturally find the most efficient route to the destination.
+
+Further, the decentralised nature of Rhizome means that there is no central point of failure or central location where the networks data is stored; it is stored on every node.
+This is vitally important in situations such as disaster recovery where the Serval Mesh will be used in areas where it is possible that a Rhizome node may be lost.
+
+Rhizome uses two data structures, a manifest and a payload.
+A Rhizome payload is simply a unit of data such as an image file, or a message.
+A manifest lists all meta-data associated with this payload, including the size, data type, date of creation, and intended destination.
+A Rhizome Bundle is formed of a manifest and a payload. 
+
+\todo{Benefits}
+
+\subsection{Serval-DNA}
+Serval-DNA forms the main software component of the Serval Mesh Network.
+Written in C, Serval-DNA handles all the core functionality of the Serval Network and provides the implementation of the Rhizome protocol.
+
+Serval-DNA handles the transfer of Rhizome Bundles over WiFi automatically, determining what bundles are required by nearby nodes through a synchronisation method.
+
+\todo{Talk more about what/how it does}
+
+\begin{itemize}
+    \item What servald is
+    \item How it works
+    \item Overview of functionality
+    \item Bundles/pieces/etc
+\end{itemize}
+
+
+\subsection{LBARD}
+The Low Bandwidth Asynchronous Rhizome Demonstrator (LBARD) is a C program written for the Serval Project that handles synchronising Rhizome Bundles over low bandwidth connections such as those used in the RFD900 packet radio in the Serval Mesh Extender.
+LBARD was developed to run as an addition to Serval-DNA and provides the functionality to communicate with neighbouring Serval nodes as well as implementing the radio drivers necessary to use the various radio types that LBARD supports.
+
+Since the default synchronisation method for Rhizome as implemented in Serval-DNA relies on a relatively high amount of bandwidth in comparison with the low bandwidth available on UHF or HF radios a new synchronisation method needed to be used for these low bandwidth links.
+LBARD uses a tree-synchronisation protocol that uses a XOR of Rhizome bundle hashes to quickly determine which bundles are missing from its neighbours. \todo{cite}
+This synchronisation protocol allows for LBARD nodes to efficiently determine if a neighbour is missing any of the bundles that it has in its Rhizome store with a minimal amount of communication needed.
+This is crucial for the low-bandwidth links that exist between two LBARD nodes, as it allows for LBARD to utilise the rest of the bandwidth that is available to it to transfer the Rhizome bundles. \todo{fix}
+After the LBARD node has determined what bundles are required to be transferred, these bundles are then transferred in 64-byte pieces.
+To ensure that these pieces are received, LBARD continues sending these pieces until it receives a confirmation from the receiving node that all the pieces have been received intact.
+
+As it stands, LBARD is able to support several radio types, including the RFD900, with some experimental implementations for the CodanHF and BarrettHF radios, as well as a prototype Outernet satellite uplink.
+
+
+\subsection{Serval Test Framework}
+The Serval Test Framework is a test suite designed for the Serval Network, that provides the framework for emulated Serval nodes to be tested.
+The test framework is largely written as Bash scripts that setup specified tests, and links Serval nodes together using simulated WiFi or radio connections.
+The test framework is divided into two parts; the Serval-DNA framework, and the LBARD framework.
+The framework provides the tools to test a wide range of Serval functionality, as it is able to directly monitor the performance and responses of the software and compare it to the expected output as defined in the test definition.
+The framework functions as an emulator rather than a simulator as it is running the real Serval-DNA/LBARD software, with only the links between nodes simulated.
+The Serval Test Framework will be covered in more detail in Chapter 3.
+
+
 
 \section{Network Testing}
+
 \begin{itemize}
+    \item More general; what are methods to network testing?
+    \item Simulation?
+    \item Emulation? Difference?
+    \item Real world/bench testing?
+    \item Large-scale real-world tests
     \item How it's done
+    \item Why it is important
     \item What are important features
     \item Why we don't want to use 
     \item What improvements Serval needs
 \end{itemize}
 
+\subsection{Features of Popular Test Frameworks}
 
-\section{Network and Graph Visualisation}
+
+\subsection{Network and Graph Visualisation}
 \begin{itemize}
     \item What emulators had graphical outputs
     \item What visualisation is helpful
