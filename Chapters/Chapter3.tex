@@ -132,6 +132,7 @@ The majority of the tests in the LBARD test file are as follows, with slight dif
 
 
 \section{Outputs}
+\todo{switch order}
 Tests produce two main outputs; a PASS/FAIL status in the command line, and a log file.
 This log file contains the outputs of all the programs run in the course of the test including Serval DNA and LBARD instances, Fakeradio, and the test framework itself, with each line in the log file timestamped.
 The log files produced contain several pieces of information.
@@ -189,6 +190,7 @@ A lack of comparisons between real-world tests and emulated tests means that con
 
 
 \section{How to improve}
+\todo{add about simple log}
 To improve the LBARD test framework, multiple changes will need to be made.
 The first of these is adding the ability to allows nodes to communicate over both WiFi and Fakeradio. 
 This step alone will drastically increase the scope of possible tests that can be conducted, as it will allow for tests of both WiFi and emulated Fakeradio interface.
@@ -207,33 +209,46 @@ To achieve this, the emulator should model a real-world Serval network and run t
 This will serve to validate the accuracy of the Serval emulator, as it is expected that modelling the same network should have near-identical results with minimal variance provided the appropriate variables (i.e. average packet loss) have been accounted for in the emulation.
 
 \section{Summary}
-\begin{itemize}
-    \item Summarise what this chapter did
-    \item Talk about why it was important
-    \item Link to next section
-\end{itemize}
-
-\begin{itemize}
-    \item Analysed the aims of test framework
-    \item overview of serval DNA test framework
-    \item       how it functions
-    \item overview of LBARD
-    \item       how to define tests
-    \item       what exists already exist
-    \item What outputs are
-    \item What the limitations are
-    \item       no radio/wifi
-    \item       very few topologies
-    \item       log output is bad
-    \item       no comparison to real world
-    \item What needs to be added
-\end{itemize}
+\todo{Cut this down}
 
 In this chapter we have answered the first research question: "What is the state of LBARD and the test framework?".
-To analyse the state of the test framework, its aims needed to be analysed. 
-These aims were determined to be: provide the basis for field testing and validate the functioning of Servald and LBARD functionality.
+To analyse the state of the test framework, its aims first needed to be analysed. 
+This aim of the Serval-DNA framework was determined to be: provide the basis for validating the functionality of core Serval functionality.
+While the aim for the LBARD framework was determined to be: provide the basis for field tests, and validate LBARD functionality, particularly the tree-synchronisation and the radio drivers.
 
-A thorough investigation of how tests are implemented was also conducted.
+This chapter provided a thorough analysis of the Serval DNA test framework.
+In this chapter the functionality and usage of the Serval DNA test framework was outlined.
+
+This chapter also provided an analysis of the LBARD test framework.
+In this chapter, a thorough investigation into the functionality of this test framework was conducted.
+The process of how the framework sets up and runs test is outlined, and then the process for defining tests was listed.
+As part of this, examples were given to illustrate the core parts of a test definition, and a thorough investigation into what tests already exist as part of this framework.
+
+From here, the outputs of the test frameworks were analysed. 
+As part of this, the two different outputs that the framework provides were detailed.
+The first of these is the output log file produced after a test is concluded.
+This file contains a compilation of all the logs produced by the processes run throughout the test.l
+The next output that is detailed is the simple pass/fail status provided by the test framework when the tests are run in a terminal.
+
+Next, the limitations of the LBARD framework were analysed.
+The framework has four main limitations.
+The first and most significant of these is the lack of functionality to allow for tests to feature topologies with WiFi alongside radio.
+The next limitation is the lack of complicated topologies tested in the existing tests.
+The framework is further limited by the extensive log files produced after a test. 
+While this is useful for debugging, this can hinder the initial process of determining where an issue is occurring by obscuring the useful information with log lines that are not useful.
+Finally, the test framework has not had the accuracy of its tests validated due to a lack of comparison with real world tests.
 
 
-\todo{Add summary}
+With these limitations of the framework determined, the improvements that should be added to the framework were analysed.
+Each of these improvements is based on the limitations previous outlined.
+The suggested improvements are:
+\begin{itemize}
+    \item Add the capability to run WiFi alongside radio in a test
+    \item Add more topology-focused tests,
+    \item Add a simpler log file with just the crucial log information
+    \item Add some form of graphical output of the network during a test,
+    \item Validate the test framework against a real-world model of the network
+\end{itemize}
+The analysis of the limitations of the test framework and the development of this list of improvements has answered the third research question: "What additional tools and features would be useful for analysing and testing the functionality of the Serval Mesh?".
+In the next chapter, these improvements will begin to be implemented.
+This will begin to answer the first half of the final research question: "How might these additional diagnostic tools be created and evaluated?". 

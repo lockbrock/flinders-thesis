@@ -447,8 +447,25 @@ Once the LaTeX file has been produced, the program renders the file using the co
 \todo{Add image of pdf}
 
 \section{Summary}
-\begin{itemize}
-    \item Summarise what this chapter did
-    \item Talk about why it was important
-    \item Link to next section
-\end{itemize}
+
+In this chapter we have continued answering the fourth research question: "How might these additional diagnostic tools be created and evaluated?" as started in Chapter 4.
+These additional diagnostic tools were in the form of a C program that could be used to generate simpler, formatted, and chronologically ordered log files from the log files produced by the test framework, and optionally generate several different outputs displaying the network traffic throughout the test.
+
+In \todo{reference section 1} the simple log generation was developed, and an explanation behind several design decisions were outlined.
+In this section, the methodology and criteria of filtering lines was outlined, and the reasoning behind why these specific types of log lines were added to the simple log was listed.
+Further, the output format of the simple log was listed, and the reasoning behind this format explained.
+
+After this, the process for drawing the packet transfer throughout the network was detailed.
+In this section the process was divided into four parts.
+The first of these parts was categorising the log lines into major or minor events, where major events constituted a transfer of data between two nodes, and a minor event was any other useful information that would be displayed on the generated diagrams but was not a transfer.
+The next part was developing an ASCII network diagram to be used by testers if they were lacking the required software (GraphViz and LaTeX) to generate the PDF.
+In the third part, the method for generating network diagrams using DOT files was outlined, and the justifications for choosing GraphViz and DOT files were outlined.
+Finally, these were combined to create the LaTeX document that is rendered into a PDF by the program. 
+This PDF file contains a diagram of the network layout on every page for each major event, with a visual representation of the network traffic throughout the network at the time of this major event.
+Under this diagram each of the minor events that are associated with this major event is listed in the same format as that of the simple log file.
+
+
+In this chapter the outputs of the test framework were improved based on the improvements outlined in chapter 3.
+Further, in this and the previous chapter, of the five improvements that were planned to be made to the LBARD test framework, four of them have now been implemented, with only the final one — "Validate the test framework against a real-world model of the network" — left to complete.
+In the next chapter, the basis for validating the test framework against the real world will be implemented, and 
+\todo{update after writing chapter 6}
