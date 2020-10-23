@@ -78,18 +78,18 @@ With these flags, LBARD will produce the minimum log output required to generate
 
 For Servald processes no specific configurations are required, however it is recommended to run each process with the following configuration as a minimum:
 \begin{lstlisting}
-set log.console.show_pid on 
-set log.console.show_time on 
-set debug.server on 
-set debug.mdprequests on 
-set debug.httpd on 
-set debug.rhizome_manifest on
-set debug.rhizome_sync_keys on
-set debug.msp on
-set debug.config on
-set debug.mdprequests on
-set debug.mdp_filter on
-set debug.verbose on
+    set log.console.show_pid on 
+    set log.console.show_time on 
+    set debug.server on 
+    set debug.mdprequests on 
+    set debug.httpd on 
+    set debug.rhizome_manifest on
+    set debug.rhizome_sync_keys on
+    set debug.msp on
+    set debug.config on
+    set debug.mdprequests on
+    set debug.mdp_filter on
+    set debug.verbose on
 \end{lstlisting}
 These configurations will allow for a good coverage of Servald functionality, and provide the necessary information for a deeper analysis of real-world tests.
 
@@ -196,6 +196,7 @@ For the PDF output, the bitmap partition and counts are displayed in a table und
 The program creates two tables per receiving node, one for body and one for manifest bitmaps.
 These tables simply list the start and end bytes for each partition in the header row, and beneath each of these, show the 'live' count of the number of times that these partitions have been sent.
 This can be seen in \figurename{ \ref{fig:chapter6PDFPartition}}.
+\todo{Update with better diagram}
 
 \begin{figure}
     \begin{centering}
@@ -206,27 +207,75 @@ This can be seen in \figurename{ \ref{fig:chapter6PDFPartition}}.
 \end{figure}
 
 \section{Comparing real-world and framework tests}
-Talk about lack of time leading to minimal analysis
-Covid stopped the level of analysis wanted
-Goals were to compare lab network
+In this section, the methodology for comparing real-world tests is outlined, and the basis for the comparison is detailed.
+The original intentions of this section of the thesis involved the comparison of several tests in the Serval Test Network located at Flinders University, Tonsley Campus with an emulated version of the same network topology.
+However, due to the COVID-19 pandemic that occurred during the process of this thesis, this was unable to be conducted due to restrictions around laboratory access.
+As such, in this section the reasoning behind why the test network was chosen to be modelled, as well as the criteria that was planned to be used to compare the real-world and framework tests will be detailed and justified for the use of future work.
 
+
+\subsection{Comparing Tests}
+Before tests modelling a real-world scenario could be made, the real-world topology first needed to be determined.
+The network that was chosen to be modelled was the Serval Test Network that exists at Flinders University Tonsley.
+This network was set up in previous Thesis work \todo{Add ref} and consists of 14 Serval Mesh Extenders, with 10 of these Mesh Extenders attached to Serval Mesh Observers that log all WiFi and radio data that the extenders send and receive.
+The Lab network was chosen for two main reasons, it allows for comprehensive logging of the functionality of the network due to the Mesh Observers, and the network is set up in a complicated network topology.
+The topology of the Lab network can be seen in \figurename{ \ref{fig:chapter6LabNetwork}}.
+
+
+
+
+\begin{figure}
+    \begin{centering}
+        \includegraphics[width=15cm,height=20cm,keepaspectratio]{Figures/Chapter6-PDFPartition.png}
+        \caption{PDF Output showing network diagram and bundle bitmap}
+        \label{fig:chapter6LabNetwork}
+    \end{centering}
+\end{figure}
+\todo{Update image}
+
+
+\subsection{Future Work}
+% What needs to be done
+After the network was chosen, several tests were defined to model the Lab Network as outlined in Chapter 4.
+These tests provide the basis for running tests that model the lab network, and should be expanded to further test aspects of the Laboratory network.
+Once these tests have been run in the emulation, the existing framework to run tests in the Lab network should be used to run these same tests.
+After a test has been run in both the test framework and the Lab network, the log files of the real-world test should be compiled as outlined earlier in this chapter to form a single comprehensive log file.
+
+% How to compare them
+With this, the two networks can then be compared.
+Comparison of the real-world and emulated network should be done based on general behaviour and overall functionality rather than comparing for the exact behaviour.
+This is due to the fact that individual Serval nodes may make decisions that depend on test-specific information such as sending a bundle earlier than another due to the fact that it was created slightly earlier than the comparable bundle in the other network.
+
+Some of the behaviour that should be analysed in particular includes:
 \begin{itemize}
-    \item Number of bundle bitmaps by the time that all bundles are sent
-    \item General behaviour
-    \item "simulation fidelity", i.e., is the simulation able to reproduce known real-world problems.
-    \item Multi hop communications aren't working properly but do in simulation
-    \item Lack of bundle background things
-    \item No visibility to see what is happening
-    \item Diagnostic power — how effective the simulation framework is for revealing the cause rather than revealing them \todo{Talk about in lit review}
+    \item Multi hop communications
+    \item LBARD tree-synchronisation message
+    \item LBARD bundle transfers \emph{after} a bundle has already been sent and received
 \end{itemize}
 
+The reason this behaviour is of particular note is since each of these activities have errors that have been documented to occur in the real-world or in the emulation.
+If any of these behaviours are \emph{not} present in one test, but they are in the other, this suggests that the emulation is not accurately modelling the real world, and some investigation must be done to determine what the emulation is lacking.
+Similarly, if a fix for a bug like this has been applied, this behaviour should no longer occur in both scenarios as long as the software for both topologies is updated.
 
+
+% ======== What the advantage of comparing the two is
+By comparing the behaviour of the real-world against the behaviour of the emulated Serval network, the simulation fidelity of the software can be determined.
+The simulation fidelity is simply how accurately the software is able to model the network, and if it is able to reproduce known real-world problems.
+If through analysis the emulation is determined to have a low amount of simulation fidelity, then this indicates to the Serval team that the test framework is not as accurate as believed.
+As such, they may need to revisit the test framework and determine how to more accurately model Serval networks.
 
 
 \section{Summary}
-\begin{itemize}
-    \item Summarise what this chapter did
-    \item Talk about why it was important
-    \item Link to next section
-\end{itemize}
-\textbf{Summarise this section and link with results}
+In this Chapter, the tools that were developed in Chapter 5 were adapted to add support for real-world networks.
+This involved determining the necessary configurations for LBARD and Serval-DNA processes to produce the necessary log information to allow the tools to monitor when LBARD bundles are sent and received.
+As Fakeradio can not be used for real-world tests to determine when data is sent by LBARD, this log information is needed to create the major events for diagrams.
+Since this log information also contains information about the start and end byte values that LBARD sends, this allowed for the creation of bundle bitmaps, showing a count of the number of times specific pieces of a bundle has been sent to a node.
+The bundle bitmaps are displayed as a table in both the ASCII and PDF output types for every LBARD major event, and show a 'live' count of the sent pieces as of the time of that major event.
+With this implemented, real-world tests can then be analysed using the tools previously developed in Chapter 5.
+
+% Talk about comparisons
+Due to the COVID-19 pandemic, this project was unable to complete the comparison between the emulated and real-world networks due to time constraints. 
+The methodology and criteria that is recommended to be used in future investigations into the simulation fidelity of the test framework is outlined. 
+This methodology follows the original plan of this thesis and would have been completed if time allowed.
+
+This chapter has continued answering the fourth research question "How might these additional diagnostic tools be created and evaluated?" by continuing the development of the diagnostic tools, and has begun answering how these tools might be evaluated.
+In the next chapter, this fourth question will conclude being answered, with an in-depth evaluation of the tools developed throughout this thesis.
