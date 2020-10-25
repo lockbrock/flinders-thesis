@@ -10,80 +10,57 @@
 
 \section{Mesh Networks}
 A Mesh Network is a type of wireless network where each device directly connects to any neighbouring devices within range.
-To communicate over longer distances than a single device can communicate, each device in the network - called a node - act as a relay, where they transmit any data they receive to their neighbouring nodes.
+To communicate over longer distances than a single device can communicate, each device in the network - called a node - act as a relay, where they forward any data they receive to their neighbouring nodes \parencite{akyildiz_wang_2009}.
 
+Mesh networks function without any central hierarchy, allowing for networks to self-organise and automatically create a network with any compatible surrounding nodes \parencite{madhusudan_2019}.
 
-\begin{itemize}
-    \item What they are
-    \item How they work
-    \item What the advantages are
-    \item What the different types are (partially connected/fully connected)
-\end{itemize}
+Due to the non-hierarchical and self-configuring nature, wireless mesh networks have "low up-front costs, easy network maintenance, robustness, and reliable service coverage" \parencite{akyildiz_wang_2009}.
+This allows for quick and easy deployment of a mesh network in unfamiliar locations, as the nodes will automatically connect with any neighbours, and form a topology without any manual configuration required.
+
+% Talk about why Serval uses them??
 
 \section{The Serval Mesh Network}
-\begin{itemize}
-    \item What is Serval?
-    \item How does it work (Servald, LBARD, bundles, pieces, etc.)
-    \item Different radio types
-    \item Last bit is LBARD
-    \item What are we doing (testing network)?
-\end{itemize}
 
-    
 \subsection{The Serval Project}
-In 2010, Dr. Paul Gardner-Stephen began the development of the Serval Mesh Network in response to the earthquakes in Haiti. 
+In 2010, Dr. Paul Gardner-Stephen began the development of the Serval Mesh Network in response to the earthquakes in Haiti \parencite{servalProject2011}.
 Originally, the network was designed to connect smartphone devices together using WiFi and Bluetooth technology to form an ad hoc mesh network.
-However, through development this was abandoned due to the lack of ad hoc WiFi support in Android and iOS devices.
+However, through development this was abandoned due to the lack of ad hoc WiFi support in Android and iOS devices \parencite{productizingServalMesh}.
 To circumvent this, the first generation Serval Mesh Extender was developed.
 This Mesh Extender was built using a GL-AR150 portable WiFi router, and was able to reach ranges of up to 100 meters.
 With this Mesh Extender, users could connect their smartphone devices to the wireless hotspot of the Mesh Extender without requiring their smartphones themselves to become a node in the mesh network.
-To extend the range of these Mesh Extenders further than the 802.11 WiFi would allow, a radio module was added to the Mesh Extender.
+To extend the range of these Mesh Extenders further than the 802.11 WiFi would allow, a radio module was added to the Mesh Extender \parencite{productizingServalMesh}.
 The RFD900 radio module allowed for Serval Mesh Extenders to reach ranges of up to 3 kilometres over the 915MHz radio band.
 
-\todo{Talk about 2nd gen mesh extenders}
 
-
-\begin{itemize}
-    \item The history
-    \item Original mesh plan — smart phones over wifi
-    \item 1st gen mesh extenders
-    \item 2nd gen mesh extenders
-    \item Tested in field in Vanuatu
-\end{itemize}
+After several iterations, the latest version of the Serval Mesh Extender features both inbuilt WiFi and UHF radio over the RFD900+ packet radio.
+In 2017 these Mesh Extenders were deployed in eight different locations around Vanuatu in the first large-scale test of the Serval Mesh.
+\parencite{pilotingServalMesh}
 
 
 \subsection{Rhizome}
 The Rhizome protocol was developed for the Serval Mesh Network, and forms the basis of all services provided by the Serval Mesh.
 
 Rhizome has several features that are useful for the Serval Mesh network.
-The first of these is that it functions as a store and forward protocol, where when data is transferred across the mesh network, this data is stored on the Serval node that this data is transferred to, and is then forwarded on to any neighbouring nodes that do not have this piece of data.
+The first of these is that it functions as a store and forward protocol, where when data is transferred across the mesh network, this data is stored on the Serval node that this data is transferred to, and is then forwarded on to any neighbouring nodes that do not have this piece of data \parencite{servalProject2011}.
 In practice, this means that the Serval Mesh is very rugged, as the data sent through the Mesh will be stored in multiple locations so that even if one node is removed from the network due to a situation such as a natural disaster or power outage, then this data will still — eventually — reach its destination as long as a path can be made to the destination.
-The other advantage that the store-and-forward design has is that the Mesh does not need to use any routing protocols to determine what the most efficient route to the destination is; the data will eventually reach every node and will naturally find the most efficient route to the destination.
+The other advantage that the store-and-forward design has is that the Mesh does not need to use any routing protocols to determine what the most efficient route to the destination is; the data will eventually reach every node and will naturally find the most efficient route to the destination. \todo{not accurate, uses batman}
 
-Further, the decentralised nature of Rhizome means that there is no central point of failure or central location where the networks data is stored; it is stored on every node.
+Further, the decentralised nature of Rhizome means that there is no central point of failure or central location where the networks data is stored; it is stored on every node \parencite{servalWiFiMultiModel}.
 This is vitally important in situations such as disaster recovery where the Serval Mesh will be used in areas where it is possible that a Rhizome node may be lost.
 
 Rhizome uses two data structures, a manifest and a payload.
 A Rhizome payload is simply a unit of data such as an image file, or a message.
-A manifest lists all meta-data associated with this payload, including the size, data type, date of creation, and intended destination.
+A manifest lists all meta-data associated with this payload, including the size, data type, date of creation, and intended destination \parencite{servalProject2011}.
 A Rhizome Bundle is formed of a manifest and a payload. 
 
 \todo{Benefits}
 
 \subsection{Serval-DNA}
 Serval-DNA forms the main software component of the Serval Mesh Network.
-Written in C, Serval-DNA handles all the core functionality of the Serval Network and provides the implementation of the Rhizome protocol.
-
+Written in C, Serval-DNA handles all the core functionality of the Serval Network and provides the implementation of the Rhizome protocol. \parencite{servalMesh2013}
 Serval-DNA handles the transfer of Rhizome Bundles over WiFi automatically, determining what bundles are required by nearby nodes through a synchronisation method.
 
 \todo{Talk more about what/how it does}
-
-\begin{itemize}
-    \item What servald is
-    \item How it works
-    \item Overview of functionality
-    \item Bundles/pieces/etc
-\end{itemize}
 
 
 \subsection{LBARD}
@@ -102,46 +79,54 @@ As it stands, LBARD is able to support several radio types, including the RFD900
 
 \subsection{Serval Test Framework}
 The Serval Test Framework is a test suite designed for the Serval Network, that provides the framework for emulated Serval nodes to be tested.
-The test framework is largely written as Bash scripts that setup specified tests, and links Serval nodes together using simulated WiFi or radio connections.
+The test framework is largely written as Bash scripts that setup specified tests, and links Serval nodes together using simulated WiFi or radio connections \parencite{servalTestDocumentation}.
 The test framework is divided into two parts; the Serval-DNA framework, and the LBARD framework.
 The framework provides the tools to test a wide range of Serval functionality, as it is able to directly monitor the performance and responses of the software and compare it to the expected output as defined in the test definition.
-The framework functions as an emulator rather than a simulator as it is running the real Serval-DNA/LBARD software, with only the links between nodes simulated.
+The framework functions as an emulator rather than a simulator as it is running the real Serval-DNA/LBARD software, with only the links between nodes simulated \parencite{servalTestDocumentation}.
 The Serval Test Framework will be covered in more detail in Chapter 3.
 
 \subsection{Serval Test Network}
-\begin{itemize}
-    \item Talk briefly
-    \item What it is, observers, etc.
-\end{itemize}
+The Serval Test Network is a laboratory network that has been set up at the Flinders University Campus.
+This network features 14 Mesh Extenders with 10 of these attached to Serval Mesh Observers \parencite{wade_2019}.
+These observers log all WiFi and UHF data that is sent and received by these extenders, which is then logged and sent back to a single main server alongside the logs of these extenders \parencite{lancaster_2019}.
+This allows for real-world tests to be run on this test network, with the test data sent back to a single computer for analysis.
+
 
 \section{Network Testing}
+When testing networks, two main routes exist; real-world test beds, and software emulation.
+Real-world test beds consist of a real deployed network that has some tests run on it.
+These tests are  
+\todo{finish}
+
+As opposed to network simulation, which serves as a mathematical model of how a network may function under certain criteria, software emulation runs the real software that is to be used on each of the nodes of the network and simulates the network links between these nodes.
+Software emulation is particularly useful in testing mesh networks, as these can networks are often more difficult to develop real-world test beds for due to their non-hierarchical nature.
+Further, emulation allows for testers to easily change the network layout with minimal extra effort or cost, while a real-world hardware test-bed would require far more effort to change this layout, and adding a node may come at an extra cost.
+Network emulation requires a high-level of simulation fidelity to accurately model and test a network.
+Simulation fidelity is the accuracy of a network to model the corresponding real-world network, and requires the relative accuracy of information such as percentage of packet loss and signal strength in the simulation. \todo{this is bad}
 
 \begin{itemize}
     \item More general; what are methods to network testing?
-    \item Simulation?
-    \item Emulation? Difference?
     \item Real world/bench testing?
     \item Large-scale real-world tests
-    \item How it's done
-    \item Why it is important
-    \item What are important features
-    \item Why we don't want to use 
-    \item What improvements Serval needs
 \end{itemize}
 
-\subsection{Features of Popular Test Frameworks}
+\section{Features of Popular Network Emulators/Simulators}
 
-
-\subsection{Network and Graph Visualisation}
+Common Open Research Emulator (CORE) is an open source emulator produced by the U.S Naval Research Laboratory, and is considered an industry-standard network emulator. \todo{cite}
+CORE offers several key features for testing different networks. Some of these key features and a brief explanation are listed below:
 \begin{itemize}
-    \item What emulators had graphical outputs
-    \item What visualisation is helpful
-    \item What tools exist \& what offers the best fit
+    \item \textbf{Network visualisation} showing the traffic throughout the network. This can be played back after a test concludes.
+    \item \textbf{Test Report} detailing the activity on each of the network nodes throughout the test.
+    \item \textbf{Node specific configuration} allowing for fine control over the specific configuration of a certain node.
 \end{itemize}
 
+The Network Simulator (ns-2) is a network simulator 
 
 \section{Summary}
+Testing networks before real-world deployment is crucial for determining their reliability and locating flaws \parencite{predeploymentTesting2006}.
+This is of particular importance if these networks are mission-critical, as is the case of the Serval Mesh Network. 
 \begin{itemize}
     \item In comparison with other networks
-    \item 
+    \item Answered some of first and second research question
+    \item In the next chapter the first will continue being answered
 \end{itemize}
