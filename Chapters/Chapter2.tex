@@ -111,7 +111,7 @@ Simulation fidelity is the accuracy of a network to model the corresponding real
 \end{itemize}
 
 \section{Features of Popular Network Emulators/Simulators}
-
+\subsection{C.O.R.E}
 Common Open Research Emulator (CORE) is an open source emulator produced by the U.S. Naval Research Laboratory, and is considered an industry-standard network emulator. \todo{cite}
 CORE offers several key features for testing different networks. Some of these key features and a brief explanation are listed below:
 \begin{itemize}
@@ -120,13 +120,18 @@ CORE offers several key features for testing different networks. Some of these k
     \item \textbf{Node specific configuration} allowing for fine control over the specific configuration of a certain node.
 \end{itemize}
 
-The Network Simulator (ns-2) is a network simulator 
+\subsection{The Network Simulator (ns-3)}
+The Network Simulator (ns-3) is a network simulator often used in research to model networks and test specific networking protocols \parencite{modellingAndTools2010}.
+The ns-3 simulator features several features for testers to simulate a variety of networks. Some of these features are listed below:
+\begin{itemize}
+    \item \textbf{Animated network visualisation} to display the network traffic throughout the test.
+    \item \textbf{Support for various link types} including the ability to define variables such as packet loss and signal strength
+\end{itemize}
+
 
 \section{Summary}
 Testing networks before real-world deployment is crucial for determining their reliability and locating flaws \parencite{predeploymentTesting2006}.
-This is of particular importance if these networks are mission-critical, as is the case of the Serval Mesh Network. 
-\begin{itemize}
-    \item In comparison with other networks
-    \item Answered some of the first and second research question
-    \item In the next chapter the first will continue being answered
-\end{itemize}
+This is of particular importance if these networks are mission-critical, as is the case of the Serval Mesh Network.
+This chapter has answered the second research question "\secondRQ" and has begun to answer the first research question "\firstRQ".
+In the next chapter, this first research question will continue to be answered through an analysis of the Serval-DNA and LBARD test frameworks.
+\todo{Add more}
