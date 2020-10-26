@@ -17,8 +17,6 @@ Mesh networks function without any central hierarchy, allowing for networks to s
 Due to the non-hierarchical and self-configuring nature, wireless mesh networks have "low up-front costs, easy network maintenance, robustness, and reliable service coverage" \parencite{akyildiz_wang_2009}.
 This allows for quick and easy deployment of a mesh network in unfamiliar locations, as the nodes will automatically connect with any neighbours, and form a topology without any manual configuration required.
 
-% Talk about why Serval uses them??
-
 \section{The Serval Mesh Network}
 
 \subsection{The Serval Project}
@@ -38,12 +36,12 @@ In 2017 these Mesh Extenders were deployed in eight different locations around V
 
 
 \subsection{Rhizome}
-The Rhizome protocol was developed for the Serval Mesh Network, and forms the basis of all services provided by the Serval Mesh.
+The Rhizome protocol was developed for the Serval Mesh Network, and forms the basis of all services provided by the Serval Mesh \parencite{rhizomeDocumentation}.
 
 Rhizome has several features that are useful for the Serval Mesh network.
 The first of these is that it functions as a store and forward protocol, where when data is transferred across the mesh network, this data is stored on the Serval node that this data is transferred to, and is then forwarded on to any neighbouring nodes that do not have this piece of data \parencite{servalProject2011}.
 In practice, this means that the Serval Mesh is very rugged, as the data sent through the Mesh will be stored in multiple locations so that even if one node is removed from the network due to a situation such as a natural disaster or power outage, then this data will still — eventually — reach its destination as long as a path can be made to the destination.
-The other advantage that the store-and-forward design has is that the Mesh does not need to use any routing protocols to determine what the most efficient route to the destination is; the data will eventually reach every node and will naturally find the most efficient route to the destination. \todo{Not accurate, uses batman}
+% The other advantage that the store-and-forward design has is that the Mesh does not need to use any routing protocols to determine what the most efficient route to the destination is; the data will eventually reach every node and will naturally find the most efficient route to the destination. \todo{Not accurate, uses batman}
 
 Further, the decentralised nature of Rhizome means that there is no central point of failure or central location where the networks data is stored; it is stored on every node \parencite{servalWiFiMultiModel}.
 This is vitally important in situations such as disaster recovery where the Serval Mesh will be used in areas where it is possible that a Rhizome node may be lost.
@@ -53,29 +51,23 @@ A Rhizome payload is simply a unit of data such as an image file, or a message.
 A manifest lists all meta-data associated with this payload, including the size, data type, date of creation, and intended destination \parencite{servalProject2011}.
 A Rhizome Bundle is formed of a manifest and a payload. 
 
-\todo{Benefits}
-
 \subsection{Serval-DNA}
 Serval-DNA forms the main software component of the Serval Mesh Network.
-Written in C, Serval-DNA handles all the core functionality of the Serval Network and provides the implementation of the Rhizome protocol. \parencite{servalMesh2013}
+Written in C, Serval-DNA handles all the core functionality of the Serval Network and provides the implementation of the Rhizome protocol \parencite{servalMesh2013}. 
 Serval-DNA handles the transfer of Rhizome Bundles over WiFi automatically, determining what bundles are required by nearby nodes through a synchronisation method.
-
-\todo{Talk more about what/how it does}
-
 
 \subsection{LBARD}
 The Low Bandwidth Asynchronous Rhizome Demonstrator (LBARD) is a C program written for the Serval Project that handles synchronising Rhizome Bundles over low bandwidth connections such as those used in the RFD900 packet radio in the Serval Mesh Extender.
 LBARD was developed to run as an addition to Serval-DNA and provides the functionality to communicate with neighbouring Serval nodes as well as implementing the radio drivers necessary to use the various radio types that LBARD supports.
 
-Since the default synchronisation method for Rhizome as implemented in Serval-DNA relies on a relatively high amount of bandwidth in comparison with the low bandwidth available on UHF or HF radios a new synchronisation method needed to be used for these low bandwidth links.
-LBARD uses a tree-synchronisation protocol that uses a XOR of Rhizome bundle hashes to quickly determine which bundles are missing from its neighbours. \todo{cite}
+Since the default synchronisation method for Rhizome as implemented in Serval-DNA relies on a relatively high amount of bandwidth in comparison with the low bandwidth available on UHF or HF radios a new synchronisation method needed to be used for these low bandwidth links \parencite{productizingServalMesh}.
+LBARD uses a tree-synchronisation protocol that uses a XOR of Rhizome bundle hashes to quickly determine which bundles are missing from its neighbours \parencite{lbardDocumentation}.
 This synchronisation protocol allows for LBARD nodes to efficiently determine if a neighbour is missing any of the bundles that it has in its Rhizome store with a minimal amount of communication needed.
-This is crucial for the low-bandwidth links that exist between two LBARD nodes, as it allows for LBARD to utilise the rest of the bandwidth that is available to it to transfer the Rhizome bundles. \todo{fix}
-After the LBARD node has determined what bundles are required to be transferred, these bundles are then transferred in 64-byte pieces.
+This is crucial for the low-bandwidth links that exist between two LBARD nodes, as it allows for LBARD to utilise the rest of the bandwidth that is available to it to transfer the Rhizome bundles.
+After the LBARD node has determined what bundles are required to be transferred, these bundles are then transferred in 64-byte pieces \parencite{lbardDocumentation}.
 To ensure that these pieces are received, LBARD continues sending these pieces until it receives a confirmation from the receiving node that all the pieces have been received intact.
 
-As it stands, LBARD is able to support several radio types, including the RFD900, with some experimental implementations for the CodanHF and BarrettHF radios, as well as a prototype Outernet satellite uplink.
-
+As it stands, LBARD is able to support several radio types, including the RFD900, with some experimental implementations for the CodanHF and BarrettHF radios, as well as a prototype Outernet satellite uplink \parencite{lbardDocumentation}.
 
 \subsection{Serval Test Framework}
 The Serval Test Framework is a test suite designed for the Serval Network, that provides the framework for emulated Serval nodes to be tested.
@@ -93,26 +85,22 @@ This allows for real-world tests to be run on this test network, with the test d
 
 
 \section{Network Testing}
-When testing networks, two main routes exist; real-world test beds, and software emulation.
-Real-world test beds consist of a real deployed network that has some tests run on it.
-These tests are.
-\todo{finish}
+When testing networks, two main routes exist; software emulation, and real-world test beds.
 
-As opposed to network simulation, which serves as a mathematical model of how a network may function under certain criteria, software emulation runs the real software that is to be used on each of the nodes of the network and simulates the network links between these nodes.
-Software emulation is particularly useful in testing mesh networks, as these can networks are often more difficult to develop real-world test beds for due to their non-hierarchical nature.
+As opposed to network simulation, which serves as a mathematical model of how a network may function under certain criteria, software emulation runs the real software that is to be used on each of the nodes of the network and simulates the network links between these nodes \parencite{comparingSimulationTestbeds}.
+Software emulation is particularly useful in testing mesh networks, as these can networks are often more difficult to develop real-world test beds for due to their non-hierarchical nature \parencite{predeploymentTesting2006}.
 Further, emulation allows for testers to easily change the network layout with minimal extra effort or cost, while a real-world hardware test-bed would require far more effort to change this layout, and adding a node may come at an extra cost.
 Network emulation requires a high-level of simulation fidelity to accurately model and test a network.
-Simulation fidelity is the accuracy of a network to model the corresponding real-world network, and requires the relative accuracy of information such as percentage of packet loss and signal strength in the simulation. \todo{This is bad}
+Simulation fidelity is the accuracy of a network to model the corresponding real-world network, and requires the relative accuracy of information such as percentage of packet loss and signal strength in the simulation.
 
-\begin{itemize}
-    \item More general; what are methods to network testing?
-    \item Real world/bench testing?
-    \item Large-scale real-world tests.
-\end{itemize}
+Real-world test beds consist of a real deployed network that has some tests run on it \parencite{testingWirelessMesh2010}.
+These tests are often smaller in scale than emulated tests due to the relative difficulty and additional cost of setting up real networks.
+These tests are often more accurate than an emulated test network, as these test beds form the same or similar network to a real-world scenario \parencite{disasterResilientMesh2013}.
 
-\section{Features of Popular Network Emulators/Simulators}
+
+\section{Features of Popular Network Emulators/ Simulators}
 \subsection{C.O.R.E}
-Common Open Research Emulator (CORE) is an open source emulator produced by the U.S. Naval Research Laboratory, and is considered an industry-standard network emulator. \todo{cite}
+Common Open Research Emulator (CORE) is an open source emulator produced by the U.S. Naval Research Laboratory, and is considered an industry-standard network emulator \parencite{coreDocumentation}.
 CORE offers several key features for testing different networks. Some of these key features and a brief explanation are listed below:
 \begin{itemize}
     \item \textbf{Network visualisation} showing the traffic throughout the network. This can be played back after a test concludes.
@@ -134,4 +122,3 @@ Testing networks before real-world deployment is crucial for determining their r
 This is of particular importance if these networks are mission-critical, as is the case of the Serval Mesh Network.
 This chapter has answered the second research question "\secondRQ" and has begun to answer the first research question "\firstRQ".
 In the next chapter, this first research question will continue to be answered through an analysis of the Serval-DNA and LBARD test frameworks.
-\todo{Add more}
