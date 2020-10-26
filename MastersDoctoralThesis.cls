@@ -224,6 +224,12 @@
 \NewDocumentCommand{\subject}{m}{\newcommand{\subjectname}{#1}}
 \NewDocumentCommand{\keywords}{m}{\newcommand{\keywordnames}{#1}}
 
+\NewDocumentCommand{\defFirstResearchQuestion}{m}{\newcommand{\firstRQ}{#1}}
+\NewDocumentCommand{\defSecondResearchQuestion}{m}{\newcommand{\secondRQ}{#1}}
+\NewDocumentCommand{\defThirdResearchQuestion}{m}{\newcommand{\thirdRQ}{#1}}
+\NewDocumentCommand{\defFourthResearchQuestion}{m}{\newcommand{\fourthRQ}{#1}}
+
+
 \newcommand{\checktoopen}{% New command to move content to the next page which prints to the next odd page if twosided mode is active  
 	\if@openright\cleardoublepage\else\clearpage\fi
 	\ifdef{\phantomsection}{\phantomsection}{}% The \phantomsection command is necessary for hyperref to jump to the correct page

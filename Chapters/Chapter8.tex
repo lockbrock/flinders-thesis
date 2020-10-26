@@ -1,36 +1,74 @@
 % Chapter Template
 
-\chapter{Conclusion} % Main chapter title
+\chapter{Conclusion and Future Work} % Main chapter title
 
-\label{Chapter8} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+\label{Chapter8}
 
-%----------------------------------------------------------------------------------------
-%	SECTION 1
-%----------------------------------------------------------------------------------------
+\section{Conclusion}
 
-\section{Main Section 1}
-Chapter 8
-- Conslusion
+Throughout this thesis four questions have been addressed.
+The first question, "\firstRQ" was answered in Chapters 2 and 3.
+In Chapter 2, an in-depth review of the existing literature was conducted, and an overview provided of Mesh Networks, the Serval Mesh Network and associated technologies, an overview of Network Testing, and a review of popular features in network emulators and simulators.
+Chapter 2 also answered the second research question "\secondRQ".
 
+From there, in Chapter 3 an indepth investigation into LBARD and the test framework was conducted.
+In this chapter, the Serval-DNA and LBARD test frameworks were investigated and the processes behind defining and running tests was outlined. 
+With the analysis of the test framework conducted, the limitations of the framework were discussed.
+From these limitations, the suggested improvements to be added to the test framework were outlined, and the specific requirements for these improvements were discussed.
+This answered the third research question "\thirdRQ".
+The improvements that were suggested to be added to the test framework were:
 \begin{itemize}
-    \item Talk about each of the research questions
-    \item       in each chapter, we addressed x research question
+    \item Add the capability to communicate over both radio and WiFi in a test
+    \item Add more topology-focused tests
+    \item Create a simpler, consistently formatted log file for easier test analysis
+    \item Implement a graphical output showing the network traffic during a test
+    \item Validate the accuracy of the test framework by comparing it against real-world tests
 \end{itemize}
-%-----------------------------------
-%	SUBSECTION 1
-%-----------------------------------
-\subsection{Subsection 1}
+Except for the last improvement, each of these was implemented throughout this thesis.
+
+In Chapter 4 the fourth research question "\fourthRQ" began to be answered with the extension of the test framework. \todo{weak sentence}
+The first improvement to be made to the test framework was the implementation of per-node configuration, allowing for tests that feature both WiFi and radio links between nodes.
+An additional improvement was the implementation of a function that allows Serval testers to setup and start the exact number of Serval nodes that a test required.
+With these improvements, 8 new topology-focused tests were added to the framework, with the goal that this would provide a basis for Serval testers to develop more topology tests.
+
+In Chapter 5 the fourth research question continued to be answered with the development of a tool to generate simpler log files and generate graphical representations of network traffic through a test.
+The simple log file produces chronologically ordered and consistently formatted log files of crucial log lines from the original log file produced by the test framework.
+\todo{add more}
+Two graphical representations were developed, an ASCII output, and a PDF output with diagrams showing network traffic throughout the entire network.
+Each of these outputs shows the transfer of data between Serval nodes and details any minor events that are occurring that are related to this data transfer.
+
+Chapter 6 covered how these tools were adapted to model and analyse real-world Serval test results.
+Due to the test framework functioning as an emulation of real Serval software this was relatively easy to implement.
+With this adaption made, the calculation of bundle bitmaps could be developed, allowing for the display of a count of the number of times a piece of a bundle had been sent to a node, allowing for a detailed analysis of bundle transfer throughout the network by testers.
+In the original intentions of this thesis, this chapter then performed a comparison between an emulated version of the Serval Test Network at Flinders University, Tonsley Campus, however due to the COVID-19 pandemic this was unable to be completed.
+The methodology to perform this comparison and the criteria that should be analysed is outlined for the use of further development and analysis by the Serval team.
+
+Finally, in Chapter 7 each of the improvements made to the test framework and the additional tools developed were analysed in detail.
+Each of these tools had their strengths and weaknessess evaluated, and their contributions to the Serval Project discussed.
+In Chapter 7, these tools were further evaluated by discussing the bugs that were uncovered or demonstrated using these tools throughout the process of this project.
+Chapter 7 finished answering the fourth research question "\fourthRQ".
 
 
-%-----------------------------------
-%	SUBSECTION 2
-%-----------------------------------
 
-\subsection{Subsection 2}
+\section{Future Work}
+Overall, this project has met the goals of this thesis.
+However, there is still some minor improvements and additional features that could be added to the tools.
+The first of these is the auto generation of network layouts.
+This would be relatively easy to implement, and would remove the necessity to manually specify the network layout for real-world tests.
+To implement this, whenever a node registers a neighbour over LBARD or WiFi, then this would need to be added as a neighbour of that node.
+With this, a connected graph could be generated and used to determine the network layout of the test.
 
-%----------------------------------------------------------------------------------------
-%	SECTION 2
-%----------------------------------------------------------------------------------------
+An additional improvement that could be added is improving the diagram generation for the PDF.
+As outlined in Chapter 7, neato is currently used for generating the diagrams as it allows for nodes to be pinned in place. 
+This is essential for ensuring that diagrams are in a consistent layout throughout the PDF. 
+However, for some network layouts neato does not place nodes in a logical layout and some 
 
-\section{Main Section 2}
+This can be fixed by initially rendering the diagrams using \texttt{dot} which places nodes in a hierarchical structure, creating more logical diagrams but does not allow for nodes to be pinned in place.
+Then, the \emph{x} and \emph{y} coordinates of each node can be extracted from this DOT diagram and then these coordinates \todo{word} set for each node in the \texttt{neato} diagram, allowing for these nodes to be manually placed and then pinned in place in a logical layout.
+This was not done in this thesis due to time limitations.
+\todo{fix the chapter 7 bit relevant to this}
 
+\section{Summary}
+This thesis project has improved the testing framework of the Serval Mesh Network and developed tools to assist with the debugging and testing of the Serval Mesh.
+These tools have already proven useful to the team by uncovering and demonstrating several issues in the Serval Mesh.
+With these tools, the Serval Project team are able to further their goals to create an infrastructure-less mesh network for use in disaster struck areas to save lives.
