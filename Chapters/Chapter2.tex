@@ -10,7 +10,7 @@
 
 \section{Mesh Networks}
 A Mesh Network is a type of wireless network where each device directly connects to any neighbouring devices within range.
-To communicate over longer distances than a single device can communicate, each device in the network - called a node - act as a relay, where they forward any data they receive to their neighbouring nodes \parencite{akyildiz_wang_2009}.
+To communicate over longer distances than a single device can communicate, each device in the network — called a node — act as a relay, where they forward any data they receive to their neighbouring nodes \parencite{akyildiz_wang_2009}.
 
 Mesh networks function without any central hierarchy, allowing for networks to self-organise and automatically create a network with any compatible surrounding nodes \parencite{madhusudan_2019}.
 
@@ -43,7 +43,7 @@ The Rhizome protocol was developed for the Serval Mesh Network, and forms the ba
 Rhizome has several features that are useful for the Serval Mesh network.
 The first of these is that it functions as a store and forward protocol, where when data is transferred across the mesh network, this data is stored on the Serval node that this data is transferred to, and is then forwarded on to any neighbouring nodes that do not have this piece of data \parencite{servalProject2011}.
 In practice, this means that the Serval Mesh is very rugged, as the data sent through the Mesh will be stored in multiple locations so that even if one node is removed from the network due to a situation such as a natural disaster or power outage, then this data will still — eventually — reach its destination as long as a path can be made to the destination.
-The other advantage that the store-and-forward design has is that the Mesh does not need to use any routing protocols to determine what the most efficient route to the destination is; the data will eventually reach every node and will naturally find the most efficient route to the destination. \todo{not accurate, uses batman}
+The other advantage that the store-and-forward design has is that the Mesh does not need to use any routing protocols to determine what the most efficient route to the destination is; the data will eventually reach every node and will naturally find the most efficient route to the destination. \todo{Not accurate, uses batman}
 
 Further, the decentralised nature of Rhizome means that there is no central point of failure or central location where the networks data is stored; it is stored on every node \parencite{servalWiFiMultiModel}.
 This is vitally important in situations such as disaster recovery where the Serval Mesh will be used in areas where it is possible that a Rhizome node may be lost.
@@ -95,24 +95,24 @@ This allows for real-world tests to be run on this test network, with the test d
 \section{Network Testing}
 When testing networks, two main routes exist; real-world test beds, and software emulation.
 Real-world test beds consist of a real deployed network that has some tests run on it.
-These tests are  
+These tests are.
 \todo{finish}
 
 As opposed to network simulation, which serves as a mathematical model of how a network may function under certain criteria, software emulation runs the real software that is to be used on each of the nodes of the network and simulates the network links between these nodes.
 Software emulation is particularly useful in testing mesh networks, as these can networks are often more difficult to develop real-world test beds for due to their non-hierarchical nature.
 Further, emulation allows for testers to easily change the network layout with minimal extra effort or cost, while a real-world hardware test-bed would require far more effort to change this layout, and adding a node may come at an extra cost.
 Network emulation requires a high-level of simulation fidelity to accurately model and test a network.
-Simulation fidelity is the accuracy of a network to model the corresponding real-world network, and requires the relative accuracy of information such as percentage of packet loss and signal strength in the simulation. \todo{this is bad}
+Simulation fidelity is the accuracy of a network to model the corresponding real-world network, and requires the relative accuracy of information such as percentage of packet loss and signal strength in the simulation. \todo{This is bad}
 
 \begin{itemize}
     \item More general; what are methods to network testing?
     \item Real world/bench testing?
-    \item Large-scale real-world tests
+    \item Large-scale real-world tests.
 \end{itemize}
 
 \section{Features of Popular Network Emulators/Simulators}
 
-Common Open Research Emulator (CORE) is an open source emulator produced by the U.S Naval Research Laboratory, and is considered an industry-standard network emulator. \todo{cite}
+Common Open Research Emulator (CORE) is an open source emulator produced by the U.S. Naval Research Laboratory, and is considered an industry-standard network emulator. \todo{cite}
 CORE offers several key features for testing different networks. Some of these key features and a brief explanation are listed below:
 \begin{itemize}
     \item \textbf{Network visualisation} showing the traffic throughout the network. This can be played back after a test concludes.
@@ -127,6 +127,6 @@ Testing networks before real-world deployment is crucial for determining their r
 This is of particular importance if these networks are mission-critical, as is the case of the Serval Mesh Network. 
 \begin{itemize}
     \item In comparison with other networks
-    \item Answered some of first and second research question
+    \item Answered some of the first and second research question
     \item In the next chapter the first will continue being answered
 \end{itemize}
