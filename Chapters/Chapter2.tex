@@ -20,7 +20,7 @@ This allows for quick and easy deployment of a mesh network in unfamiliar locati
 \section{The Serval Mesh Network}
 
 \subsection{The Serval Project}
-In 2010, Dr. Paul Gardner-Stephen began the development of the Serval Mesh Network in response to the earthquakes in Haiti \parencite{servalProject2011}.
+In 2010, Dr. Paul Gardner-Stephen began the development of the Serval Mesh Network in response to the earthquakes in Haiti \parencite{gardner2011serval}.
 Originally, the network was designed to connect smartphone devices together using WiFi and Bluetooth technology to form an ad hoc mesh network.
 However, through development this was abandoned due to the lack of ad hoc WiFi support in Android and iOS devices \parencite{productizingServalMesh}.
 To circumvent this, the first generation Serval Mesh Extender was developed.
@@ -39,7 +39,7 @@ In 2017 these Mesh Extenders were deployed in eight different locations around V
 The Rhizome protocol was developed for the Serval Mesh Network, and forms the basis of all services provided by the Serval Mesh \parencite{rhizomeDocumentation}.
 
 Rhizome has several features that are useful for the Serval Mesh network.
-The first of these is that it functions as a store and forward protocol, where when data is transferred across the mesh network, this data is stored on the Serval node that this data is transferred to, and is then forwarded on to any neighbouring nodes that do not have this piece of data \parencite{servalProject2011}.
+The first of these is that it functions as a store and forward protocol, where when data is transferred across the mesh network, this data is stored on the Serval node that this data is transferred to, and is then forwarded on to any neighbouring nodes that do not have this piece of data \parencite{gardner2011serval}.
 In practice, this means that the Serval Mesh is very rugged, as the data sent through the Mesh will be stored in multiple locations so that even if one node is removed from the network due to a situation such as a natural disaster or power outage, then this data will still — eventually — reach its destination as long as a path can be made to the destination.
 % The other advantage that the store-and-forward design has is that the Mesh does not need to use any routing protocols to determine what the most efficient route to the destination is; the data will eventually reach every node and will naturally find the most efficient route to the destination. \todo{Not accurate, uses batman}
 
@@ -48,7 +48,7 @@ This is vitally important in situations such as disaster recovery where the Serv
 
 Rhizome uses two data structures, a manifest and a payload.
 A Rhizome payload is simply a unit of data such as an image file, or a message.
-A manifest lists all meta-data associated with this payload, including the size, data type, date of creation, and intended destination \parencite{servalProject2011}.
+A manifest lists all meta-data associated with this payload, including the size, data type, date of creation, and intended destination \parencite{gardner2011serval}.
 A Rhizome Bundle is formed of a manifest and a payload. 
 
 \subsection{Serval-DNA}
@@ -98,7 +98,7 @@ These tests are often smaller in scale than emulated tests due to the relative d
 These tests are often more accurate than an emulated test network, as these test beds form the same or similar network to a real-world scenario \parencite{disasterResilientMesh2013}.
 
 
-\section{Features of Popular Network Emulators/ Simulators}
+\section{Features of Popular Network Emulators/\\Simulators}
 \subsection{C.O.R.E}
 Common Open Research Emulator (CORE) is an open source emulator produced by the U.S. Naval Research Laboratory, and is considered an industry-standard network emulator \parencite{coreDocumentation}.
 CORE offers several key features for testing different networks. Some of these key features and a brief explanation are listed below:

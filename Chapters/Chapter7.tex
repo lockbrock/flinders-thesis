@@ -6,7 +6,7 @@
 
 \todo{Add intro}
 
-\section{Analysing expanded test framework}
+\section{Evaluation of framework expansion}
 \todo{Add what criteria to analyse against}
 Three main improvements were made to the LBARD test framework, with each significantly expanding or improving the capabilities of the test framework.
 
@@ -73,11 +73,8 @@ These features are as follows:
 \end{itemize}
 With these features, Serval Testers are now able to visualise the network traffic during a test, and gain a greater insight into the functionality of Servald and LBARD during their tests.
 
-
 \subsubsection{ASCII}
 The ASCII output format has some strengths and weaknesses that are specific to that format in addition to the features listed above.
-
-
 The ASCII output is able to function without any additional external dependencies as it is using standard C libraries to display this output.
 This allows for high levels of portability of this application, allowing for all Serval testers to use this program without requiring testers to install applications such as GraphViz or LaTeX tools.
 In the ASCII output, testers are able to filter out the display of minor events and only display the major events.
@@ -89,7 +86,6 @@ This may hinder the ability of testers to visualise the network topology as each
 
 \subsubsection{Diagrams}
 The diagram generation tool allows for Serval testers to easily visually determine the network layout of a tested Serval layout, and easily understand how data is transferred throughout the network.
-
 
 The LaTeX PDF generation tool has several strengths that allow it to serve as a useful tool for the Serval team.
 The first of these is the visual nature of the output; testers are shown the entire network topology in an easily understandable diagram with the network traffic of each major event shown on the diagram.
@@ -117,42 +113,33 @@ GraphViz is required to render the DOT files as images, and LaTeX is required to
 While this reliance on external libraries does limit the portability of the tool, these are necessary to generate the diagram as discussed in Chapter 5.
 
 
-\section{Debugging LBARD}
-Talk about what issues we've uncovered, how they worked, etc.
+\section{Debugging Serval}
+Throughout the process of this thesis several bugs and memory issues have been uncovered and reliably reproduced.
+These issues have occurred in both the emulation and real-world tests.
 
-\subsection{Subsection 1}
-Found a ~3 second delay between LBARD receiving a bundle and registering a bundle
+The first of these issues is the reliable reproduction of a bug where a LBARD node will continue resending bundle pieces to a neighbour despite the neighbour having received an entire copy of this bundle and reporting internally that this bundle has been received.
+This issue has been encountered in both the RFD900 and CodanHF radio interfaces, as well as in real-world field tests using real CodanHF radios that have been analysed with these tools.
+Reliable reproduction of this bug is essential for determining the cause and verifying the fix of this bug.
+This bug was reported to the first supervisor of this thesis who believed they had fixed this issue, however when the appropriate test was re-run with the updated software, the bug still remained.
+Using the tools developed throughout this thesis allowed the Serval team to determine that this bug must be occurring in the tree synchronisation protocol of LBARD as the tools indicated that this occurred when different radio modules were used.
 
-14:47:38.060 LBARD:B We have the entire bundle EB7E8ABC*
-14:47:42.465 LBARD:B We have new bundle EB7E8ABC*
+A further issue that has been uncovered through this thesis is the delayed reporting of bundles being received.
+In tests, it appears that there is an approximately 3 second gap between when LBARD reports that all the pieces of a bundle have been received and when the bundle is marked as added to the database.
 
-\emph{How the tools were useful for this}
+Additionally, several memory issues in LBARD and Serval-DNA have been located through the use of the simple log and diagram generation tool.
+As this tool parses the initial log file, it attempts to match lines to specific filters.
+However sometimes a line matches an initial filter but fails to be processed properly by the program as the format does not match the proper format that lines that match this filter follow.
+This is due to memory leaks in LBARD and Serval-DNA where enough of the line matches the filter, but due to a memory issue, other parts of the line are interrupted by other log lines that have leaked into this space in memory.
+To handle this, the tool attempts to format these lines, but if this formatting fails reports this as a malformed line.
+In one such test over 1,100 lines in a field test were reported as malformed.
 
-\subsection{Pre-existing bugs}
-Can show bundles not being marked as sent and resending pieces 
 
 \section{Summary}
+This chapter provided a detailed evaluation of the improvements made to the test framework and the tools developed, and served as an answer to the final research question "\fourthRQ".
+The improvements made to the framework were evaluated, and their strengths and limitations detailed.
+These improvements were additionally analysed on their use to the Serval Project as a whole.
+This chapter further analysed the tools throughout this project, and detailed their strengths and limitations.
+Finally, the bugs and issues that have been uncovered in LBARD and the test framework were described, and the process for uncovering them listed.
 
-- Discussion
-- Talk about all benefits
-Broader use
-Show people conceptually how serval works
-Understanding all the tests
-
-Compare to theoretical
-
-Talk about results in chapter 6
-
-\begin{itemize}
-    \item Benefits
-    \begin{itemize}
-        \item Broader use - education
-        \item Understanding of tests
-    \end{itemize}
-    \item Compare to theoretical
-    \item Talk about results of comparing against real world
-    \item Use in discovering faults
-    \item Should work in combined emulated and real-world tests
-\end{itemize}
-
-
+In the next chapter, this thesis will be summarised, with each of the research questions reiterated and 
+Further, the future work is investigated, and the improvements that could be made to the tools developed in this thesis outlined.

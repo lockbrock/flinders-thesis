@@ -46,9 +46,10 @@ headsepline, % Uncomment to get a line under the header
 \usepackage{color}
 \usepackage{tabularx}
 
-\usepackage[style=authoryear]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
+\usepackage[style=authoryear, dashed=false]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
 %\usepackage{biblatex}
 \bibliography{main} 
+\renewcommand*{\nameyeardelim}{\addcomma\space}
 
 \usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
 
@@ -293,6 +294,9 @@ But most of all I thank me for writing this (add later)
 %	BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
 
-\printbibliography
+\printbibliography[
+	heading=bibintoc,
+	title={References}
+	]
 
 \end{document}  
