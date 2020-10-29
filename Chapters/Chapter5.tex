@@ -324,17 +324,34 @@ Finally, the program adds the closing curly braces to the file, and closes it.
 The program then renders the DOT file with the command:
 
 \texttt{neato -Tpng [fileName] -o [outputFileName]}
-An example DOT file and corresponding graph can be seen in \ref{fig:chapter5DotAndRender}.
-With this, the tool is able to create network topology diagrams using just the log information.
 
-\begin{figure}
+An example DOT file and corresponding graph can be seen in \figurename{ \ref{fig:chapter5DotAndRender}}.
+With this, the tool is able to create network topology diagrams using just the log information.
+\begin{figure}[H]
     \begin{centering}
-        \includegraphics[width=15cm,height=10cm,keepaspectratio]{Figures/Chapter5-DotAndRender.png}
-        \caption{Side-by-side of DOT file and output graph\\ \emph{Rendered using neato}}
+        \begin{minipage}{0.6\textwidth}
+            \begin{lstlisting}[numbers=left, basicstyle=\small, breaklines, frame=l]
+strict digraph A {
+  ratio=fill
+  pad=0.5
+  mindist=0.5
+  subgraph Layout {
+    edge [dir=none, penwidth=3, style=dashed]
+    A -> B [color=red]
+    C -> D [color=red]
+    B -> C [color=blue]
+  }
+}
+            \end{lstlisting}
+        \end{minipage}
+        \begin{minipage}{0.15\textwidth}
+            \raggedleft
+            \includegraphics[height=9cm, keepaspectratio]{Figures/Chapter5-RenderedDot.png}
+        \end{minipage}
+        \caption{DOT file and rendered graph}
         \label{fig:chapter5DotAndRender}
     \end{centering}
 \end{figure}
-\todo{Move this to a lstlisting next to an image}
 
 \subsection{Creating a LaTeX PDF}
 To generate PDFs of the network traffic throughout the test, two steps must be made: create diagrams for each major event showing the network traffic during this major event, then add these diagrams and all minor events to a LaTeX template which is then rendered to a PDF.
@@ -376,11 +393,13 @@ Finally, a page break is added so that the next major event is put on a new page
 This is done for every major event.
 
 Once the LaTeX file has been produced, the program renders the file using the command
+
 \texttt{pdflatex --output-directory=[output file] [file]}
+
 This then creates a PDF where each page displays the network traffic during a major event, and lists all the minor events associated with this major event.
 
+\pagebreak
 \section{Summary}
-
 In this chapter we have continued answering the fourth research question: "\fourthRQ" as started in Chapter \ref{Chapter4}.
 These additional diagnostic tools were in the form of a C program that could be used to generate simpler, formatted, and chronologically ordered log files from the log files produced by the test framework.
 This tool allows for the log file produced by the test framework to be processed and a simpler and clearer log file produced from this.
