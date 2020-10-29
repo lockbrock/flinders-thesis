@@ -33,7 +33,7 @@ This log file needs to follow the same format as that of the log files:
 \end{itemize} 
 
 Additionally, the SIDs for each of the nodes will need to be listed at the top of the file. 
-This is because as the initial log file is processed, any references to a SID involve a lookup to determine which node this is referring to, requiring these SIDs to be listed at the beginning of the file to remove the need to pre-process this file.
+This is because as the initial log file is processed, any references to a SID involve a lookup to determine which node this is referring to, requiring these SIDs to be listed at the beginning of the file to remove the need to preprocess this file.
 For emulated tests this was not necessary, as these SIDs are reported by the test framework at the beginning of the log file.
 A combined real-world log file may look similar to \figurename{ \ref{fig:chapter6RealWorldLog}}.
 
@@ -227,7 +227,7 @@ With this, the two networks can then be compared.
 Comparison of the real-world and emulated network should be done based on general behaviour and overall functionality rather than comparing for the exact behaviour.
 This is due to the fact that individual Serval nodes may make decisions that depend on test-specific information such as sending a bundle earlier than another due to the fact that it was created slightly earlier than the comparable bundle in the other network.
 
-Some of the behaviour that should be analysed in particular includes:
+Some behaviour that should be analysed in particular includes:
 \begin{itemize}
     \item Multi hop communications
     \item LBARD tree-synchronisation message

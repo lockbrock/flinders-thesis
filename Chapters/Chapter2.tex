@@ -41,7 +41,7 @@ The Rhizome protocol was developed for the Serval Mesh Network, and forms the ba
 Rhizome has several features that are useful for the Serval Mesh network.
 The first of these is that it functions as a store and forward protocol, where when data is transferred across the mesh network, this data is stored on the Serval node that this data is transferred to, and is then forwarded on to any neighbouring nodes that do not have this piece of data \parencite{gardner2011serval}.
 In practice, this means that the Serval Mesh is very rugged, as the data sent through the Mesh will be stored in multiple locations so that even if one node is removed from the network due to a situation such as a natural disaster or power outage, then this data will still — eventually — reach its destination as long as a path can be made to the destination.
-% The other advantage that the store-and-forward design has is that the Mesh does not need to use any routing protocols to determine what the most efficient route to the destination is; the data will eventually reach every node and will naturally find the most efficient route to the destination. \todo{Not accurate, uses batman}
+
 
 Further, the decentralised nature of Rhizome means that there is no central point of failure or central location where the networks data is stored; it is stored on every node \parencite{servalWiFiMultiModel}.
 This is vitally important in situations such as disaster recovery where the Serval Mesh will be used in areas where it is possible that a Rhizome node may be lost.
@@ -113,7 +113,7 @@ The Network Simulator (ns-3) is a network simulator often used in research to mo
 The ns-3 simulator features several features for testers to simulate a variety of networks. Some of these features are listed below:
 \begin{itemize}
     \item \textbf{Animated network visualisation} to display the network traffic throughout the test.
-    \item \textbf{Support for various link types} including the ability to define variables such as packet loss and signal strength
+    \item \textbf{Support for various link types} including the ability to define variables such as packet loss and signal strength.
 \end{itemize}
 
 

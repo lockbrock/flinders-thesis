@@ -35,7 +35,7 @@ The first step to completing this is to determine what configuration is required
 Two possibilities exist for this; manually define the configurations for each node in the test definition or automatically determine which configuration is required for each node.
 Since each node that will be connected by Fakeradio needs to be defined already, it was decided to use this information to determine what configuration the node needed.
 
-Each test that uses Fakeradio contains a string in the setup function defining the links between nodes.
+Each test that uses \texttt{fakeradio} contains a string in the setup function defining the links between nodes.
 The string defines the links in the format \texttt{allow between [n],[m];} where n and m are the 0-indexed serval-dna instance number.
 Every node that will exist in a \texttt{fakeradio} topology is required to be listed in this string.
 As such, this string lists every node that requires an LBARD interface to be defined.
@@ -51,7 +51,7 @@ To achieve this, a new array is created that contains the combination of these t
 
 When each node is started, this array is checked and the appropriate configuration is applied to that node.
 For nodes that require LBARD to be started, the configuration required for Serval-DNA is enabling the HTTP API for LBARD to connect to, and setting the username and password for this API.
-For nodes that require WiFi to be enabled, the configuration required can be seen in \figurename{ \ref{fig:chapter4WifiConfig}}
+For nodes that require WiFi to be enabled, the configuration required can be seen in \figurename{ \ref{fig:chapter4WifiConfig}}.
 
 \begin{figure}
     \begin{centering}

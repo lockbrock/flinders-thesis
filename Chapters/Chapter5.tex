@@ -166,7 +166,7 @@ An example of the setup section can be seen in \figurename{ \ref{fig:chapter5Sim
     \end{centering}
 \end{figure}
 
-After the setup section each line in the log file is ordered by chronological order. 
+After the setup section, each line in the log file is ordered by chronological order. 
 The lines follow a simple and consistent structure.
 \begin{center}
     \begin{lstlisting}[basicstyle=\small, breaklines]
@@ -282,7 +282,6 @@ This output can then be piped to a file for debugging if testers do not have the
 
 
 \subsection{Generating a network diagram}
-\todo{cut down}
 To render these diagrams, the network topology needs to be extracted from the test definition, then a diagram drawn of this topology.
 From this layout, the image will then need to be created and rendered.
 There are two main solutions for creating the image: do it using a graphics library, or creating a DOT file and rendering it with Graphviz.
@@ -305,7 +304,7 @@ This graph is defined as directed (but with arrow direction hidden) for the use 
 
 Producing the DOT file consists of four steps:
 \begin{enumerate}
-    \item Open the file and initialise variabls
+    \item Open the file and initialise variables
     \item Write the Fakeradio links
     \item Write the WiFi nodes
     \item Write the end of the DOT file, then close it
@@ -331,7 +330,7 @@ With this, the tool is able to create network topology diagrams using just the l
 \begin{figure}
     \begin{centering}
         \includegraphics[width=15cm,height=10cm,keepaspectratio]{Figures/Chapter5-DotAndRender.png}
-        \caption{Side-by-side of DOT file and output graph\\\emph{Rendered using neato}}
+        \caption{Side-by-side of DOT file and output graph\\ \emph{Rendered using neato}}
         \label{fig:chapter5DotAndRender}
     \end{centering}
 \end{figure}
@@ -345,12 +344,12 @@ The first step in creating a LaTeX PDF is to generate all the images of the netw
 This is an extension of the development done in the previous section, however this is now creating multiple images — one per major event — and adding a directed link and label between a sending and receiving node.
 
 To achieve this, the program iterates through every single major event and creates a new DOT file for each event.
-In each file, the DOT file is created as previously outlined, however a new subgraph is added named \emph{Transfer}
+In each file, the DOT file is created as previously outlined, however a new sub-graph is added named \emph{Transfer}
 The transfer sub-graph contains a single solid line definition of a \emph{directed} connection between the sending and receiving node.
 To display the transfer on this directed link between the nodes, a label is added that displays the transfer message.
 
 With this, the DOT file can be compiled as previously described to generate a diagram for each major event.
-When these are compiled in the LaTeX PDF this will have the effect of appearing to animate the network topology.
+When these are compiled in the LaTeX PDF, this will have the effect of appearing to animate the network topology.
 
 
 \subsubsection{Creating the LaTeX PDF}

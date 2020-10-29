@@ -15,7 +15,6 @@ This emulator is able to emulate multiple aspects of the Serval DNA software, fr
 Later, once LBARD was added to the Serval project, a second emulator was built that extended the code of the Serval DNA emulator.
 This emulator performed similar functions to that of the Serval DNA emulator; testing internal LBARD functionality, and emulating radio communication between Serval nodes. 
 While the LBARD emulator serves as an extension to the Serval DNA emulator — extending and overwriting functionality — there is currently no ability to run tests that feature both WiFi and radio links. 
-\todo{Talk about why we expand instead of use something else}
 
 
 \section{Serval DNA Test Framework}
@@ -138,7 +137,7 @@ As shown in \figurename{ \ref{fig:exampleTest}} when a test is run, four possibl
     \end{centering}
 \end{figure}
 
-The produced log file contains the outputs of all the programs run in the course of the test including \texttt{servald} and \texttt{lbard} instances, \texttt{fakeradio}, and the test framework, with each line in the log file timestamped.
+The produced log file contains the outputs of all the programs run in the course of the test including \texttt{servald} and \texttt{LBARD} instances, \texttt{fakeradio}, and the test framework, with each line in the log file timestamped.
 The log files produced contain several pieces of information.
 At the beginning of the file the name, status, and start/finish time of the test is listed.
 Next, the complete logs of each of the started sub-processes are listed.
@@ -189,7 +188,7 @@ To achieve this, the emulator should model a real-world Serval network and run t
 This will serve to validate the accuracy of the Serval emulator, as it is expected that modelling the same network should have near-identical results with minimal variance provided the appropriate variables (i.e. average packet loss) have been accounted for in the emulation.
 
 \section{Summary}
-In this chapter we have answered the first research question "\firstRQ" as well as the third research question "\thirdRQ".
+In this chapter the first research question "\firstRQ" and the third research question "\thirdRQ" have both been answered.
 To analyse the state of the test framework, its aims first needed to be analysed. 
 This aim of the Serval-DNA framework was determined to be: provide the basis for validating the functionality of core Serval functionality.
 The aim for the LBARD framework was determined to be: provide the basis for field tests, and validate LBARD functionality, particularly the tree-synchronisation and the radio drivers.
