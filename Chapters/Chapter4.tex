@@ -91,8 +91,8 @@ It was believed that this should be high enough for normal usage of the test fra
 
 With this implemented, nodes can still have \texttt{LBARD} enabled if defined in the test definition as previously outlined, but will now always have a WiFi interface enabled but not connected to any other WiFi enabled nodes.
 To connect nodes via WiFi they must now be connected to a specific WiFi interface with the command
-\begin{lstlisting}
-    foreach_instance +[Node1] +[Node2] add_servald_interface [interface]
+\begin{lstlisting}[numbers=none, basicstyle=\small]
+foreach_instance +[Node1] +[Node2] add_servald_interface [interface]
 \end{lstlisting}
 Where \emph{Node1} and \emph{Node2} are single node characters, and where \emph{interface} is a positive integer.
 This can be seen in \figurename{ \ref{fig:definingInterfaces}}.
