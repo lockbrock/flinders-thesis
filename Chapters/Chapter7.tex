@@ -6,10 +6,10 @@
 
 In this chapter the fourth research question "\fourthRQ" will finish being answered with an evaluation of the tools and improvements developed throughout this project.
 Each of these tools and improvements will be summarised and the strengths and limitations critically analysed.
-Further, the bugs and issues in LBARD that have been uncovered or demonstrated and reliably reproduced will be discussed.
+Further, the bugs and issues in \texttt{LBARD} that have been uncovered or demonstrated and reliably reproduced will be discussed.
 
 \section{Evaluation of framework expansion}
-Three main improvements were made to the LBARD test framework, with each significantly expanding or improving the capabilities of the test framework.
+Three main improvements were made to the \texttt{LBARD} test framework, with each significantly expanding or improving the capabilities of the test framework.
 
 The first of these improvements was the implementation of per-node configurations.
 This improvement allows for an increased amount of control around how emulated networks behave.
@@ -45,7 +45,7 @@ First, it may not produce enough output information to the tester to diagnose an
 Fortunately this is not necessarily what the use of this simple log file is; this simplified log file is aimed at locating where issues are occurring in the test, at which point the tester can then use this information to more effectively use the initial log file.
 This generation of the simple log file is further limited by the amount of information that it filters.
 As it stands, the simple log file only keeps specific items from the initial log file.
-As such, if the capabilities of LBARD, Servald, or Fakeradio are extended, this would need to added to the functionality of the program.
+As such, if the capabilities of \texttt{LBARD}, \texttt{servald}, or \texttt{fakeradio} are extended, this would need to added to the functionality of the program.
 This should not present a major issue in the future, as implementing this should just prove to be a matter of expanding what lines the program does not filter out.
 
 \subsection{Network traffic visualisation}
@@ -63,7 +63,7 @@ These features are as follows:
     Gives information about number of major/minor events, bundles, and malformed lines that are encountered in the original log file.
     \item \textbf{Shows overview of test events} throughout the test, helping testers to determine what is occurring at a given point of time.
 \end{itemize}
-With these features, Serval Testers are now able to visualise the network traffic during a test, and gain a greater insight into the functionality of Servald and LBARD during their tests.
+With these features, Serval Testers are now able to visualise the network traffic during a test, and gain a greater insight into the functionality of \texttt{servald} and \texttt{LBARD} during their tests.
 
 \subsubsection{ASCII}
 The ASCII output format has some strengths and weaknesses that are specific to that format in addition to the features listed above.
@@ -83,7 +83,7 @@ The PDF generation tool allows for Serval testers to easily visually determine t
 The LaTeX PDF generation tool has several strengths that allow it to serve as a useful tool for the Serval team.
 The first of these is the visual nature of the output; testers are shown the entire network topology in an easily understandable diagram with the network traffic of each major event shown on the diagram.
 This allows for testers to easily understand where traffic is being sent throughout the network, and isolate where issues are occurring when this data is not being sent.
-This is also helpful for demonstrating core Serval and LBARD concepts to new contributors to the Serval Project.
+This is also helpful for demonstrating core Serval and \texttt{LBARD} concepts to new contributors to the Serval Project.
 As the Serval Project is an open-source project, this is crucial for expanding the Serval team and ensuring the longevity of the project.
 
 The generated PDFs are also very portable as it is a simple PDF file, allowing for Serval team members to easily share the PDF with other team members and easily indicate where the issues are occurring.
@@ -97,26 +97,26 @@ This is detailed in Section \ref{section:futureWork}.
 Further, when several major events occur at the same time these are not all shown on the diagram.
 This is due to the assumption that each major event occurs at a single unique point of time.
 In normal usage, this does not often occur with unrelated major events.
-For some events, such as LBARD sending a piece of a bundle at the same time as it sends a synchronisation message, these will be displayed as different major events.
+For some events, such as \texttt{LBARD} sending a piece of a bundle at the same time as it sends a synchronisation message, these will be displayed as different major events.
 It is not expected that this will cause issues with debugging tests, however if this functionality is later required this should require minimal extra work.
 
 \section{Debugging Serval}
 Throughout the process of this thesis several bugs and memory issues have been uncovered and reliably reproduced.
 These issues have occurred in both the emulation and real-world tests.
 
-The first of these issues is the reliable reproduction of a bug where a LBARD node will continue resending bundle pieces to a neighbour despite the neighbour having received an entire copy of this bundle and reporting internally that this bundle has been received.
+The first of these issues is the reliable reproduction of a bug where a \texttt{LBARD} node will continue resending bundle pieces to a neighbour despite the neighbour having received an entire copy of this bundle and reporting internally that this bundle has been received.
 This issue has been encountered in both the RFD900 and CodanHF radio interfaces, as well as in real-world field tests using real CodanHF radios that have been analysed with these tools.
 Reliable reproduction of this bug is essential for determining the cause and verifying the fix of this bug.
 This bug was reported to the first supervisor of this thesis who believed they had fixed this issue, however when the appropriate test was re-run with the updated software, the bug still remained.
-Using the tools developed throughout this thesis allowed the Serval team to determine that this bug must be occurring in the tree synchronisation protocol of LBARD as the tools indicated that this occurred when different radio modules were used.
+Using the tools developed throughout this thesis allowed the Serval team to determine that this bug must be occurring in the tree synchronisation protocol of \texttt{LBARD} as the tools indicated that this occurred when different radio modules were used.
 
 A further issue that has been uncovered through this thesis is the delayed reporting of bundles being received.
-In tests, it appears that there is an approximately 3 second gap between when LBARD reports that all the pieces of a bundle have been received and when the bundle is marked as added to the database.
+In tests, it appears that there is an approximately 3 second gap between when \texttt{LBARD} reports that all the pieces of a bundle have been received and when the bundle is marked as added to the database.
 
-Additionally, several memory issues in LBARD and Serval-DNA have been located through the use of the simple log and diagram generation tool.
+Additionally, several memory issues in \texttt{LBARD} and Serval-DNA have been located through the use of the simple log and diagram generation tool.
 As this tool parses the initial log file, it attempts to match lines to specific filters.
 However sometimes a line matches an initial filter but fails to be processed properly by the program as the format does not match the proper format that lines that match this filter follow.
-This is due to memory leaks in LBARD and Serval-DNA where enough of the line matches the filter, but due to a memory issue, other parts of the line are interrupted by other log lines that have leaked into this space in memory.
+This is due to memory leaks in \texttt{LBARD} and Serval-DNA where enough of the line matches the filter, but due to a memory issue, other parts of the line are interrupted by other log lines that have leaked into this space in memory.
 To handle this, the tool attempts to format these lines, but if this formatting fails reports this as a malformed line.
 In one such test over 1,100 lines in a field test were reported as malformed.
 
@@ -126,7 +126,7 @@ This chapter provided a detailed evaluation of the improvements made to the test
 The improvements made to the framework were evaluated, and their strengths and limitations detailed.
 These improvements were additionally analysed on their use to the Serval Project as a whole.
 This chapter further analysed the tools throughout this project, and detailed their strengths and limitations.
-Finally, the bugs and issues that have been uncovered in LBARD and the test framework were described, and the process for uncovering them listed.
+Finally, the bugs and issues that have been uncovered in \texttt{LBARD} and the test framework were described, and the process for uncovering them listed.
 
 In the next chapter, this thesis will be summarised, with each of the research questions reiterated and a summary of the answers provided
 Further, the future work is investigated, and the improvements that could be made to the tools developed in this thesis outlined.

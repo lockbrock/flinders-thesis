@@ -62,9 +62,9 @@ This allows for only specific lines to be added to the log file by adding only t
 To determine the minimal information required to understand the tests, the output log files of the tests were analysed.
 While analysing the output log files, the following list of important events was created.
 \begin{itemize}
-    \item \textbf{Setup} Start of a process, LBARD/Fakeradio
+    \item \textbf{Setup} Start of a process, \texttt{LBARD}/Fakeradio
     \item \textbf{Setup} Test details
-    \item \textbf{Setup} Layout information (WiFi and Fakeradio)
+    \item \textbf{Setup} Layout information (WiFi and \texttt{fakeradio})
     \item \textbf{Setup} SID information
     \item \textbf{Servald} Sending and receiving packets
     \item \textbf{Servald} Adding manifest
@@ -79,7 +79,7 @@ From there, these filtered events should allow a tester to more easily utilise t
 
 Once the desired events had been determined, these then needed to be filtered within the program.
 To achieve this, each line in the file is analysed to determine if it is important by examining what substrings the line contains.
-A line is accepted if it matches specified criteria; for instance, a line within the Fakeradio process that contains the substring "\texttt{neighbour has a bundle}" would be considered important. 
+A line is accepted if it matches specified criteria; for instance, a line within the \texttt{fakeradio} process that contains the substring "\texttt{neighbour has a bundle}" would be considered important. 
 These lines are then sent to the relevant function to be formatted appropriately.
 
 \subsection{Output format}
@@ -90,20 +90,20 @@ The structure always follows the structure of:
 \begin{itemize}
     \item the test details, 
     \item the output of the test framework, 
-    \item output of Fakeradio, 
-    \item output of \emph{each} LBARD process, and finally,
-    \item the output of \emph{each} Servald process.
+    \item output of \texttt{fakeradio}, 
+    \item output of \emph{each} \texttt{LBARD} process, and finally,
+    \item the output of \emph{each} \texttt{servald} process.
 \end{itemize} 
 
 As this structure is consistent throughout tests in the framework, this allows the tools to only track which process is being processed, and then filter lines based on this.
 However, the test framework log files have one major issue: the format of lines is not consistent between processes.
-For instance, the typical Servald line may appear as
+For instance, the typical \texttt{servald} line may appear as
 \begin{center}
     \begin{lstlisting}[basicstyle=\small, breaklines]
 DEBUG:[511710] 18:15:34.372 overlay_mdp.c:859:_overlay_send_frame() {mdprequests} Send frame 68 bytes    
     \end{lstlisting}
 \end{center}
-while a similar line in LBARD follows a format of:
+while a similar line in \texttt{LBARD} follows a format of:
 \begin{center}
     \begin{lstlisting}[basicstyle=\small, breaklines]
 T+25138ms : Sending length of bundle 6A1A3379501553D1* (bundle #0, version 1596098704035, cached_version 1596098704035)
@@ -116,13 +116,13 @@ With this information, the appropriate formatting function can be called for the
 
 For \texttt{servald} lines this is trivial, the C standard function \texttt{sscanf} is used to extract the important information from the line and this information is then written to the simple log output file \texttt{sprintf}.
 
-However, in the case of LBARD and Fakeradio lines, multiple issues arise due to the formatting of the log files.
-The first of these issues is that several lines in LBARD are not timestamped with the time that they occurred, rather they are timestamped with the number of milliseconds since the program started as shown above.
+However, in the case of \texttt{LBARD} and \texttt{fakeradio} lines, multiple issues arise due to the formatting of the log files.
+The first of these issues is that several lines in \texttt{LBARD} are not timestamped with the time that they occurred, rather they are timestamped with the number of milliseconds since the program started as shown above.
 This is an issue since this means that the log files can not be easily sorted by timestamp, and also will not be formatted with a consistent format with the other lines.
-To fix this, the initial time that an LBARD instance is started as logged by the file will be used as the T=0 point.
+To fix this, the initial time that an \texttt{LBARD} instance is started as logged by the file will be used as the T=0 point.
 After this has occurred, when an event with a 'T+' timestamp is encountered, the number of milliseconds is added to the original timestamp to produce an accurate timestamp for this event.
 
-The other issue with this method is that Fakeradio log lines often are spread over multiple lines.
+The other issue with this method is that \texttt{fakeradio} log lines often are spread over multiple lines.
 This means that simply scanning and processing a single line will not produce all the necessary information.
 However, this can be mitigated by iterating over several lines until the end of this log line is reached.
 As the program iterates through these lines it simply scans for the important information and forms a single log message from this.
@@ -134,7 +134,7 @@ With these outliers accounted for, the tool is now able to filter each log line 
 With this, the log file produced now has a consistent format.
 The simple log files format begins with the setup section.
 The setup section lists all the essential information for drawing a diagram of the network topology. 
-It lists the test details, SIDs of each of the nodes, and all the WiFi connections and Fakeradio rules. 
+It lists the test details, SIDs of each of the nodes, and all the WiFi connections and \texttt{fakeradio} rules. 
 An example of the setup section can be seen in \figurename{ \ref{fig:chapter5SimpleLogSetup}}.
 
 \begin{figure}
@@ -228,12 +228,12 @@ This struct contains all the necessary features of a major event. These details 
     \item All Destination Nodes
     \item Transfer details (type of message, size, etc.)
     \item The time it occurs at
-    \item The transfer type (LBARD or WiFi)
+    \item The transfer type (\texttt{LBARD} or WiFi)
     \item An array of minor events associated with this major event
 \end{itemize}
 Major events occur at two different points in the log file: when \texttt{fakeradio} sends a packet to a different node, and when \texttt{servald} sends a packet.
 \texttt{Fakeradio} events are already filtered down to a one line log event for the simple log, so the program simply breaks this line down to get the details of the event, and then appends this to the major events array.
-\texttt{Servald} events however are more complicated as the packet transfer takes place over several messages.
+\texttt{Servald} events however, are more complicated as the packet transfer takes place over several messages.
 To convert this into one event, the program saves the details of the packet as each line is processed until the log line stating that the message is sent, at which point all the saved details are added to an event and appended to the major event array.
 
 To add the minor events, when a line for the simple log is being formatted for the simple log, the program simply checks if it meets a handful of criteria.
@@ -305,7 +305,7 @@ This graph is defined as directed (but with arrow direction hidden) for the use 
 Producing the DOT file consists of four steps:
 \begin{enumerate}
     \item Open the file and initialise variables
-    \item Write the Fakeradio links
+    \item Write the \texttt{fakeradio} links
     \item Write the WiFi nodes
     \item Write the end of the DOT file, then close it
 \end{enumerate}
@@ -314,7 +314,7 @@ In the first step, the program opens a new file with the name \texttt{diagramLay
 The initialisation variables are the padding around the image the pen width to be used for drawing the diagram.
 
 In the next step, the program simply iterates through each \texttt{fakeradio} link and defines a dashed link between these two nodes and colours it red.
-This is used to highlight Fakeradio links between nodes and help distinguish the different link types between nodes in a network.
+This is used to highlight \texttt{fakeradio} links between nodes and help distinguish the different link types between nodes in a network.
 
 
 Then, the program iterates through the WiFi link array. 

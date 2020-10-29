@@ -5,16 +5,16 @@ In a project like the Serval project, confidence in its performance is crucial �
 To achieve this, both the development team and potential users of the network need to be confident in its performance in a wide range of scenarios. 
 While a significant portion of this will need to be done through field testing, this is unfeasible to perform without software emulation.
 
-The test frameworks for Serval-DNA and LBARD were developed to perform software testing by emulating the real Serval software and analysing its behaviour during tests.
+The test frameworks for Serval-DNA and \texttt{LBARD} were developed to perform software testing by emulating the real Serval software and analysing its behaviour during tests.
 In this chapter, the first research question "\firstRQ" will continue to be answered as was started in Chapter 2. 
 
 
 \section{Aims of test frameworks}
 The Serval-DNA test framework was built to test the functionality of the Serval mesh in its early days when nodes were purely communicating over WiFi. 
 This emulator is able to emulate multiple aspects of the Serval DNA software, from validating the database integrity to simulating WiFi communication between Serval nodes. 
-Later, once LBARD was added to the Serval project, a second emulator was built that extended the code of the Serval DNA emulator.
-This emulator performed similar functions to that of the Serval DNA emulator; testing internal LBARD functionality, and emulating radio communication between Serval nodes. 
-While the LBARD emulator serves as an extension to the Serval DNA emulator — extending and overwriting functionality — there is currently no ability to run tests that feature both WiFi and radio links. 
+Later, once \texttt{LBARD} was added to the Serval project, a second emulator was built that extended the code of the Serval DNA emulator.
+This emulator performed similar functions to that of the Serval DNA emulator; testing internal \texttt{LBARD} functionality, and emulating radio communication between Serval nodes. 
+While the \texttt{LBARD} emulator serves as an extension to the Serval DNA emulator — extending and overwriting functionality — there is currently no ability to run tests that feature both WiFi and radio links. 
 
 
 \section{Serval DNA Test Framework}
@@ -36,15 +36,15 @@ These files import the test definitions and test framework and define the enviro
 Running the tests requires running the appropriate test file and the framework and definitions will be imported automatically.
 
 \section{LBARD Test Framework}
-The LBARD test framework extends the functionality of the Serval DNA test framework, however it overrides multiple functions to get it working with LBARD.
-By overriding functions, the LBARD test framework is able to create Serval instances running LBARD and is able to simulate radio links between these nodes between the \texttt{fakeradio} program.
-\texttt{Fakeradio} monitors the driver outputs of each LBARD network interface, and routes these packets to the simulated driver inputs of the appropriate LBARD interfaces according to the rules specified in the test definition.
-Network topologies can be specified with \texttt{fakeradio} by defining the radio links allowed between LBARD nodes.
+The \texttt{LBARD} test framework extends the functionality of the Serval DNA test framework, however it overrides multiple functions to get it working with \texttt{LBARD}.
+By overriding functions, the \texttt{LBARD} test framework is able to create Serval instances running \texttt{LBARD} and is able to simulate radio links between these nodes between the \texttt{fakeradio} program.
+\texttt{Fakeradio} monitors the driver outputs of each \texttt{LBARD} network interface, and routes these packets to the simulated driver inputs of the appropriate \texttt{LBARD} interfaces according to the rules specified in the test definition.
+Network topologies can be specified with \texttt{fakeradio} by defining the radio links allowed between \texttt{LBARD} nodes.
 
 When a test is run, the test framework starts the specified number of Serval instances, each with their own separate databases, configurations, and log files.
-LBARD instances are then started for each of these instances, running emulated radio hardware (RFD900, BarrettHF, etc.) as defined in the test definition.
-Finally, Fakeradio is started and begins to listen to the output files of each of the LBARD interfaces.
-Once a test is concluded, the framework collects all the log files and outputs of the Serval instances, LBARD instances, and Fakeradio.
+\texttt{LBARD} instances are then started for each of these instances, running emulated radio hardware (RFD900, BarrettHF, etc.) as defined in the test definition.
+Finally, \texttt{fakeradio} is started and begins to listen to the output files of each of the \texttt{LBARD} interfaces.
+Once a test is concluded, the framework collects all the log files and outputs of the Serval instances, \texttt{LBARD} instances, and \texttt{fakeradio}.
 These are then collated into a single test log file, with every piece of data timestamped.
 
 \emph{Unless otherwise specified, when talking about the test framework in this document, we will be talking about the LBARD test framework.}
@@ -52,7 +52,7 @@ These are then collated into a single test log file, with every piece of data ti
 
 \subsection{Defining Tests}
 Tests are defined in either the lbard (\texttt{./lbard/tests/lbard}) or lbard\_size\_tests (\texttt{./lbard/tests/lbard\_size\_tests}) file. 
-These are Bash files that import the LBARD test framework, and define what tests are to be run.
+These are Bash files that import the \texttt{LBARD} test framework, and define what tests are to be run.
 Tests are comprised of three basic components: a doc string with a brief description of what the test does, a \texttt{setup} function that sets up the test environment, and a \texttt{test} function, that is run when the test is run.
 The doc string is used when running tests and serves as feedback to the tester as to what test is currently being run.
 The \texttt{setup} function is run before the test is conducted. 
@@ -62,7 +62,7 @@ Finally, in the test function, the conditions for a successful test are defined.
 
 
 This can be seen in Figure \ref{fig:testDefinition}. 
-In this figure, the \texttt{setup} function defines the Fakeradio rules, then adds a single file of 50 bytes to the Serval instance A. 
+In this figure, the \texttt{setup} function defines the \texttt{fakeradio} rules, then adds a single file of 50 bytes to the Serval instance A. 
 In the test function, a function \texttt{all\_bundles\_received} is defined, that simply checks if instance B received a bundle with the specified bundle ID and version. 
 The test then waits until this bundle is received. 
 If this bundle is received before the default timeout, the test will pass.
@@ -92,17 +92,17 @@ test_OneOne() {
     wait_until all_bundles_received
 } 
 \end{lstlisting}
-        \caption{Example of LBARD test definition}
+        \caption{Example of \texttt{LBARD} test definition}
         \label{fig:testDefinition}
     \end{centering}
 \end{figure}
 
 \subsection{Existing Tests}
-Currently, 276 LBARD tests exist; 55 of these are in \texttt{./tests/lbard} file, and 221 of these are in the \texttt{./tests/lbard\_size\_tests} file.
+Currently, 276 \texttt{LBARD} tests exist; 55 of these are in \texttt{./tests/lbard} file, and 221 of these are in the \texttt{./tests/lbard\_size\_tests} file.
 
 Of these, only 14 of these tests are unique, with all the tests in the \texttt{lbard\_size\_tests} following the same format with the only difference in the size of the bundle increasing in increments of 10 bytes from 6000 to 8200 bytes.
 
-The majority of the tests in the LBARD test file are as follows, with slight difference in test variables:
+The majority of the tests in the \texttt{LBARD} test file are as follows, with slight difference in test variables:
 \begin{itemize}
     \item Detect radio types (RFD900, BarrettHF, CodanHF)
     \item Setup for Outernet
@@ -111,7 +111,7 @@ The majority of the tests in the LBARD test file are as follows, with slight dif
     \item One peer to one peer with various sizes
     \item MeshMS with different packet loss
     \item File delivery with 3 hops over UHF (RFD900)
-    \item 10 nodes sending, 10 receiving, various LBARD options
+    \item 10 nodes sending, 10 receiving, various \texttt{LBARD} options
     \item 10 nodes sending, 10 receiving, various packet sizes
 \end{itemize}
 
@@ -124,7 +124,7 @@ As shown in \figurename{ \ref{fig:exampleTest}} when a test is run, four possibl
 
     \item \texttt{FAIL} occurs when a test does not meet the requirements from a test definition but it is not due to an issue with the test or test definition. This may occur if a timeout elapses, or an output does not meet a success condition.
     
-    \item The \texttt{ERROR} status occurs when an error occurs that stops the test from running correctly, such as LBARD failing to start properly, or being failing to start Serval DNA with the current configuration.
+    \item The \texttt{ERROR} status occurs when an error occurs that stops the test from running correctly, such as \texttt{LBARD} failing to start properly, or being failing to start Serval DNA with the current configuration.
     
     \item Finally, the \texttt{FATAL} status occurs when files are missing, commands are not available, or invalid options are passed to the test framework.
 \end{list}
@@ -132,7 +132,7 @@ As shown in \figurename{ \ref{fig:exampleTest}} when a test is run, four possibl
 \begin{figure}
     \begin{centering}
         \includegraphics[width=14cm,height=20cm,keepaspectratio]{Figures/testOutput1.png}
-        \caption{Example output of LBARD tests}
+        \caption{Example output of \texttt{LBARD} tests}
         \label{fig:exampleTest}
     \end{centering}
 \end{figure}
@@ -146,11 +146,11 @@ Tests can be configured to display more log information by setting specific flag
 
 \section{Limitations}
 While the emulators are able to test large portions of the Serval network, they have several limitations that drastically limit the usefulness of the emulators to effectively model real world situations.
-The first limitation is that it is currently not possible to model networks that use WiFi alongside radio, limiting the testable scenarios to that of just WiFi if using the Serval-DNA framework, or just radio networks if using the LBARD framework.
+The first limitation is that it is currently not possible to model networks that use WiFi alongside radio, limiting the testable scenarios to that of just WiFi if using the Serval-DNA framework, or just radio networks if using the \texttt{LBARD} framework.
 
 Another major limitation of the test frameworks is that there currently exists very few topologies that are being tested.
 While the Serval DNA portion of the framework does feature various WiFi-exclusive topology tests including long node chains and a 6 node circular network these are minimal,
-and the LBARD framework only features topologies of chain networks
+and the \texttt{LBARD} framework only features topologies of chain networks
 Due to the previous limitation, this means there are no currently existing topology tests that contain multiple radio types or WiFi/radio networks.
 
 While the log files produced by the tests are extensive and contain a large amount of data that is helpful while debugging, it does have several drawbacks.
@@ -167,9 +167,9 @@ This can lead to a lack of confidence in the results of the emulated tests, and 
 
 
 \section{Suggested Improvements}
-To improve the LBARD test framework, multiple changes will need to be made.
-The first of these is adding the ability to allows nodes to communicate over both WiFi and Fakeradio.
-This step alone will drastically increase the scope of possible tests that can be conducted, as it will allow for tests of both WiFi and emulated Fakeradio interface.
+To improve the \texttt{LBARD} test framework, multiple changes will need to be made.
+The first of these is adding the ability to allows nodes to communicate over both WiFi and \texttt{LBARD} through \texttt{fakeradio}.
+This step alone will drastically increase the scope of possible tests that can be conducted, as it will allow for tests of both WiFi and emulated \texttt{LBARD} interfaces.
 Further, this will allow for networks to utilise more than one type of radio communication.
 
 With the ability to have multiple link types between Serval nodes, a much larger range of network topologies can be modelled and tested.
@@ -191,9 +191,9 @@ This will serve to validate the accuracy of the Serval emulator, as it is expect
 In this chapter the first research question "\firstRQ" and the third research question "\thirdRQ" have both been answered.
 To analyse the state of the test framework, its aims first needed to be analysed. 
 This aim of the Serval-DNA framework was determined to be: provide the basis for validating the functionality of core Serval functionality.
-The aim for the LBARD framework was determined to be: provide the basis for field tests, and validate LBARD functionality, particularly the tree-synchronisation and the radio drivers.
+The aim for the \texttt{LBARD} framework was determined to be: provide the basis for field tests, and validate \texttt{LBARD} functionality, particularly the tree-synchronisation and the radio drivers.
 
-In this chapter, both the Serval-DNA and LBARD test framework were analysed in detail, and an explanation and outline provided of their core functionality.
+In this chapter, both the Serval-DNA and \texttt{LBARD} test framework were analysed in detail, and an explanation and outline provided of their core functionality.
 The process for defining tests and a detailed analysis of the two main output types of the frameworks was conducted.
 The limitations of the frameworks was outlined, and then a list of recommendations of improvements that should be made to the test frameworks was listed, answering the third research question.
 In the next chapter, the first of these improvements will start to be implemented, beginning the answering of the fourth research question "\fourthRQ.

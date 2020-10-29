@@ -12,11 +12,11 @@ Without this functionality, Serval testers are limited to a relatively small sam
 
 To implement this functionality, per-node configuration needs to be added to the test framework, allowing testers to define what interfaces each node will be using.
 Then, the ability to define network topologies needs to be implemented to allow for these networks to be created and tested.
-This already exists in the case of the Fakeradio networks as discussed in the previous chapters, however for WiFi nodes it appears to only be possible to have nodes communicating with every other node without any defined topology forming a full-connected Mesh network.
+This already exists in the case of the \texttt{fakeradio} networks as discussed in the previous chapters, however for WiFi nodes it appears to only be possible to have nodes communicating with every other node without any defined topology forming a full-connected Mesh network.
 
-To ensure that these changes to the test framework do not affect the existing LBARD framework tests, two new files will be created.
+To ensure that these changes to the test framework do not affect the existing \texttt{LBARD} framework tests, two new files will be created.
 The first file (\texttt{topologies}) is the new bash file where the new tests will be defined.
-Next, as these topology tests will need to use  and overwrite some test definitions from the original LBARD framework \texttt{testdefs.sh} file, a new test definition file (\texttt{topology\_testdefs.sh}) will be created that extends these functions.
+Next, as these topology tests will need to use  and overwrite some test definitions from the original \texttt{LBARD} framework \texttt{testdefs.sh} file, a new test definition file (\texttt{topology\_testdefs.sh}) will be created that extends these functions.
 
 In this section two approaches will be attempted to define the WiFi topology and configurations.
 The first of these is to not enable WiFi on a node unless specifically defined, as is attempted in Section \ref{subsection:DefiningInterfaces}.
@@ -33,24 +33,24 @@ Prior to this implementation, each Serval node in a test used the same configura
 
 The first step to completing this is to determine what configuration is required for a given node.
 Two possibilities exist for this; manually define the configurations for each node in the test definition or automatically determine which configuration is required for each node.
-Since each node that will be connected by Fakeradio needs to be defined already, it was decided to use this information to determine what configuration the node needed.
+Since each node that will be connected by \texttt{fakeradio} needs to be defined already, it was decided to use this information to determine what configuration the node needed.
 
 Each test that uses \texttt{fakeradio} contains a string in the setup function defining the links between nodes.
 The string defines the links in the format \texttt{allow between [n],[m];} where n and m are the 0-indexed serval-dna instance number.
 Every node that will exist in a \texttt{fakeradio} topology is required to be listed in this string.
-As such, this string lists every node that requires an LBARD interface to be defined.
+As such, this string lists every node that requires a \texttt{LBARD} interface to be defined.
 As the WiFi functionality does not need to have the topology defined in such a way it is necessary to define a new string, listing the nodes that require WiFi to be enabled. 
 
 In the test definition, both of these strings are passed to the \texttt{start\_instances} function.
 To determine what nodes to enable the configurations on, the node information needs to be stripped from the string.
 To achieve this, both of these strings are altered to extract the 0-indexed instance numbers which are then assigned to an array of integers.
-This results in two arrays (WiFi and LBARD) of the instance numbers.
+This results in two arrays (WiFi and \texttt{LBARD}) of the instance numbers.
 With this information, the configurations that are required for each node can be programmatically determined.
 
 To achieve this, a new array is created that contains the combination of these two arrays with valid configurations being "\texttt{wifi}", "\texttt{lbard}", or "\texttt{wifi lbard}".
 
 When each node is started, this array is checked and the appropriate configuration is applied to that node.
-For nodes that require LBARD to be started, the configuration required for Serval-DNA is enabling the HTTP API for LBARD to connect to, and setting the username and password for this API.
+For nodes that require \texttt{LBARD} to be started, the configuration required for Serval-DNA is enabling the HTTP API for \texttt{LBARD} to connect to, and setting the username and password for this API.
 For nodes that require WiFi to be enabled, the configuration required can be seen in \figurename{ \ref{fig:chapter4WifiConfig}}.
 
 \begin{figure}
@@ -67,7 +67,7 @@ set interfaces.[INTERFACE].idle_tick_ms 500
     \end{centering}
 \end{figure}
 
-With this implemented, WiFi and LBARD can be enabled on a per-node basis, allowing for nodes to connect over WiFi or LBARD.
+With this implemented, WiFi and \texttt{LBARD} can be enabled on a per-node basis, allowing for nodes to connect over WiFi or \texttt{LBARD}.
 However, this method is limited in that it does not allow for any configuration of a WiFi topology as every node will use the same WiFi interface, and so every WiFi node will form a fully-connected mesh by default.
 It was at this stage that the first supervisor advised to change the methodology of defining and configuring WiFi nodes.
 This is outlined in Section \ref{subsection:DefiningWiFi}.
@@ -80,16 +80,16 @@ To mitigate this, the method outlined in the previous section was partially aban
 
 In the Serval-DNA test framework, each WiFi interface is essentially a sub-network, with nodes within a specified interface only able to communicate with nodes within the same interface as themselves.
 Thus, to define a complicated network topology it is necessary to restrict which interfaces WiFi nodes can communicate on.
-In the Serval-DNA test framework, non- fully-connected WiFi networks are created by manually defining the WiFi interfaces that a specified Servald interface is connected to.
+In the Serval-DNA test framework, non- fully-connected WiFi networks are created by manually defining the WiFi interfaces that a specified \texttt{servald} interface is connected to.
 
 
 To implement this, several changes needed to be made.
-The first is alter the functions added in the previous section to only handle LBARD information.
+The first is alter the functions added in the previous section to only handle \texttt{LBARD} information.
 This is since WiFi will now be enabled for every node, however each will only be connected to a single interface by default.
 This interface will be unique for every node, with the interface id given by the index of the node plus 100.
 It was believed that this should be high enough for normal usage of the test framework.
 
-With this implemented, nodes can still have LBARD enabled if defined in the test definition as previously outlined, but will now always have a WiFi interface enabled but not connected to any other WiFi enabled nodes.
+With this implemented, nodes can still have \texttt{LBARD} enabled if defined in the test definition as previously outlined, but will now always have a WiFi interface enabled but not connected to any other WiFi enabled nodes.
 To connect nodes via WiFi they must now be connected to a specific WiFi interface with the command
 \begin{lstlisting}
     foreach_instance +[Node1] +[Node2] add_servald_interface [interface]
@@ -129,27 +129,27 @@ As a node can be connected to multiple WiFi interfaces, this allows for network 
 
 
 \section{Improving Topology Definition}
-To assist with creating complex network topologies, a function \texttt{setupN} was implemented that allowed for an arbitrary number of Servald and LBARD instances to be created and networked together.
-This function was required as the LBARD test framework lacked any way of defining an arbitrary number of nodes and instead only provides function to start 4 or 10 Servald devices.
+To assist with creating complex network topologies, a function \texttt{setupN} was implemented that allowed for an arbitrary number of \texttt{servald} and \texttt{LBARD} instances to be created and networked together.
+This function was required as the \texttt{LBARD} test framework lacked any way of defining an arbitrary number of nodes and instead only provides function to start 4 or 10 \texttt{servald} devices.
 A function that can create and start an arbitrary number of nodes allows for greater flexibility in defining network topologies.
 
 This \texttt{setupN} function accepts four parameters:
 \begin{itemize}
     \item a string of node characters, 
-    \item a string of radio types ('none' if LBARD is not to be started on the relevant node), 
-    \item the Fakeradio parameters (i.e. packet loss), 
-    \item and finally the parameters for each LBARD instance.
+    \item a string of radio types ('none' if \texttt{LBARD} is not to be started on the relevant node), 
+    \item the \texttt{fakeradio} parameters (i.e. packet loss), 
+    \item and finally the parameters for each \texttt{LBARD} instance.
 \end{itemize}
 
-This function then starts a \texttt{servald} process on each of these nodes, and as described in previous sections, starts LBARD as required.
-Once Servald and LBARD is running on every relevant node with the appropriate configurations as outlined in the previous sections, the function then starts \texttt{fakeradio} as necessary.
+This function then starts a \texttt{servald} process on each of these nodes, and as described in previous sections, starts \texttt{LBARD} as required.
+Once \texttt{servald} and \texttt{LBARD} is running on every relevant node with the appropriate configurations as outlined in the previous sections, the function then starts \texttt{fakeradio} as necessary.
 
 By using this function, testers are able to define and test the exact number of Serval nodes that they require in their test, and with the capability to define exact parameters of the test — such as defining which radio to use on a per-node basis and packet loss — this relatively simply function provides a greater range of flexibility.
-Furthermore, this function when combined with the implementation of mixing WiFi and Fakeradio interfaces allows for Serval testers to test a far greater number of Serval networks with minimal additional code required.
+Furthermore, this function when combined with the implementation of mixing WiFi and \texttt{fakeradio} interfaces allows for Serval testers to test a far greater number of Serval networks with minimal additional code required.
 
 
 \section{Adding more topologies tests}
-With the improvements made to the LBARD test framework, several new topology tests can be implemented to test the functionality of LBARD in various different network topologies.
+With the improvements made to the \texttt{LBARD} test framework, several new topology tests can be implemented to test the functionality of \texttt{LBARD} in various different network topologies.
 The implemented topology tests do not all strictly need to feature WiFi alongside radio, as any test which focuses on a specific network topology that did not exist previously represents an expansion of the test framework.
 All of these tests were implemented using the functionality developed throughout this chapter, and followed the process of defining tests as outlined in \chaptername{ \ref{Chapter3}}.
 
@@ -177,8 +177,8 @@ While the developed tests are not exhaustive, they provide groundwork for the fu
 The tests cover a wide range of test cases, with the developed tests focusing on how Serval networks handle communication through complicated network topologies.
 This is most obvious in both of the Lab tests. These tests model the real-world lab network that the Serval team have set up at the Flinders University Tonsley campus.
 These tests also provide the basis of comparison to real-world Serval networks as outlined in \chaptername{ \ref{Chapter6}}.
-In these tests, the reliability of LBARD is tested, particularly in the \texttt{LBARD\_Big\_File\_Chain} test, where a large file is sent across several RFD900 hops.
-Further, these tests analyse how LBARD handles a single node receiving bundle pieces from several nodes at a time, notably in SplitRFD900 and both of the Tonsley lab tests.
+In these tests, the reliability of \texttt{LBARD} is tested, particularly in the \texttt{LBARD\_Big\_File\_Chain} test, where a large file is sent across several RFD900 hops.
+Further, these tests analyse how \texttt{LBARD} handles a single node receiving bundle pieces from several nodes at a time, notably in SplitRFD900 and both of the Tonsley lab tests.
 
 
 \section{Summary}

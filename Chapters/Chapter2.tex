@@ -57,22 +57,22 @@ Written in C, Serval-DNA handles all the core functionality of the Serval Networ
 Serval-DNA handles the transfer of Rhizome Bundles over WiFi automatically, determining what bundles are required by nearby nodes through a synchronisation method.
 
 \subsection{LBARD}
-The Low Bandwidth Asynchronous Rhizome Demonstrator (LBARD) is a C program written for the Serval Project that handles synchronising Rhizome Bundles over low bandwidth connections such as those used in the RFD900 packet radio in the Serval Mesh Extender.
-LBARD was developed to run as an addition to Serval-DNA and provides the functionality to communicate with neighbouring Serval nodes as well as implementing the radio drivers necessary to use the various radio types that LBARD supports.
+The Low Bandwidth Asynchronous Rhizome Demonstrator (\texttt{LBARD}) is a C program written for the Serval Project that handles synchronising Rhizome Bundles over low bandwidth connections such as those used in the RFD900 packet radio in the Serval Mesh Extender.
+\texttt{LBARD} was developed to run as an addition to Serval-DNA and provides the functionality to communicate with neighbouring Serval nodes as well as implementing the radio drivers necessary to use the various radio types that \texttt{LBARD} supports.
 
 Since the default synchronisation method for Rhizome as implemented in Serval-DNA relies on a relatively high amount of bandwidth in comparison with the low bandwidth available on UHF or HF radios a new synchronisation method needed to be used for these low bandwidth links \parencite{productizingServalMesh}.
-LBARD uses a tree-synchronisation protocol that uses a XOR of Rhizome bundle hashes to quickly determine which bundles are missing from its neighbours \parencite{lbardDocumentation}.
-This synchronisation protocol allows for LBARD nodes to efficiently determine if a neighbour is missing any of the bundles that it has in its Rhizome store with a minimal amount of communication needed.
-This is crucial for the low-bandwidth links that exist between two LBARD nodes, as it allows for LBARD to utilise the rest of the bandwidth that is available to it to transfer the Rhizome bundles.
-After the LBARD node has determined what bundles are required to be transferred, these bundles are then transferred in 64-byte pieces \parencite{lbardDocumentation}.
-To ensure that these pieces are received, LBARD continues sending these pieces until it receives a confirmation from the receiving node that all the pieces have been received intact.
+\texttt{LBARD} uses a tree-synchronisation protocol that uses a XOR of Rhizome bundle hashes to quickly determine which bundles are missing from its neighbours \parencite{lbardDocumentation}.
+This synchronisation protocol allows for \texttt{LBARD} nodes to efficiently determine if a neighbour is missing any of the bundles that it has in its Rhizome store with a minimal amount of communication needed.
+This is crucial for the low-bandwidth links that exist between two \texttt{LBARD} nodes, as it allows for \texttt{LBARD} to utilise the rest of the bandwidth that is available to it to transfer the Rhizome bundles.
+After the \texttt{LBARD} node has determined what bundles are required to be transferred, these bundles are then transferred in 64-byte pieces \parencite{lbardDocumentation}.
+To ensure that these pieces are received, \texttt{LBARD} continues sending these pieces until it receives a confirmation from the receiving node that all the pieces have been received intact.
 
-As it stands, LBARD is able to support several radio types, including the RFD900, with some experimental implementations for the CodanHF and BarrettHF radios, as well as a prototype Outernet satellite uplink \parencite{lbardDocumentation}.
+As it stands, \texttt{LBARD} is able to support several radio types, including the RFD900, with some experimental implementations for the CodanHF and BarrettHF radios, as well as a prototype Outernet satellite uplink \parencite{lbardDocumentation}.
 
 \subsection{Serval Test Framework}
 The Serval Test Framework is a test suite designed for the Serval Network, that provides the framework for emulated Serval nodes to be tested.
 The test framework is largely written as Bash scripts that setup specified tests, and links Serval nodes together using simulated WiFi or radio connections \parencite{servalTestDocumentation}.
-The test framework is divided into two parts; the Serval-DNA framework, and the LBARD framework.
+The test framework is divided into two parts; the Serval-DNA framework, and the \texttt{LBARD} framework.
 The framework provides the tools to test a wide range of Serval functionality, as it is able to directly monitor the performance and responses of the software and compare it to the expected output as defined in the test definition.
 The framework functions as an emulator rather than a simulator as it is running the real Serval-DNA/LBARD software, with only the links between nodes simulated \parencite{servalTestDocumentation}.
 The Serval Test Framework will be covered in more detail in Chapter 3.
