@@ -4,46 +4,41 @@
 
 \label{Chapter7} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-\todo{Add intro}
+In this chapter the fourth research question "\fourthRQ" will finish being answered with an evaluation of the tools and improvements developed throughout this project.
+Each of these tools and improvements will be summarised and the strengths and limitations critically analysed.
+Further, the bugs and issues in LBARD that have been uncovered or demonstrated and reliably reproduced will be discussed.
 
 \section{Evaluation of framework expansion}
-\todo{Add what criteria to analyse against}
 Three main improvements were made to the LBARD test framework, with each significantly expanding or improving the capabilities of the test framework.
 
 The first of these improvements was the implementation of per-node configurations.
 This improvement allows for an increased amount of control around how emulated networks behave.
-The most important result of this is that nodes can have different interfaces — WiFi and radio — enabled, allowing for more flexible network topologies than the original WiFi- or radio- only network topologies.
+This allows for nodes in a test to have different interfaces defined allowing for more flexible network topologies than the original WiFi- or radio- only network topologies.
 With the development of this, the goals of the Serval project — to create reliable and cost-effective communication - have been furthered, with the ability to now comprehensively test a far greater range of Serval networks than was previously possible.
-\todo{Add more strengths and weaknesses}
 
 The next improvement that was made to the test framework is the development of new \texttt{setup} functions to allow for easier testing of networks of arbitrary size.
 This improvement is more of a quality of life improvement than a significant feature increase, however its impact to the testing process of the Serval team is non-negligible.
 Before this improvement had been made, tests were generally limited to using either 4 or 8 nodes in a test. 
 This is not due to any limitation in the test framework itself, as the framework is capable of handling up to 26 nodes (A-Z), but simply due to testers using the \texttt{setup} functions available to them which only setup and started 4 or 8 Serval nodes.
 However, with the development of the \texttt{setupN} function, an arbitrary number of Serval nodes can be deployed for the test, allowing for more flexibility in test design, without requiring testers to write a function to deploy the exact number of nodes that they require.
-In the future, as the testing requirements of the Serval team expand it is likely that tests may require more than 26 nodes — particularly if they wish to model a large planned deployment of Serval nodes.
-This represents a limitation in the development of this utility function.
-However, this is considered outside the scope of this thesis and is left for a future developer.
 
 Finally, 8 different tests were written using these newly developed improvements.
 These tests focused on testing several topology-specific Serval network layouts.
-These tests however do have some limitations. First, there is minimal variety in the layout of the newly developed tests, with half of the tests all featuring some variation on a simple chain of nodes.
+These tests however do have some limitations. 
+First, there is minimal variety in the layout of the newly developed tests, with half of the tests all featuring some variation on a simple chain of nodes.
 Further, these tests predominately tests networks using one file at the start node and concluding when this file reaches a specified destination node.
 While there is some variation in the specific layout, these tests present only a mild addition to the Serval test coverage.
 However, it is hoped that these added tests serve as a useful starting point for future test developers to further test various Serval topologies.
 
 
 \section{Evaluation of developed tools}
-\todo{Add intro}
-\todo{Add criteria}
 
 \subsection{Creation of simple log}
 The first tool that was developed for the Serval project is that of the simple log generation.
 This tool allows for the log file produced by a test to be simplified, formatted, and sorted into chronological order.
-This is an important tool for the Serval team for various reasons.
-Before this tool, if an issue occurs in a test, the Serval team needed to search through the expansive log file for where the issue went wrong, with no other useful information from the test framework than a Pass/Fail status.
-However, with this tool the Serval team are able to look through the simplified log file chronologically, and develop an understanding of how the network was behaving at any given time.
-\todo{Continue talking about the strengths}
+
+With this tool, the Serval team are able to more effectively determine where an issue occurs during a test without needing to search through the unordered, non-formatted original log file.
+With this tool the Serval team are able to look through the simplified log file chronologically, and develop an understanding of how the network was behaving at any given time.
 
 The generation of the simplified log file does have some limitations however.
 First, it may not produce enough output information to the tester to diagnose an encountered issue.
@@ -51,11 +46,10 @@ Fortunately this is not necessarily what the use of this simple log file is; thi
 This generation of the simple log file is further limited by the amount of information that it filters.
 As it stands, the simple log file only keeps specific items from the initial log file.
 As such, if the capabilities of LBARD, Servald, or Fakeradio are extended, this would need to added to the functionality of the program.
-This should not present a major issue in the future, as implementing this should just prove to be a matter of mildly expanding what lines the program does not filter out.
+This should not present a major issue in the future, as implementing this should just prove to be a matter of expanding what lines the program does not filter out.
 
 \subsection{Network traffic visualisation}
-\todo{Add intro bit}
-The next tools that was developed was the network diagram generation.
+The network visualisation tool was developed for analysing Serval networks  after tests.
 This tool had two main outputs for visualising the network traffic: ASCII and LaTeX/PDF outputs.
 Both of these visualisation methods share some key features.
 These features are as follows:
@@ -63,13 +57,11 @@ These features are as follows:
     \item \textbf{Does not modify log lines} from the lines added to the simple log. 
     This allows for testers to use the generated diagrams as an aid to the simple log by visually determine where issues may be occurring, then investigating the log file for more details. 
     \item \textbf{Shows log lines associated with a major event}. 
-    \todo{add explanation}
     \item \textbf{Display a bundle bitmap} allowing for testers to determine what pieces of a bundle have not been sent or have been sent several times to a node.
-    \item \textbf{Display test information}
+    \item \textbf{Display test information}.
     \item \textbf{Display test statistics}. 
     Gives information about number of major/minor events, bundles, and malformed lines that are encountered in the original log file.
-    \item \textbf{Shows overview of test events.} \todo{Add explanation} 
-    Helps testers to determine what is occurring at a given point of time.
+    \item \textbf{Shows overview of test events} throughout the test, helping testers to determine what is occurring at a given point of time.
 \end{itemize}
 With these features, Serval Testers are now able to visualise the network traffic during a test, and gain a greater insight into the functionality of Servald and LBARD during their tests.
 
@@ -82,10 +74,11 @@ This is useful for testers as they are able to quickly see the transfers that oc
 
 However, the ASCII output is limited as it does not ever show an entire ASCII representation of the entire network topology.
 This may hinder the ability of testers to visualise the network topology as each major event.
-\todo{finish}
+An ASCII network representation could be implemented in the future to mitigate this limitation.
+This is covered in further details in Section \ref{section:futureWork}/
 
 \subsubsection{Diagrams}
-The diagram generation tool allows for Serval testers to easily visually determine the network layout of a tested Serval layout, and easily understand how data is transferred throughout the network.
+The PDF generation tool allows for Serval testers to easily visually determine the network layout of a tested Serval layout, and easily understand how data is transferred throughout the network.
 
 The LaTeX PDF generation tool has several strengths that allow it to serve as a useful tool for the Serval team.
 The first of these is the visual nature of the output; testers are shown the entire network topology in an easily understandable diagram with the network traffic of each major event shown on the diagram.
@@ -98,20 +91,14 @@ The generated PDFs are also very portable as it is a simple PDF file, allowing f
 The PDF generation does have some weaknesses.
 The first of these is that the diagram generation is not perfect and may produce some non-optimal layouts.
 While the diagrams generated are correct to the test definition, these diagrams produced may have lines that overlap and are not organised in a particularly logical layout.
-This can be improved through further work in the diagram generation. 
-These non-optimal layouts are due to the diagram generation using GraphViz to generate the diagrams, specifically the \texttt{neato} tool.
-Neato generates diagrams where the nodes are distributed using a method where the nodes are distributed using an 'ideal-spring' which is then adjusted so that the nodes are equidistant. \todo{cite}
-For the diagram generation this means that the nodes are equally distributed across the diagram, however these layouts are not necessarily organised in a layout that makes logical sense.
+This can be improved through further work in the diagram generation.
+This is detailed in Section \ref{section:futureWork}.
+
 Further, when several major events occur at the same time these are not all shown on the diagram.
-This is simply due to the assumption that each major event occurs at a single unique point of time.
+This is due to the assumption that each major event occurs at a single unique point of time.
 In normal usage, this does not often occur with unrelated major events.
 For some events, such as LBARD sending a piece of a bundle at the same time as it sends a synchronisation message, these will be displayed as different major events.
-It is not expected that this will cause issues with debugging tests, however if this functionality is later required this should prove to be a minor addition.
-The largest weakness of the diagram generation is the reliance on external libraries.
-The libraries that are required are GraphViz and LaTeX.
-GraphViz is required to render the DOT files as images, and LaTeX is required to create the PDF from the \.tex file produced by the tool.
-While this reliance on external libraries does limit the portability of the tool, these are necessary to generate the diagram as discussed in Chapter 5.
-
+It is not expected that this will cause issues with debugging tests, however if this functionality is later required this should require minimal extra work.
 
 \section{Debugging Serval}
 Throughout the process of this thesis several bugs and memory issues have been uncovered and reliably reproduced.
@@ -141,5 +128,5 @@ These improvements were additionally analysed on their use to the Serval Project
 This chapter further analysed the tools throughout this project, and detailed their strengths and limitations.
 Finally, the bugs and issues that have been uncovered in LBARD and the test framework were described, and the process for uncovering them listed.
 
-In the next chapter, this thesis will be summarised, with each of the research questions reiterated and 
+In the next chapter, this thesis will be summarised, with each of the research questions reiterated and a summary of the answers provided
 Further, the future work is investigated, and the improvements that could be made to the tools developed in this thesis outlined.
