@@ -185,10 +185,10 @@ The program creates two tables per receiving node, one for body and one for mani
 These tables list the start and end bytes for each partition in the header row, and beneath each of these, show the 'live' count of the number of times that these partitions have been sent.
 This can be seen in \figurename{ \ref{fig:chapter6PDFPartition}}.
 
-\begin{figure}
+\begin{figure}[h]
     \begin{centering}
-        \includegraphics[width=15cm,height=20cm,keepaspectratio]{Figures/Chapter6-PDFPartition.png}
-        \caption{PDF Output showing network diagram and bundle bitmap}
+        \includegraphics[width=15cm,height=15cm,keepaspectratio]{Figures/Chapter6-PDFPartition.png}
+        \caption{PDF Output showing network diagram and \\bundle bitmap}
         \label{fig:chapter6PDFPartition}
     \end{centering}
 \end{figure}
@@ -206,7 +206,7 @@ This network was set up in previous Thesis work and consists of 14 Serval Mesh E
 The lab network was chosen for two main reasons, it allows for comprehensive logging of the functionality of the network due to the Mesh Observers, and the network is set up in a complicated network topology.
 The topology of the lab network can be seen in \figurename{ \ref{fig:chapter6LabNetwork}}.
 
-\begin{figure}
+\begin{figure}[h]
     \begin{centering}
         \includegraphics[width=15cm,height=10cm,keepaspectratio]{Figures/Chapter6-LabTopology.png}
         \caption{Network topology of the lab network}
@@ -251,7 +251,7 @@ This involved determining the necessary configurations for \texttt{LBARD} and Se
 As \texttt{fakeradio} can not be used for real-world tests to determine when data is sent by \texttt{LBARD}, this log information is needed to create the major events for diagrams.
 Since this log information also contains information about the start and end byte values that \texttt{LBARD} sends, this allowed for the creation of bundle bitmaps, showing a count of the number of times specific pieces of a bundle has been sent to a node.
 The bundle bitmaps are displayed as a table in both the ASCII and PDF output types for every \texttt{LBARD} major event, and show a 'live' count of the sent pieces as of the time of that major event.
-With this implemented, real-world tests can then be analysed using the tools previously developed in Chapter 5.
+With this implemented, real-world tests can then be analysed using the tools previously developed in Chapter \ref{Chapter5}.
 
 % Talk about comparisons
 Due to the COVID-19 pandemic, this project was unable to complete the comparison between the emulated and real-world networks due to time constraints. 

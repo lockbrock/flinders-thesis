@@ -169,7 +169,7 @@ An example of the setup section can be seen in \figurename{ \ref{fig:chapter5Sim
 After the setup section, each line in the log file is ordered by chronological order. 
 The lines follow a simple and consistent structure.
 \begin{center}
-    \begin{lstlisting}[basicstyle=\small, breaklines]
+    \begin{lstlisting}[basicstyle=\scriptsize, breaklines]
 [Timestamp] [Process]:[Instance Letter] [Description]
     \end{lstlisting}
 \end{center}
@@ -178,23 +178,19 @@ This structure can be seen in \figurename{ \ref{fig:chapter5SimpleLogFormat}}.
 \begin{figure}
     \begin{centering}
 \begin{lstlisting}[basicstyle=\small, breaklines, frame=single]
-13:23:18.358 LBARD:A Resending bundle 3580786E* from the start.
-13:23:18.358 LBARD:A Sending length of bundle 3580786E* 
-13:23:18.370 FAKERADIO A -> B [Bundle end piece ] [218 bytes]
-13:23:18.370 FAKERADIO A -> B [Time stamp] [218 bytes]
-13:23:18.370 LBARD:A I just sent manifest piece [128,258) for 86c9dd08ea6a*.
-13:23:18.388 LBARD:B : Calling message handler for type 'S' @ offset 0x15
-13:23:18.388 LBARD:B : Calling message handler for type 'T' @ offset 0x8
-13:23:18.388 LBARD:B : Calling message handler for type 'p' @ offset 0x21
-13:23:18.388 LBARD:B Decoding message #4 from f170309e3033*, length = 186:
-13:23:18.388 LBARD:B We have the entire bundle 3580786E*    
+16:12:57.073 FAKERADIO A -> B [bundle piece]  bid=57E1F321* [229 bytes]
+16:12:57.073 LBARD:A Broadcast tree sync message
+16:12:57.091 LBARD:B Progress receiving 57E1F321*: Manifest is 258 bytes, and body is 50 bytes
+16:12:57.091 LBARD:B We have the entire bundle 57E1F321*
+16:12:57.092 SERVALD:B Adding 57E1F321F86F6197 to tree
+16:12:57.092 SERVALD:B Queueing next message for 5ms   
 \end{lstlisting}
-        \caption{Format of simple log events}
+        \caption{Format of simple log}
         \label{fig:chapter5SimpleLogFormat}
     \end{centering}
 \end{figure}
 
-
+\pagebreak
 \section{Drawing Packet Transfer through the network}
 To improve the output of the test framework, a network diagram displaying packet transfer is highly useful, allowing testers to better understand the topology they are testing. 
 To produce a useful and informative network diagram, four steps need to be undertaken: determine the major events to be displayed on the diagram, create an ASCII representation of events during a test, generate a network diagram, and finally, create a PDF of the network topology with the traffic displayed.
@@ -203,7 +199,7 @@ To produce a useful and informative network diagram, four steps need to be under
 Before the network diagrams can be generated, the content that will be displayed must first be determined.
 To do this, two categories of log events are defined: 
 \begin{list}{}{}
-    \item Major: When a node sends a message/packet to another
+    \item Major: When a node sends a message/packet to a node(s)
     \item Minor: Some processing on a single node that would not give the full picture of the test if omitted
 \end{list}
 

@@ -36,7 +36,12 @@ Two possibilities exist for this; manually define the configurations for each no
 Since each node that will be connected by \texttt{fakeradio} needs to be defined already, it was decided to use this information to determine what configuration the node needed.
 
 Each test that uses \texttt{fakeradio} contains a string in the setup function defining the links between nodes.
-The string defines the links in the format \texttt{allow between [n],[m];} where n and m are the 0-indexed serval-dna instance number.
+The string defines the links in the format 
+
+\texttt{allow between [n],[m];} 
+
+Where n and m are the 0-indexed serval-dna instance number.
+
 Every node that will exist in a \texttt{fakeradio} topology is required to be listed in this string.
 As such, this string lists every node that requires a \texttt{LBARD} interface to be defined.
 As the WiFi functionality does not need to have the topology defined in such a way it is necessary to define a new string, listing the nodes that require WiFi to be enabled. 

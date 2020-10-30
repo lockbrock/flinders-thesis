@@ -6,7 +6,7 @@ To achieve this, both the development team and potential users of the network ne
 While a significant portion of this will need to be done through field testing, this is unfeasible to perform without software emulation.
 
 The test frameworks for Serval-DNA and \texttt{LBARD} were developed to perform software testing by emulating the real Serval software and analysing its behaviour during tests.
-In this chapter, the first research question "\firstRQ" will continue to be answered as was started in Chapter 2. 
+In this chapter, the first research question "\firstRQ" will continue to be answered as was started in Chapter \ref{ch:Chapter2}.
 
 
 \section{Aims of test frameworks}
@@ -61,7 +61,7 @@ This function serves to set up any necessary configurations for the running of t
 Finally, in the test function, the conditions for a successful test are defined. Once this function completes (or an error/fail/timeout is encountered), the test concludes.
 
 
-This can be seen in Figure \ref{fig:testDefinition}. 
+This can be seen in \figurename{ \ref{fig:testDefinition}}. 
 In this figure, the \texttt{setup} function defines the \texttt{fakeradio} rules, then adds a single file of 50 bytes to the Serval instance A. 
 In the test function, a function \texttt{all\_bundles\_received} is defined, that simply checks if instance B received a bundle with the specified bundle ID and version. 
 The test then waits until this bundle is received. 
